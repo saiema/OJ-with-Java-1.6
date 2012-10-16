@@ -277,8 +277,9 @@ public class Parser implements ParserConstants {
                 /* skip the modifier */
                 for (ptr = 1; modifierCheck( env, getToken( ptr ) ) ; ++ptr)  ;
                 int old_ptr = ptr;
-
+            //System.out.println("LocalVariableDeclarationLookahead:0 " + getToken(old_ptr));
                 ptr = consumePureResultType( old_ptr );
+                //System.out.println("LocalVariableDeclarationLookahead:1 " + getToken(ptr));
 
                 if (ptr != old_ptr && getToken( ptr ).kind == IDENTIFIER) {
                     return true;
@@ -414,16 +415,26 @@ public class Parser implements ParserConstants {
 	  */
     private final int consumePureResultType( int ptr ) {
                 Token token = getToken( ptr );
+
                 if (primitiveTypeCheck( token )) {
                     ptr++;
                 } else if (token.kind == IDENTIFIER) {
                     ptr++;
                     /* skip the generics */
+
+                        int number = 0; //a number to record how many "< >"s are included in the generics
                     if(getToken(ptr).kind == LT){
                                 do{
+                                    if(getToken(ptr).kind == LT)
+                                        number++; // add one to the number if encountering a "<"
+
                                         ptr++;
+
+                                        if(getToken(ptr).kind == GT)
+                                                number--;// subtract one from the number if encountering a " >"
                                 }
-                                while(getToken(ptr).kind == GT);
+                                while( (getToken(ptr).kind != GT) && (number != 0));
+                                ptr++;
                     }
 
                     while (getToken( ptr ).kind == DOT
@@ -3577,10 +3588,10 @@ public class Parser implements ParserConstants {
     StatementList               result = new StatementList();
     ModifierList                p1;
     TypeName                    p2;
-    VariableDeclarator          p3;
-    TypeName  tspec;
-    String  vname;
-    VariableInitializer  vinit;
+    VariableDeclarator  p3;
+    TypeName                    tspec;
+    String                      vname;
+    VariableInitializer vinit;
     DebugOut.println( "#LocalVariableDeclaration()" );
     p1 = VariableModifiersOpt(env);
     p2 = Type(env);
@@ -7478,71 +7489,6 @@ public class Parser implements ParserConstants {
     jj_la = xla; jj_lastpos = jj_scanpos = token;
     try { return !jj_3_108(); }
     catch(LookaheadSuccess ls) { return true; }
-  }
-
-  private boolean jj_3_87() {
-    if (jj_scan_token(DOT)) return true;
-    if (jj_3R_136()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_216() {
-    if (jj_scan_token(DOT)) return true;
-    if (jj_scan_token(THIS)) return true;
-    return false;
-  }
-
-  private boolean jj_3_84() {
-    if (jj_3R_135()) return true;
-    if (jj_scan_token(DOT)) return true;
-    if (jj_scan_token(CLASS)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_132() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_215()) {
-    jj_scanpos = xsp;
-    if (jj_3R_216()) {
-    jj_scanpos = xsp;
-    if (jj_3_87()) {
-    jj_scanpos = xsp;
-    if (jj_3_88()) {
-    jj_scanpos = xsp;
-    if (jj_3R_217()) {
-    jj_scanpos = xsp;
-    if (jj_3R_218()) {
-    jj_scanpos = xsp;
-    if (jj_3R_219()) return true;
-    }
-    }
-    }
-    }
-    }
-    }
-    return false;
-  }
-
-  private boolean jj_3R_215() {
-    if (jj_scan_token(DOT)) return true;
-    if (jj_scan_token(SUPER)) return true;
-    return false;
-  }
-
-  private boolean jj_3_14() {
-    if (jj_scan_token(COMMA)) return true;
-    if (jj_3R_109()) return true;
-    return false;
-  }
-
-  private boolean jj_3_83() {
-    if (jj_3R_134()) return true;
-    if (jj_scan_token(DOT)) return true;
-    if (jj_scan_token(SUPER)) return true;
-    if (jj_scan_token(DOT)) return true;
-    if (jj_scan_token(IDENTIFIER)) return true;
-    return false;
   }
 
   private boolean jj_3R_174() {
@@ -11548,6 +11494,71 @@ public class Parser implements ParserConstants {
 
   private boolean jj_3R_111() {
     if (jj_3R_177()) return true;
+    return false;
+  }
+
+  private boolean jj_3_87() {
+    if (jj_scan_token(DOT)) return true;
+    if (jj_3R_136()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_216() {
+    if (jj_scan_token(DOT)) return true;
+    if (jj_scan_token(THIS)) return true;
+    return false;
+  }
+
+  private boolean jj_3_84() {
+    if (jj_3R_135()) return true;
+    if (jj_scan_token(DOT)) return true;
+    if (jj_scan_token(CLASS)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_132() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_215()) {
+    jj_scanpos = xsp;
+    if (jj_3R_216()) {
+    jj_scanpos = xsp;
+    if (jj_3_87()) {
+    jj_scanpos = xsp;
+    if (jj_3_88()) {
+    jj_scanpos = xsp;
+    if (jj_3R_217()) {
+    jj_scanpos = xsp;
+    if (jj_3R_218()) {
+    jj_scanpos = xsp;
+    if (jj_3R_219()) return true;
+    }
+    }
+    }
+    }
+    }
+    }
+    return false;
+  }
+
+  private boolean jj_3R_215() {
+    if (jj_scan_token(DOT)) return true;
+    if (jj_scan_token(SUPER)) return true;
+    return false;
+  }
+
+  private boolean jj_3_14() {
+    if (jj_scan_token(COMMA)) return true;
+    if (jj_3R_109()) return true;
+    return false;
+  }
+
+  private boolean jj_3_83() {
+    if (jj_3R_134()) return true;
+    if (jj_scan_token(DOT)) return true;
+    if (jj_scan_token(SUPER)) return true;
+    if (jj_scan_token(DOT)) return true;
+    if (jj_scan_token(IDENTIFIER)) return true;
     return false;
   }
 

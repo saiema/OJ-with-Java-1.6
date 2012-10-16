@@ -300,8 +300,9 @@ public class Parser
 		/* skip the modifier */
 		for (ptr = 1; modifierCheck( env, getToken( ptr ) ) ; ++ptr)  ;
 		int old_ptr = ptr;
-	
+	    //System.out.println("LocalVariableDeclarationLookahead:0 " + getToken(old_ptr));
 		ptr = consumePureResultType( old_ptr );
+		//System.out.println("LocalVariableDeclarationLookahead:1 " + getToken(ptr));
 		
 		if (ptr != old_ptr && getToken( ptr ).kind == IDENTIFIER) {
 		    return true;
@@ -437,16 +438,26 @@ public class Parser
 	  */
     private final int consumePureResultType( int ptr ) {
 		Token token = getToken( ptr );
+		
 		if (primitiveTypeCheck( token )) {
 		    ptr++;
 		} else if (token.kind == IDENTIFIER) {
 		    ptr++;
 		    /* skip the generics */
+
+			int number = 0; //a number to record how many "< >"s are included in the generics
 		    if(getToken(ptr).kind == LT){
 				do{
+				    if(getToken(ptr).kind == LT)
+				    	number++; // add one to the number if encountering a "<"
+				    					    
 					ptr++;
+
+					if(getToken(ptr).kind == GT)
+						number--;// subtract one from the number if encountering a " >"
 				}
-				while(getToken(ptr).kind == GT);
+				while( (getToken(ptr).kind != GT) && (number != 0));
+				ptr++;
 		    }
 		    
 		    while (getToken( ptr ).kind == DOT
@@ -3069,10 +3080,10 @@ StatementList LocalVariableDeclaration( Environment env ) :
     StatementList		result = new StatementList();
     ModifierList		p1;
     TypeName			p2;
-    VariableDeclarator		p3;
-    TypeName  tspec;
-    String  vname;
-    VariableInitializer  vinit;
+    VariableDeclarator	p3;
+    TypeName  			tspec;
+    String  			vname;
+    VariableInitializer vinit;
     DebugOut.println( "#LocalVariableDeclaration()" );
 }
 {

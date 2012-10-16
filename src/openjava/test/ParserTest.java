@@ -13,8 +13,9 @@ public class ParserTest {
 	public static void main(String[] args) {
 		System.out.println(System.getProperty("user.dir"));
 		//String file = "src/openjava/test/Planet.java";
-		//String file = "src/openjava/test/VendingMachine.java";
-		String file = "src/openjava/test/Box.java";
+		String file = "src/openjava/test/VendingMachine.java";
+		//String file = "src/openjava/test/Box.java";
+		//String file = "e://muJavaJunit//src/junit/framework/TestSuite.java";
 		//String file = "src/openjava/test/RequestForEnhancement.java";
 	      Parser parser = null;
 	      try
