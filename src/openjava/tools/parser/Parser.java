@@ -420,6 +420,7 @@ public class Parser implements ParserConstants {
                     ptr++;
                 } else if (token.kind == IDENTIFIER) {
                     ptr++;
+
                     /* skip the generics */
 
                         int number = 0; //a number to record how many "< >"s are included in the generics
@@ -7491,11 +7492,6 @@ public class Parser implements ParserConstants {
     catch(LookaheadSuccess ls) { return true; }
   }
 
-  private boolean jj_3R_174() {
-    if (jj_3R_172()) return true;
-    return false;
-  }
-
   private boolean jj_3R_383() {
     if (jj_3R_101()) return true;
     return false;
@@ -11559,6 +11555,11 @@ public class Parser implements ParserConstants {
     if (jj_scan_token(SUPER)) return true;
     if (jj_scan_token(DOT)) return true;
     if (jj_scan_token(IDENTIFIER)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_174() {
+    if (jj_3R_172()) return true;
     return false;
   }
 

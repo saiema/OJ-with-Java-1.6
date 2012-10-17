@@ -77,6 +77,22 @@ public class ClosedEnvironment extends Environment
 			     + result.toString() );
         }
     }
+    
+    /**
+     * record a generics type like T, V, E to be a type of an object in parent environments such as a FileEnvironment
+     * @param name
+     * @param clazz
+     */
+    public void recordGenerics( String name, OJClass clazz ) {
+    	DebugOut.println( "ClosedEnvironment#recordGenerics() : "
+			 + name + " "  + clazz.getName() );
+    	
+    	if(parent != null && !(parent instanceof GlobalEnvironment))
+	    	parent.record(name, clazz);
+    	
+    }
+    
+   
 
     public OJClass lookupClass( String name ) {
 	OJClass result = (OJClass) table.get( name );

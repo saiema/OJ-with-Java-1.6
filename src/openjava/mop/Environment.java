@@ -161,5 +161,9 @@ public abstract class Environment
     	return parent.getImportedPackages();
     }
 
+	public void recordGenerics(String identifier, OJClass oBJECT) {
+		// TODO Auto-generated method stub		
+	}
+
   
 }

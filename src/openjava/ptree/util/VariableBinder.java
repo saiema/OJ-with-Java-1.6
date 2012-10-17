@@ -140,11 +140,10 @@ public class VariableBinder extends ScopeHandler {
 		}
 		else{
 			OJClass OBJECT = OJClass.forClass(Object.class);
-			//System.out.println("env.getClass()" + getEnvironment().getClass());
-		//	if(env.getClass().toString().equals("openjava.mop.ClassEnvironment")){
-		//		env.
-		//	}
-			getEnvironment().record(identifier, OBJECT);
+
+			//getEnvironment().record(identifier, OBJECT);
+			getEnvironment().recordGenerics(identifier, OBJECT);
+
 			//System.out.println("env: " + getEnvironment().toString());
 		}
 		return ptree;

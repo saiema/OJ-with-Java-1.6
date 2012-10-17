@@ -443,6 +443,7 @@ public class Parser
 		    ptr++;
 		} else if (token.kind == IDENTIFIER) {
 		    ptr++;
+		    
 		    /* skip the generics */
 
 			int number = 0; //a number to record how many "< >"s are included in the generics
