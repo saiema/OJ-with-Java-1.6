@@ -64,6 +64,11 @@ public class AnonymousClassEnvironment extends ClassEnvironment
     	 return false;
     }
     
+    /**
+     * Return the type of a field in an anonymous class
+     * @param name
+     * @return
+     */
     public OJClass returnFieldType(String name){
     	String type = "";
     	for (int i = 0, len = members.size(); i < len; ++i) {
@@ -93,5 +98,9 @@ public class AnonymousClassEnvironment extends ClassEnvironment
     public String currentClassName() {
     	return getClassName();
     }
+    
+	public Environment getParentEnvironment(){
+		return parent;
+	}
 
 }
