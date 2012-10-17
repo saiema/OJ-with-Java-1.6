@@ -31,7 +31,7 @@ import openjava.ptree.util.ParseTreeVisitor;
  *             ...
  *         }
  * </pre></blockquote><br>
- * The latter is supported from JDK 1.1, is called an anoymous class
+ * The latter is supported from JDK 1.1, is called an anonymous class
  * of the inner class.
  * 
  * @see openjava.ptree.Expression

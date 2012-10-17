@@ -23,7 +23,10 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Vector;
 
+import openjava.mop.AnonymousClassEnvironment;
 import openjava.mop.Environment;
+import openjava.mop.FileEnvironment;
+import openjava.mop.GlobalEnvironment;
 import openjava.mop.NoSuchMemberException;
 import openjava.mop.OJClass;
 import openjava.mop.OJClassNotFoundException;
@@ -108,7 +111,7 @@ public class MemberAccessCorrector extends VariableBinder {
 	public Expression evaluateDown(MethodCall ptree)
 		throws ParseTreeException {
 		super.evaluateDown(ptree);
-		//System.out.println("MemberAccessCorrector MethodCall: ptree " + ptree + "; name: " + ptree.getName() + "; type: " + ptree.getReferenceType() + "; " + ptree.getReferenceExpr());
+		//System.out.println("MemberAccessCorrector MethodCall: ptree " + ptree + "; name: " + ptree.getName() + "; type: " + ptree.getReferenceType() + "; " );
 		if (ptree.getReferenceType() != null){
 			return ptree;
 		}
@@ -206,9 +209,30 @@ public class MemberAccessCorrector extends VariableBinder {
 	private boolean isField(String name) {
 		Environment env = getEnvironment();
 		String qcname = env.toQualifiedName(env.currentClassName());
-		//System.out.println("MemberAccessCoorector isField: qcname " + qcname);
+		//System.out.println("MemberAccessCoorector isField: env.currentClassName " + env.currentClassName() + " "+ (env instanceof AnonymousClassEnvironment));
+		
+		if(qcname.indexOf("anonymous class") >= 0){
+			Environment envCopy = getEnvironment();
+			if(envCopy instanceof AnonymousClassEnvironment){
+				boolean result = ((AnonymousClassEnvironment)envCopy).isField(name);
+				if(result == true)
+					return true;
+			}
+			
+			do{
+				Environment tempEnv = envCopy.getParentEnvironment();
+				
+				if(tempEnv instanceof AnonymousClassEnvironment){
+					boolean result = ((AnonymousClassEnvironment)tempEnv).isField(name);
+					if(result == true)
+						return true;
+				}
+				envCopy = tempEnv;
+			}while(!(envCopy instanceof FileEnvironment));
+			
+		}
+		
 		OJClass declarer = env.lookupClass(qcname);
-		//System.out.println("MemberAccessCoorector isField: declarer " + declarer);
 		OJField field = null;
 		while (declarer != null && field == null) {
 			try {

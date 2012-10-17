@@ -14,13 +14,13 @@ public class AnonymousClassEnvironment extends ClassEnvironment
     private String base;
 
     public AnonymousClassEnvironment(Environment e, String baseClassName, MemberDeclarationList mdecls) {
-	super(e);
+    	super(e);
         this.members = mdecls;
         this.base = baseClassName;
     }
 
     public String getClassName() {
-	return "<anonymous class>";
+    	return "<anonymous class>";
     }
 
     public String toString() {
@@ -30,15 +30,58 @@ public class AnonymousClassEnvironment extends ClassEnvironment
     public OJClass lookupBind(String name) {
     	
         for (int i = 0, len = members.size(); i < len; ++i) {
-            if (!(members.get(i) instanceof FieldDeclaration))  continue;
+            if (!(members.get(i) instanceof FieldDeclaration))  
+            	continue;
             FieldDeclaration field = (FieldDeclaration) members.get(i);
-            if (! name.equals(field.getName()))  continue;
+
+            if (! name.equals(field.getName()))  
+            	continue;
             return lookupClass(field.getName());
         }
         OJField field = pickupField(lookupClass(base), name);
-        if (field != null)  return field.getType();
+        if (field != null)  
+        	return field.getType();
         /* not a field name of this class */
         return parent.lookupBind(name);
+    }
+    
+    /**
+     * Check if the parameter name is the name of a field of this anonymous class
+     * @param name
+     * @return
+     */
+    public boolean isField(String name){
+    	 for (int i = 0, len = members.size(); i < len; ++i) {
+             if (!(members.get(i) instanceof FieldDeclaration))  
+             	continue;
+             FieldDeclaration field = (FieldDeclaration) members.get(i);
+            
+             if (! name.equals(field.getName()))  
+             	continue;
+             else
+            	 return true;
+         }
+    	 return false;
+    }
+    
+    public OJClass returnFieldType(String name){
+    	String type = "";
+    	for (int i = 0, len = members.size(); i < len; ++i) {
+            if (!(members.get(i) instanceof FieldDeclaration))  
+            	continue;
+            FieldDeclaration field = (FieldDeclaration) members.get(i);
+
+            if (! name.equals(field.getName()))  
+            	continue;
+            else
+            {
+            	type = field.getTypeSpecifier().toString();
+            	return lookupClass(type);
+            }
+        }
+    	
+        /* not a field name of this class */
+        return parent.lookupClass(type);
     }
 
     /**
@@ -48,7 +91,7 @@ public class AnonymousClassEnvironment extends ClassEnvironment
      *         environment.
      */
     public String currentClassName() {
-	return getClassName();
+    	return getClassName();
     }
 
 }

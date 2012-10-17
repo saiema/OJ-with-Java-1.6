@@ -17,6 +17,7 @@ import java.io.StringWriter;
 import java.util.Hashtable;
 import java.util.Vector;
 
+import openjava.ptree.FieldDeclaration;
 import openjava.tools.DebugOut;
 
 
@@ -95,9 +96,9 @@ public class ClosedEnvironment extends Environment
    
 
     public OJClass lookupClass( String name ) {
-	OJClass result = (OJClass) table.get( name );
-	if (result != null)  return result;
-        return parent.lookupClass( name );
+		OJClass result = (OJClass) table.get( name );
+		if (result != null)  return result;
+	        return parent.lookupClass( name );
     }
 
     /**
@@ -150,6 +151,10 @@ public class ClosedEnvironment extends Environment
     public Vector getImportedPackages(){
     	return parent.getImportedPackages();
     }
+    
+	public Environment getParentEnvironment(){
+		return parent;
+	}
 
 
 }

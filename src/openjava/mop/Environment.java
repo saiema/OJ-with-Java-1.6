@@ -164,6 +164,9 @@ public abstract class Environment
 	public void recordGenerics(String identifier, OJClass oBJECT) {
 		// TODO Auto-generated method stub		
 	}
-
+	
+	public Environment getParentEnvironment(){
+		return parent;
+	}
   
 }

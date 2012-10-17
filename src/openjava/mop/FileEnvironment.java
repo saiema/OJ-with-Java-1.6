@@ -412,5 +412,9 @@ public class FileEnvironment extends Environment {
     public Vector getImportedPackages(){
     	return importedPackages;
     }
+    
+	public Environment getParentEnvironment(){
+		return parent;
+	}
 
 }

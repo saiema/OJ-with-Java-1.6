@@ -11,7 +11,9 @@
  */
 package openjava.ptree;
 
+import openjava.mop.AnonymousClassEnvironment;
 import openjava.mop.Environment;
+import openjava.mop.FileEnvironment;
 import openjava.mop.NoSuchMemberException;
 import openjava.mop.OJClass;
 import openjava.mop.OJField;
@@ -135,6 +137,27 @@ public class FieldAccess extends NonLeaf implements Expression {
 		Expression refexpr = getReferenceExpr();
 		
 		String name = getName();
+		
+		/*** added for the type of a FieldAccess that is defined as a field in an anonymous class ***/
+		Environment envCopy = env;
+		if(envCopy instanceof AnonymousClassEnvironment){
+			OJClass oc = ((AnonymousClassEnvironment)envCopy).returnFieldType(name);
+			if(oc != null)
+				return oc;
+		}
+		
+		do{
+			Environment tempEnv = envCopy.getParentEnvironment();
+			
+			if(tempEnv instanceof AnonymousClassEnvironment){
+				OJClass oc = ((AnonymousClassEnvironment)tempEnv).returnFieldType(name);
+				
+				if(oc != null)
+					return oc;
+			}
+			envCopy = tempEnv;
+		}while(!(envCopy instanceof FileEnvironment));
+		/**********************************************************************************************/
 		
 		OJClass reftype = null;
 

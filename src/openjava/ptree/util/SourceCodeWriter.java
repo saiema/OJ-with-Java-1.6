@@ -1088,7 +1088,8 @@ public class SourceCodeWriter extends ParseTreeVisitor {
 
 		//print generics type parameters
         TypeParameterList tpl = p.getTypeParameterList();
-        tpl.accept(this);
+        if(tpl != null)
+        	tpl.accept(this);
         out.print(" ");
         
 		TypeName ts = p.getReturnType();

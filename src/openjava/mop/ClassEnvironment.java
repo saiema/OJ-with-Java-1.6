@@ -69,7 +69,7 @@ public class ClassEnvironment extends ClosedEnvironment
     }
 
     public OJClass lookupClass( String name ) {
-	/* should hold and return member classes
+    	/* should hold and return member classes
          * Currently, the global environment holds all the top inner classes.
          */
         return parent.lookupClass( name );
@@ -259,6 +259,10 @@ public class ClassEnvironment extends ClosedEnvironment
     public Vector getImportedPackages(){
     	return parent.getImportedPackages();
     }
+    
+	public Environment getParentEnvironment(){
+		return parent;
+	}
 
 
 }
