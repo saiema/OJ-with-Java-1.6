@@ -131,6 +131,7 @@ public class ClosedEnvironment extends Environment
     }
     */
     public String toQualifiedName(String name) {
+    	//System.out.println("ClosedEnvironment toQualifiedName: " + name);
         java.util.Enumeration ite = table.keys();
         while (ite.hasMoreElements()) {
             String qname = (String) ite.nextElement();

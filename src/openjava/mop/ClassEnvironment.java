@@ -113,7 +113,7 @@ public class ClassEnvironment extends ClosedEnvironment
      * @return  the fully-qualified name of the class
      */
     public String toQualifiedName( String name ) {
-    	
+    	//System.out.println("ClassEnvironment toQualifiedName: " + name);
         if (name == null)  return null;
         	
         if (name.endsWith("[]")) {
@@ -124,8 +124,12 @@ public class ClassEnvironment extends ClosedEnvironment
 	if (name.indexOf( "." ) != -1) {
 	    /* may be simple name + innerclass */
 	    String top = getFirst( name );
+	    //System.out.println("ClassEnvironment toQualifiedName top: " + top);
 	    String qtop = toQualifiedName( top );
-	    if (qtop == null || qtop.equals( top ))  return name;
+	    //System.out.println("ClassEnvironment toQualifiedName qtop: " + qtop);
+	    if (qtop == null || qtop.equals( top ))  
+	    	return name;
+	    //System.out.println("ClassEnvironment toQualifiedName qtop + getRest( name ): " + qtop + "." + getRest( name ));
 	    return qtop + "." + getRest( name );
 	}
 		
@@ -198,15 +202,25 @@ public class ClassEnvironment extends ClosedEnvironment
       		 return name;
     }
     
+    /**
+     * Get the name before the dot
+     * @param qname
+     * @return the package name before the first dot
+     */
     private static final String getFirst( String qname ) {
-	int dot = qname.indexOf( "." ) ;
-	if (dot == -1)  return qname;
-	return qname.substring( 0, dot );
+		int dot = qname.indexOf( "." ) ;
+		if (dot == -1)  return qname;
+		return qname.substring( 0, dot );
     }
+    /**
+     * Get the name after the dot
+     * @param qname
+     * @return the rest part after the first dot 
+     */
     private static final String getRest( String qname ) {
-	int dot = qname.indexOf( "." ) ;
-	if (dot == -1)  return qname;
-	return qname.substring( dot + 1 );
+		int dot = qname.indexOf( "." ) ;
+		if (dot == -1)  return qname;
+		return qname.substring( dot + 1 );
     }
     /*
     private String parentName() {

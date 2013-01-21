@@ -256,7 +256,7 @@ public class FileEnvironment extends Environment {
 	 * @return the fully-qualified name of the class
 	 */
     public String toQualifiedName(String name) {
-
+    	//System.out.println("FileEnvironment toQualifiedName: " + name);
         if (name == null || isPrimitiveType(name) || isQualifiedName(name)) {
             return name;
         }
@@ -279,13 +279,10 @@ public class FileEnvironment extends Environment {
         String qname;
         
         qname = searchImportedClasses(sname);
-        
         if (qname != null)
             return qname;
-
-        qname = searchImportedPackages(sname);
         
-       // System.out.println("searchImportedPackages: " + qname);
+        qname = searchImportedPackages(sname);        
         if (qname != null)
             return qname;
 
@@ -356,9 +353,17 @@ public class FileEnvironment extends Environment {
         String packname = getPackage();
         if (packname == null || packname.equals("")) {
             found = simple_name;
-        } else {
+        }
+        else if(packname.equals(simple_name)){
+        	//if the simple_name is equivalent to the package name, the simple_name is the package name
+        	//no need to search package again
+        	found = null;
+        	return found;
+        }
+        else{
             found = packname + "." + simple_name;
         }
+        
         if (theClassExists(found))
             return found;
 

@@ -13,10 +13,11 @@ public class ParserTest {
 	public static void main(String[] args) {
 		System.out.println(System.getProperty("user.dir"));
 		//String file = "src/openjava/test/Planet.java";
-		String file = "src/openjava/test/VendingMachine.java";
+		String file = "src/openjava/test/VendingMachine1.java";
 		//String file = "src/openjava/test/Box.java";
 		//String file = "e://muJavaJunit//src/junit/framework/TestSuite.java";
 		//String file = "src/openjava/test/RequestForEnhancement.java";
+		//String file = "src/openjava/test/stringPlay/StringTools.java";
 	      Parser parser = null;
 	      try
 	      {
@@ -56,6 +57,7 @@ public class ParserTest {
 	      }
 	      catch (Exception e)
 	      {
+	    	  System.out.println(e);
 	    	  e.printStackTrace();
 	      }
 

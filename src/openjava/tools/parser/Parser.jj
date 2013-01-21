@@ -423,13 +423,14 @@ public class Parser
     }
 
     private final boolean ClassLiteralLookahead() {
-	int ptr = 1;
-	ptr = consumePureResultType( ptr );
-	if (ptr == 1)  return false;
-	/** here should be user suffix check **/
-	if (getToken( ptr ).kind != DOT)  return false;
-	if (getToken( ptr + 1 ).kind != CLASS)  return false;
-	return true;
+		int ptr = 1;
+		ptr = consumePureResultType( ptr );
+		
+		if (ptr == 1)  return false;
+		/** here should be user suffix check **/
+		if (getToken( ptr ).kind != DOT)  return false;
+		if (getToken( ptr + 1 ).kind != CLASS)  return false;
+		return true;
     }
 	
 	/**
@@ -438,7 +439,7 @@ public class Parser
 	  */
     private final int consumePureResultType( int ptr ) {
 		Token token = getToken( ptr );
-		
+
 		if (primitiveTypeCheck( token )) {
 		    ptr++;
 		} else if (token.kind == IDENTIFIER) {
@@ -447,6 +448,7 @@ public class Parser
 		    /* skip the generics */
 
 			int number = 0; //a number to record how many "< >"s are included in the generics
+
 		    if(getToken(ptr).kind == LT){
 				do{
 				    if(getToken(ptr).kind == LT)
@@ -456,6 +458,9 @@ public class Parser
 
 					if(getToken(ptr).kind == GT)
 						number--;// subtract one from the number if encountering a " >"
+
+					if(ptr > 500)
+						break; // if reading 500 tokens cannot finish this loop, this parser thinks this is not a generic type but a relational operator. Then the parser jumps out of the loop.	
 				}
 				while( (getToken(ptr).kind != GT) && (number != 0));
 				ptr++;
@@ -1261,7 +1266,7 @@ ClassDeclaration UnmodifiedClassDeclaration( ClassEnvironment env ) :
     TypeParameterList       tpl = null;
 }
 {
-    "class" p1 = Identifier() {System.out.println("classname: " + p1);}
+    "class" p1 = Identifier() 
 	[ 
 	  tpl = TypeParameters(env) 
 	]
@@ -1582,7 +1587,7 @@ MemberDeclarationList MethodOrFieldDeclaration( Environment base_env ) :
 		tpl = TypeParameters(base_env) 
 	]
     p2 = Type( base_env )
-	{/*System.out.println("field: " + p2);*/}
+	
     (
         LOOKAHEAD( Identifier() "(" )
         p3=Identifier()
@@ -2305,7 +2310,7 @@ Expression Expression( Environment env ) :
 }
 {
     p1 = ConditionalExpression( env )
-    [ p2 = AssignmentOperator() p3 = Expression( env ) ]
+    [ LOOKAHEAD(2) p2 = AssignmentOperator() p3 = Expression( env ) ]
     {
 	if (p2 != null) {
 	    result = new AssignmentExpression( p1, p2, p3 );
@@ -2502,15 +2507,16 @@ Expression RelationalExpression( Environment env ) :
 {
     Expression			result;
     Expression			p1;
-    String			p2;
+    String				p2;
     Expression			p3;
 }
 {
+
     p1=ShiftExpression( env )
     { result = p1; }
     (
-        ( "<" | ">" | "<=" | ">=" ) { p2 = getToken( 0 ).image; }
-        p3=ShiftExpression( env )
+        ( "<" | ">" | "<=" | ">=" ) { p2 = getToken( 0 ).image;}
+        p3=ShiftExpression( env )      
         { result = new BinaryExpression( result, p2, p3 ); }
     )*
     { return result; }
@@ -2543,7 +2549,7 @@ Expression AdditiveExpression( Environment env ) :
 {
     Expression			result;
     Expression			p1;
-    String			p2;
+    String				p2;
     Expression			p3;
 }
 {
@@ -2565,6 +2571,7 @@ Expression MultiplicativeExpression( Environment env ) :
     Expression			p3;
 }
 {
+
     p1=UnaryExpression( env )
     { result = p1; }
     (
@@ -2577,10 +2584,11 @@ Expression MultiplicativeExpression( Environment env ) :
 
 Expression UnaryExpression( Environment env ) :
 {
-    int				p1;
+    int					p1;
     Expression			p2;
 }
 {
+   (    
     LOOKAHEAD( "+" | "-" )
     (
         "+" { p1 = UnaryExpression.PLUS; }
@@ -2594,8 +2602,10 @@ Expression UnaryExpression( Environment env ) :
     p2=PreIncrementDecrementExpression( env )
     { return p2; }
 |
+	
     p2=UnaryExpressionNotPlusMinus( env )
     { return p2; }
+	)
 }
 
 Expression PreIncrementDecrementExpression( Environment env ) :
@@ -2615,15 +2625,16 @@ Expression PreIncrementDecrementExpression( Environment env ) :
 
 Expression UnaryExpressionNotPlusMinus( Environment env ) :
 {
-    int				p1;
+    int					p1;
     Expression			p2;
 }
 {
+(
     (
         "~" { p1 = UnaryExpression.BIT_NOT; }
     |
         "!" { p1 = UnaryExpression.NOT; }
-    )
+    )    
     p2=UnaryExpression( env )
     { return new UnaryExpression( p1, p2 ); }
 |
@@ -2633,6 +2644,7 @@ Expression UnaryExpressionNotPlusMinus( Environment env ) :
 |
     p2=PostfixExpression( env )
     { return p2; }
+  )
 }
 
 void CastLookahead( Environment env ) :
@@ -2734,7 +2746,7 @@ Expression PrimaryExpression( Environment env ) :
 {
     p1 = PrimaryPrefix( env )
     { result = p1; }
-    
+
     ( LOOKAHEAD( "." | "[" | "(" )
     (
 	    LOOKAHEAD( "." "new" )
@@ -2771,6 +2783,7 @@ Expression PrimaryPrefix( Environment env ) :
     DebugOut.println( "#PrimaryPrefix()" );
 }
 {
+  (
     p1=Literal()
     { return p1; }
 |
@@ -2778,7 +2791,8 @@ Expression PrimaryPrefix( Environment env ) :
     p1=SelfAccess( env )
     { return p1; }
 |
-    "super" "." p2=Identifier()
+    "super" "."
+    p2=Identifier()
     { return new FieldAccess( SelfAccess.constantSuper(), p2 ); }
 |
     "(" p1=Expression( env ) ")"
@@ -2786,13 +2800,14 @@ Expression PrimaryPrefix( Environment env ) :
 |
     p1=AllocationExpression( env )
     { return p1; }
-|
+| 
     LOOKAHEAD( { ClassLiteralLookahead() } )
     p1=ClassLiteral( env )
     { return p1; }
 |
     p1=TempFieldAccess( env )
     { return p1; }
+  )
 }
 
 FieldAccess TempFieldAccess( Environment env ) :
@@ -3015,7 +3030,7 @@ Statement Statement( Environment env ) :
 
 LabeledStatement LabeledStatement( Environment env ) :
 {
-    String			p1;
+    String				p1;
     Statement			p2;
 
     DebugOut.println( "#LabeledStatement()" );
@@ -3050,7 +3065,7 @@ StatementList BlockOrStatementListOpt( Environment env ) :
 	         && getToken( 1 ).kind != EOF
 	         && getToken( 1 ).kind != CASE
 	         && getToken( 1 ).kind != _DEFAULT ) } )
-        p1=BlockOrStatement( env )
+        p1=BlockOrStatement( env )      
         { result.addAll( p1 ); }
     )+
     { return result; }

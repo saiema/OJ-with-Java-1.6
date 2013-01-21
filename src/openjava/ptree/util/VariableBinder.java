@@ -172,6 +172,7 @@ public class VariableBinder extends ScopeHandler {
 	}
 	
 	private static void bindName(Environment env, String type, String name) {
+		//System.out.println("before bindName: " + name+ ": " + type);
 		String qtypename = env.toQualifiedName(type);
 		//System.out.println("bindName: " + name+ ": " + qtypename);
 		try {

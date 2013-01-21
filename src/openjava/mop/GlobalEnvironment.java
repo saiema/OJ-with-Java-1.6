@@ -100,7 +100,7 @@ public class GlobalEnvironment
      * @param     clazz           the class object associated with that name
      */
     public void bindVariable( String name, OJClass clazz ) {
-	System.err.println( "error : illegal binding on GlobalEnvironment" );
+    	System.err.println( "error : illegal binding on GlobalEnvironment" );
     }
 
     public OJClass lookupBind( String name ) {
