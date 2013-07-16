@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 import static java.lang.Math.*;
 
-	public class Box<T> {
+	public class Box1<T> {
 
 	    private T t;    
 	    List<? extends Number> ln ;
@@ -56,7 +56,7 @@ import static java.lang.Math.*;
 	    
 	    //
 	    public static void main(String[] args) {
-	        Box<Integer> integerBox = new Box<Integer>();
+	        Box1<Integer> integerBox = new Box1<Integer>();
 	        integerBox.add(new Integer(10));
 	        integerBox.inspect(new Integer(10));
 	        

@@ -97,6 +97,7 @@ public int getCredit ()
 //Needed for testing -- increases observability
 public LinkedList getStock ()
 {
+	Integer i = new Integer(1);
 	return (stock);
 }
 

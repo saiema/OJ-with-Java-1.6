@@ -2156,16 +2156,16 @@ String Name() :
 {
     p1 = Identifier() { strbuf = new StringBuffer( p1 );}
     [ LOOKAHEAD(2) p2 = TypeArguments()
-       {  strbuf.append(p2); }
+       {  strbuf.append(p2);}
     ]
     
     ( LOOKAHEAD(2) "." p1 = Identifier() 
-    	{ strbuf.append( "." + p1 ); }
+    	{ strbuf.append( "." + p1 );}
       [ LOOKAHEAD(2) p2 = TypeArguments() {  strbuf.append(p2); } ]	
     )*
+    ( LOOKAHEAD(2) "[" "]"    {strbuf.append( "[]" );} )*
     
     {
-   		/* System.out.println("name: " + strbuf.toString()); */
     	return strbuf.toString(); 
     }
 }
@@ -2184,7 +2184,7 @@ String TypeArguments():
    }
    ( "," p1 = TypeArgument() 
    {
-   		typeArguementsName.append("," + p1);  
+   		typeArguementsName.append("," + p1);
    }
    )* ">"
    {
@@ -2199,7 +2199,8 @@ String TypeArgument():
 	String p1;
 }
 {
-   typeArgumentName = Name()
+   //typeArgumentName = Name()
+   typeArgumentName = TypeWithoutSemantics()
    {return typeArgumentName;}
  |
    "?" 
@@ -2223,7 +2224,7 @@ String WildcardBounds():
 }
 
 /*
- * this TypeName() is equivalent to Name() with repect to the parsing function, but it is adapted for openJava
+ * this TypeName() is equivalent to Name() with respect to the parsing function, but it is adapted for openJava
  * this TypeName() only deals with reference types e.g. openjava.tools.parser.Parser. It does not include primitive types or arrays.
  */
 TypeName TypeName( Environment env ) :
@@ -3076,19 +3077,24 @@ StatementList BlockOrStatementListOpt( Environment env ) :
 
 StatementList BlockOrStatement( Environment env ) :
 {
-    Statement			p1;
+    Statement			p1 = null;
     StatementList		p2;
+    TypeName            tn = null;
 }
 {
     p1=UnmodifiedClassDeclaration( new ClassEnvironment( env ) )
-    { return new StatementList( p1 ); }
+    {return new StatementList( p1 ); }
 |
-    LOOKAHEAD( { LocalVariableDeclarationLookahead( env ) } )
+    //the commented one is the original LOOKAHEAD statement
+    //LOOKAHEAD( { LocalVariableDeclarationLookahead( env ) } )
+    
+    LOOKAHEAD((Modifier())* TypeWithoutSemantics() Identifier() )
     p2 = LocalVariableDeclaration( env ) ";"
-    { return p2; }
+    { //System.out.println("LocalVariableDeclaration: " + p2.toString());
+    return p2; }
 |
     p1 = Statement( env )
-    { return new StatementList( p1 ); }
+    {  return new StatementList( p1 ); }
 }
 
 StatementList LocalVariableDeclaration( Environment env ) :
@@ -3352,7 +3358,8 @@ ForStatement ForStatement( Environment env ) :
     	identifierString = Identifier() ":" 
     	p4 = Expression(env)
     |
-	    [ LOOKAHEAD( { (getToken( 1 ).kind != SEMICOLON) } )
+	   // [ LOOKAHEAD( { (getToken( 1 ).kind != SEMICOLON) } )
+	    [ LOOKAHEAD( (Modifier())* TypeWithoutSemantics() Identifier() )
 	        (
 		    LOOKAHEAD( { LocalVariableDeclarationLookaheadWithoutEnv( ) } )
 		    p1=Type( env )
