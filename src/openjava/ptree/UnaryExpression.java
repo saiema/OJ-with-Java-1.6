@@ -146,12 +146,34 @@ public class UnaryExpression extends NonLeaf implements Expression {
 		result.opr = this.opr;
 		return result;
 	}
+	
+	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//+++++++++++++++++++++++++++++++++++++++++added (08/09/14) [simon]
+	
+	public ParseTree makeRecursiveCopy_keepOriginalID() {
+		UnaryExpression result = (UnaryExpression) super.makeRecursiveCopy_keepOriginalID();
+		result.opr = this.opr;
+		return result;
+	}
+	
+	//------------------------------------------------------------------
 
 	public ParseTree makeCopy() {
 		UnaryExpression result = (UnaryExpression) super.makeCopy();
 		result.opr = this.opr;
 		return result;
 	}
+	
+	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//+++++++++++++++++++++++++++++++++++++++++added (08/09/14) [simon]
+	
+	public ParseTree makeCopy_keepOriginalID() {
+		UnaryExpression result = (UnaryExpression) super.makeCopy_keepOriginalID();
+		result.opr = this.opr;
+		return result;
+	}
+	
+	//------------------------------------------------------------------
 
 	/**
 	 * Gets the expression operated in this expression.

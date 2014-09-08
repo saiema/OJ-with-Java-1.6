@@ -34,6 +34,13 @@ public interface ParseTree {
 	 * @return  the copy of this nonleaf-node as a ptree-node.
 	 */
 	public ParseTree makeRecursiveCopy();
+	
+	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//+++++++++++++++++++++++++++++++++++++++++added (08/09/14) [simon]
+	
+	public ParseTree makeRecursiveCopy_keepOriginalID();
+	
+	//------------------------------------------------------------------
 
 	/**
 	 * Makes a new copy of this nonleaf-node as a ptree-node.
@@ -43,6 +50,13 @@ public interface ParseTree {
 	 * @return  the copy of this nonleaf-node as a ptree-node.
 	 */
 	public ParseTree makeCopy();
+	
+	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//+++++++++++++++++++++++++++++++++++++++++added (08/09/14) [simon]
+	
+	public ParseTree makeCopy_keepOriginalID();
+	
+	//------------------------------------------------------------------
 
 	/**
 	 * Tests if this parse-tree-node's value equals to the specified

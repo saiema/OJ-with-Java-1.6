@@ -96,6 +96,18 @@ public class TypeName extends NonLeaf {
 		result.suffixes = this.suffixes;
 		return result;
 	}
+	
+	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//+++++++++++++++++++++++++++++++++++++++++added (08/09/14) [simon]
+	
+	public ParseTree makeRecursiveCopy_keepOriginalID() {
+		TypeName result = (TypeName) super.makeRecursiveCopy_keepOriginalID();
+		result.dim = this.dim;
+		result.suffixes = this.suffixes;
+		return result;
+	}
+	
+	//------------------------------------------------------------------
 
 	public ParseTree makeCopy() {
 		TypeName result = (TypeName) super.makeCopy();
@@ -103,6 +115,18 @@ public class TypeName extends NonLeaf {
 		result.suffixes = this.suffixes;
 		return result;
 	}
+	
+	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//+++++++++++++++++++++++++++++++++++++++++added (08/09/14) [simon]
+	
+	public ParseTree makeCopy_keepOriginalID() {
+		TypeName result = (TypeName) super.makeCopy_keepOriginalID();
+		result.dim = this.dim;
+		result.suffixes = this.suffixes;
+		return result;
+	}
+	
+	//------------------------------------------------------------------
 
 	/**
 	 * Gets array dimension of declarated type

@@ -92,6 +92,15 @@ public class Leaf extends ParseTreeObject implements ParseTree {
 	public ParseTree makeRecursiveCopy() {
 		return (ParseTree) this.clone();
 	}
+	
+	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//+++++++++++++++++++++++++++++++++++++++++added (08/09/14) [simon]
+	
+	public ParseTree makeRecursiveCopy_keepOriginalID() {
+		return (ParseTree) this.clone_keepOriginalID();
+	}
+	
+	//------------------------------------------------------------------
 
 	/**
 	 * Makes a new copy of this leaf-node.
@@ -101,6 +110,15 @@ public class Leaf extends ParseTreeObject implements ParseTree {
 	public ParseTree makeCopy() {
 		return (ParseTree) this.clone();
 	}
+	
+	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//+++++++++++++++++++++++++++++++++++++++++added (08/09/14) [simon]
+	
+	public ParseTree makeCopy_keepOriginalID() {
+		return (ParseTree) this.clone_keepOriginalID();
+	}
+	
+	//------------------------------------------------------------------
 
 	/**
 	 * Tests if the specified ptree-node equals to this leaf-node.

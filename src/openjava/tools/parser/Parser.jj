@@ -1046,6 +1046,7 @@ ClassDeclaration TypeDeclaration( ClassEnvironment env ) :
     ClassDeclaration			p1;
     Token ctoken = getToken( 1 ).specialToken;
     String comment = getComment();
+	Literal mut	= null;							//added (08/09/14) [simon]
     MemberDeclaration     		md;
 }
 {
@@ -1054,18 +1055,19 @@ ClassDeclaration TypeDeclaration( ClassEnvironment env ) :
 		LOOKAHEAD( ( Identifier() | "abstract" | "final" | "public" )*
 		   "class" )
   
-        p1 = ClassDeclaration( env )
+        p1 = ClassDeclaration( env ) [ LOOKAHEAD(2) "//mutGenLimit" [ LOOKAHEAD(2) mut=Literal() ]]	//added (08/09/14) [simon]
     |   
     	LOOKAHEAD((Modifier())* "enum" Identifier())
     	md = EnumDeclaration(env)
     	{
-    	  p1 = new ClassDeclaration(md); 
+    	  p1 = new ClassDeclaration(md); [ LOOKAHEAD(2) "//mutGenLimit" [ LOOKAHEAD(2) mut=Literal() ]]	//added (08/09/14) [simon]
     	}
     |
-        p1 = InterfaceDeclaration( env )
+        p1 = InterfaceDeclaration( env ) [ LOOKAHEAD(2) "//mutGenLimit" [ LOOKAHEAD(2) mut=Literal() ]]	//added (08/09/14) [simon]
     )
     {
         result = p1;
+		if (mut != null) result.setMutGenLimit(Integer.parseInt(mut.toString()));	//added (08/09/14) [simon]
 		result.setComment( comment );
 		return result;
     }
@@ -1515,6 +1517,7 @@ MemberDeclaration EnumDeclaration(ClassEnvironment env):
 	EnumConstantList enumConstantsList = new EnumConstantList();
 	MemberDeclarationList mdl = null;
 	ClassEnvironment newEnv = null;
+	Literal mut = null;						//added (08/09/14) [simon]
 }
 {
   (
@@ -1534,9 +1537,12 @@ MemberDeclaration EnumDeclaration(ClassEnvironment env):
     ]
     [ "," ]
     [ ";" mdl = ClassBodyDeclarationListOpt(newEnv)]
-   "}"
-   {md = new EnumDeclaration(modifierList, identifier, tn, enumConstantsList, mdl);
-   return md;}
+   "}" [ LOOKAHEAD(2) "//mutGenLimit" [ LOOKAHEAD(2) mut=Literal() ]]	//added (08/09/14) [simon]
+   {
+	  md = new EnumDeclaration(modifierList, identifier, tn, enumConstantsList, mdl);
+	  if (mut != null) md.setMutGenLimit(Integer.parseInt(mut.toString()));		//added (08/09/14) [simon]
+	  return md;
+   }
 }
 
 EnumConstant EnumConstant(ClassEnvironment env, String enumClass):
@@ -1572,6 +1578,7 @@ MemberDeclarationList MethodOrFieldDeclaration( Environment base_env ) :
     TypeParameterList    	tpl = null;
     Token                   ctoken  = getToken( 1 ).specialToken;
     String                  comment = getComment();
+	Literal mut = null;		//added (08/09/14) [simon]
 }
 {
    ( 	
@@ -1596,12 +1603,14 @@ MemberDeclarationList MethodOrFieldDeclaration( Environment base_env ) :
         p6=ThrowsPhraseOpt( base_env )
         sf=OpenJavaDeclSuffixListOpt( env )
         p7=MethodBody( env )
+		[ LOOKAHEAD(2) "//mutGenLimit" [ LOOKAHEAD(2) mut=Literal() ]]						//added (08/09/14) [simon]
         {
 			p2.addDimension( p5 );
 			MethodDeclaration mthd
 			= new MethodDeclaration( p1, p2, p3, p4, p6, p7, tpl );
 			mthd.setSuffixes( sf );
 			mthd.setComment( comment );
+			if (mut != null) mthd.setMutGenLimit(Integer.parseInt(mut.toString()));			//added (08/09/14) [simon]
 			result.add( mthd );
 	    }
     |
@@ -1620,7 +1629,14 @@ MemberDeclarationList MethodOrFieldDeclaration( Environment base_env ) :
 			result.add( fld2 );
 			}
 	    )*
-        ";"
+        ";" [ LOOKAHEAD(2) "//mutGenLimit" [ LOOKAHEAD(2) mut=Literal() ]]						//added (08/09/14) [simon]
+		{																						//added (08/09/14) [simon]
+		  if (mut != null) {																	//added (08/09/14) [simon]
+			for (int i = 0; i < fd.size(); i++) {												//added (08/09/14) [simon]
+			   ((FieldDeclaration)fd.get(i)).setMutGenLimit(Integer.parseInt(mut.toString()));	//added (08/09/14) [simon]
+			}																					//added (08/09/14) [simon]
+		  }																						//added (08/09/14) [simon]
+		}																						//added (08/09/14) [simon]
     )
     { return result; }
 }
@@ -1961,6 +1977,7 @@ ConstructorDeclaration ConstructorDeclaration( Environment base_env ) :
     ConstructorInvocation	p5;
     StatementList		p6;
     Hashtable			sf;
+	Literal mut = null;			//added (08/09/14) [simon]
 
     DebugOut.println( "#ConstructorDeclaration()" );
 }
@@ -1973,10 +1990,13 @@ ConstructorDeclaration ConstructorDeclaration( Environment base_env ) :
     "{"
     p5=ExplicitConstructorInvocationOpt( env )
     p6=BlockOrStatementListOpt( env )
-    "}"
+    "}" [ LOOKAHEAD(2) "//mutGenLimit" [ LOOKAHEAD(2) mut=Literal() ]]			//added (08/09/14) [simon]
     {
 	result = new ConstructorDeclaration( p1, p2, p3, p4, p5, p6 );
 	result.setSuffixes( sf );
+	if (mut != null) {															//added (08/09/14) [simon]
+	  result.setMutGenLimit(Integer.parseInt(mut.toString()));					//added (08/09/14) [simon]
+	}																			//added (08/09/14) [simon]
 	return result;
     }
 }
@@ -2963,15 +2983,36 @@ ArrayAllocationExpression ArrayDimsAndInits( Environment env, TypeName type ) :
     { return new ArrayAllocationExpression( type, exprs ); }
 }
 
-StatementList BlockedBody( Environment env ) :
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++modified (08/09/14) [simon]
+StatementList BlockedBody( Environment env ) :				
+{
+   StatementList		p1;
+}
+{
+   p1 = BlockedBodyWhile(env, null)
+   {return p1;}
+}
+//------------------------------------------------------------------------------------------
+
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++added (08/09/14) [simon]
+StatementList BlockedBodyGuardedStatement( Environment env, MutableInteger mutGenLimit) :
 /* See also Block. This is for bodys but for statement */
 {
     StatementList		p1;
+	Literal				mut = null;
 }
 {
-    "{" p1=BlockOrStatementListOpt( env ) "}"
-    { return p1; }
+    "{" [ LOOKAHEAD(2, {mutGenLimit != null && mutGenLimit.intValue() == -1}) "//mutGenLimit" [ LOOKAHEAD(2) mut=Literal() ] ] p1=BlockOrStatementListOpt( env ) "}"
+    {
+	   if (mut != null) {
+		  mutGenLimit.setIntValue(Integer.parseInt(mut.toString()));
+	   }
+	   return p1;
+	}
 }
+//------------------------------------------------------------------------------------------
 
 /*
  * Statement syntax follows.
@@ -3080,6 +3121,7 @@ StatementList BlockOrStatement( Environment env ) :
     Statement			p1 = null;
     StatementList		p2;
     TypeName            tn = null;
+	Literal				mut=null;	//added (08/09/14) [simon]
 }
 {
     p1=UnmodifiedClassDeclaration( new ClassEnvironment( env ) )
@@ -3089,9 +3131,16 @@ StatementList BlockOrStatement( Environment env ) :
     //LOOKAHEAD( { LocalVariableDeclarationLookahead( env ) } )
     
     LOOKAHEAD((Modifier())* TypeWithoutSemantics() Identifier() )
-    p2 = LocalVariableDeclaration( env ) ";"
+    p2 = LocalVariableDeclaration( env ) ";" [ "//mutGenLimit" [ LOOKAHEAD(2) mut=Literal() ] ]		//added (08/09/14) [simon]
     { //System.out.println("LocalVariableDeclaration: " + p2.toString());
-    return p2; }
+	 if (mut!=null) {																//added (08/09/14) [simon]
+		 for (int i=0; i<p2.size(); i++) {											//added (08/09/14) [simon]
+			 VariableDeclaration v = (VariableDeclaration) p2.get(i);				//added (08/09/14) [simon]
+			 v.setMutGenLimit(Integer.parseInt(mut.toString()));					//added (08/09/14) [simon]
+		 }																			//added (08/09/14) [simon]
+	 }																				//added (08/09/14) [simon]
+	 return p2;
+	}
 |
     p1 = Statement( env )
     {  return new StatementList( p1 ); }
@@ -3169,12 +3218,18 @@ EmptyStatement EmptyStatement( Environment env ) :
 ExpressionStatement ExpressionStatement( Environment env ) :
 {
     Expression			p1;
-
+	Literal				mut = null;					//added (08/09/14) [simon]
     DebugOut.println( "#ExpressionStatement()" );
 }
 {
-    p1 = StatementExpression( env ) ";"
-    { return new ExpressionStatement( p1 ); }
+    p1 = StatementExpression( env ) ";" [ LOOKAHEAD(2) "//mutGenLimit" [ LOOKAHEAD(2) mut=Literal() ] ]	//added (08/09/14) [simon]
+    {
+	   ExpressionStatement res = new ExpressionStatement(p1);				//modified (08/09/14) [simon]
+    	if (mut != null) {													//modified (08/09/14) [simon]
+    		res.setMutGenLimit(Integer.parseInt(mut.toString()));			//modified (08/09/14) [simon]
+    	}    																//modified (08/09/14) [simon]
+    	return res;															//modified (08/09/14) [simon]
+	 }
 }
 
 Expression StatementExpression( Environment env ) :
@@ -3204,11 +3259,11 @@ SwitchStatement SwitchStatement( Environment env ) :
     StatementList		p3;
     CaseGroupList  cplist = new CaseGroupList();
     ExpressionList  exprs;
-
+	Literal mut = null;							//added (08/09/14) [simon]
     DebugOut.println( "#SwitchStatement()" );
 }
 {
-    "switch" "(" p1=Expression( env ) ")" "{"
+    "switch" "(" p1=Expression( env ) ")" "{" [ LOOKAHEAD(2) "//mutGenLimit" [ LOOKAHEAD(2) mut=Literal() ] ]	//added (08/09/14) [simon]
      ( LOOKAHEAD( "case" | "default" )
          { exprs = new ExpressionList(); }
          ( LOOKAHEAD( "case" | "default" )
@@ -3218,7 +3273,13 @@ SwitchStatement SwitchStatement( Environment env ) :
          { cplist.add( new CaseGroup( exprs, p3 ) ); }
      )*
     "}"
-     { return new SwitchStatement( p1, cplist ); }
+     {
+		SwitchStatement swstmt = SwitchStatement( p1, cplist);				//modified (08/09/14) [simon]
+		if (mut != null) {													//modified (08/09/14) [simon]
+		   swstmt.setMutGenLimit(Integer.parseInt(mut.toString())); 		//modified (08/09/14) [simon]
+		}																	//modified (08/09/14) [simon]
+		return swstmt;														//modified (08/09/14) [simon]
+	  }
 }
 
 Expression SwitchLabel( Environment env ) :
@@ -3246,13 +3307,14 @@ IfStatement IfStatement( Environment env ) :
     Statement			p3;
     StatementList  true_part;
     StatementList  false_part = null;
-
+	MutableInteger blockedIfMGL = new MutableInteger(-1);				//added (08/09/14) [simon]
+	Literal singleStatementMGL = null;									//added (08/09/14) [simon]
     DebugOut.println( "#IfStatement()" );
 }
 {
-    "if" "(" p1=Expression( env ) ")"
+    "if" "(" p1=Expression( env ) ")" [ LOOKAHEAD(2) "//mutGenLimit" [ LOOKAHEAD(2) singleStatementMGL=Literal() {blockedIfMGL.setIntValue(-2);} ] ]	//added (08/09/14) [simon]
     ( LOOKAHEAD(1)
-        p2=BlockedBody( env )
+        p2=BlockedBodyGuardedStatement( env, blockedIfMGL )			//modified (08/09/14) [simon]
         { true_part = p2; }
     |
         p3=Statement( env )
@@ -3268,7 +3330,16 @@ IfStatement IfStatement( Environment env ) :
 	    { false_part = new StatementList( p3 ); }
 	)
     ]
-    { return new IfStatement( p1, true_part, false_part ); }
+    {
+		IfStatement ifstmnt = new IfStatement( p1, true_part, false_part );				//modified (08/09/14) [simon]
+		if (singleStatementMGL != null) {												//modified (08/09/14) [simon]
+		   ifstmnt.setMutGenLimit(Integer.parseInt(singleStatementMGL.toString()));		//modified (08/09/14) [simon]
+		}																				//modified (08/09/14) [simon]
+		if (blockedIfMGL.intValue() > 0) {												//modified (08/09/14) [simon]
+		   ifstmnt.setMutGenLimit(blockedIfMGL.intValue());								//modified (08/09/14) [simon]
+		}																				//modified (08/09/14) [simon]
+		return ifstmnt;																	//modified (08/09/14) [simon]
+	}
 }
 
 WhileStatement WhileStatement( Environment env ) :
@@ -3277,19 +3348,29 @@ WhileStatement WhileStatement( Environment env ) :
     StatementList		p2;
     Statement			p3;
     StatementList  body;
-
+	MutableInteger blockedWhileMGL = new MutableInteger(-1);			//added (08/09/14) [simon]
+	Literal 	   singleStatementMGL = null;							//added (08/09/14) [simon]
     DebugOut.println( "#WhileStatement()" );
 }
 {
-    "while" "(" p1=Expression( env ) ")"
+    "while" "(" p1=Expression( env ) ")" [ LOOKAHEAD(2) "//mutGenLimit" [ LOOKAHEAD(2) singleStatementMGL=Literal() {blockedWhileMGL.setIntValue(-2);} ] ]	//added (08/09/14) [simon]
     ( LOOKAHEAD(1)
-        p2=BlockedBody( env )
+        p2=BlockedBodyGuardedStatement( env,  blockedWhileMGL)							//modified (08/09/14) [simon]
         { body = p2; }
     |
         p3=Statement( env )
         { body = new StatementList( p3 ); }
     )
-    { return new WhileStatement( p1, body ); }
+    {
+		WhileStatement whlStmnt = new WhileStatement( p1, body );						//modified (08/09/14) [simon]
+		if (singleStatementMGL != null) {												//modified (08/09/14) [simon]
+		   whlStmnt.setMutGenLimit(Integer.parseInt(singleStatementMGL.toString()));	//modified (08/09/14) [simon]
+		}																				//modified (08/09/14) [simon]
+		if (blockedWhileMGL.intValue() > 0) {											//modified (08/09/14) [simon]
+		   whlStmnt.setMutGenLimit(blockedIfMGL.intValue());							//modified (08/09/14) [simon]
+		}																				//modified (08/09/14) [simon]
+		return whlStmnt;																//modified (08/09/14) [simon]
+	}
 }
 
 DoWhileStatement DoWhileStatement( Environment env ) :
@@ -3297,8 +3378,8 @@ DoWhileStatement DoWhileStatement( Environment env ) :
     StatementList		p1;
     Statement			p2;
     Expression			p3;
-    StatementList  body;
-
+    StatementList  		body;
+	Literal				mut = null;					//added (08/09/14) [simon]
     DebugOut.println( "#DoWhileStatement()" );
 }
 {
@@ -3310,8 +3391,13 @@ DoWhileStatement DoWhileStatement( Environment env ) :
         p2=Statement( env )
         { body = new StatementList( p2 ); }
     )
-    "while" "(" p3=Expression( env ) ")" ";"
-    { return new DoWhileStatement( body, p3 ); }
+    "while" "(" p3=Expression( env ) ")" ";" [ LOOKAHEAD(2) "//mutGenLimit" [ LOOKAHEAD(2) mut=Literal()] ]	//added (08/09/14) [simon]
+    {
+		DoWhileStatement doWhlStmnt = new DoWhileStatement( body, p3 );			//modified (08/09/14) [simon]
+		if (mut != null) {														//modified (08/09/14) [simon]
+		   doWhlStmnt.setMutGenLimit(Integer.parseInt(mut.toString()));			//modified (08/09/14) [simon]
+		}																		//modified (08/09/14) [simon]
+		return doWhlStmnt; }
 }
 
 ForStatement ForStatement( Environment env ) :

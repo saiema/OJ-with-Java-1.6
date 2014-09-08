@@ -23,7 +23,7 @@ import openjava.ptree.util.ParseTreeVisitor;
  * @see openjava.ptree.Statement
  */
 public class WhileStatement extends NonLeaf implements Statement, ParseTree {
-
+	
 	/**
 	 * Allocates a new object.
 	 *

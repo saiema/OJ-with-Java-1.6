@@ -88,6 +88,21 @@ public abstract class ParseTreeObject
 			return null;
 		}
 	}
+	
+	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//+++++++++++++++++++++++++++++++++++++++++added (08/09/14) [simon]
+	
+	protected final Object clone_keepOriginalID() {
+		try {
+			ParseTreeObject result = (ParseTreeObject) super.clone();
+			result.setObjectID(objectID);
+			return result;
+		} catch (CloneNotSupportedException e) {
+			return null;
+		}
+	}
+	
+	//------------------------------------------------------------------
 
 	/**
 	 * shallow copy
@@ -95,11 +110,27 @@ public abstract class ParseTreeObject
 	public ParseTree makeCopy() {
 		return (ParseTree) clone();
 	}
+	
+	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//+++++++++++++++++++++++++++++++++++++++++added (08/09/14) [simon]
+	
+	public ParseTree makeCopy_keepOriginalID() {
+		return (ParseTree) clone_keepOriginalID();
+	}
+	
+	//------------------------------------------------------------------
 
 	/**
 	 * deep copy
 	 */
 	public abstract ParseTree makeRecursiveCopy();
+	
+	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//+++++++++++++++++++++++++++++++++++++++++added (08/09/14) [simon]
+	
+	public abstract ParseTree makeRecursiveCopy_keepOriginalID();
+	
+	//------------------------------------------------------------------
 
 	/**
 	 * Tests if this parse-tree-node's value equals to the specified
@@ -172,6 +203,15 @@ public abstract class ParseTreeObject
 		idCount++;
 		objectID = idCount;
 	}
+	
+	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//+++++++++++++++++++++++++++++++++++++++++added (08/09/14) [simon]
+	
+	private synchronized final void setObjectID(int id) {
+		objectID = id;
+	}
+	
+	//------------------------------------------------------------------
 
 	/**
 	 * Returns

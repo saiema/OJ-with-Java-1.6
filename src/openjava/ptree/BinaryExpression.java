@@ -121,12 +121,34 @@ public class BinaryExpression extends NonLeaf implements Expression {
 		result.opr = this.opr;
 		return result;
 	}
+	
+	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//+++++++++++++++++++++++++++++++++++++++++added (08/09/14) [simon]
+	
+	public ParseTree makeRecursiveCopy_keepOriginalID() {
+		BinaryExpression result = (BinaryExpression) super.makeRecursiveCopy_keepOriginalID();
+		result.opr = this.opr;
+		return result;
+	}
+	
+	//------------------------------------------------------------------
 
 	public ParseTree makeCopy() {
 		BinaryExpression result = (BinaryExpression) super.makeCopy();
 		result.opr = this.opr;
 		return result;
 	}
+	
+	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//+++++++++++++++++++++++++++++++++++++++++added (08/09/14) [simon]
+	
+	public ParseTree makeCopy_keepOriginalID() {
+		BinaryExpression result = (BinaryExpression) super.makeCopy_keepOriginalID();
+		result.opr = this.opr;
+		return result;
+	}
+	
+	//------------------------------------------------------------------
 
 	private final boolean needsLeftPar(Expression leftexpr) {
 		if (leftexpr instanceof AssignmentExpression

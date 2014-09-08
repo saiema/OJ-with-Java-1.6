@@ -83,12 +83,35 @@ public class AssignmentExpression extends NonLeaf implements Expression {
 		result.opr = this.opr;
 		return result;
 	}
+	
+	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//+++++++++++++++++++++++++++++++++++++++++added (08/09/14) [simon]
+	
+	public ParseTree makeRecursiveCopy_keepOriginalID() {
+		AssignmentExpression result =
+				(AssignmentExpression) super.makeRecursiveCopy_keepOriginalID();
+			result.opr = this.opr;
+			return result;
+	}
+	
+	//------------------------------------------------------------------
 
 	public ParseTree makeCopy() {
 		AssignmentExpression result = (AssignmentExpression) super.makeCopy();
 		result.opr = this.opr;
 		return result;
 	}
+	
+	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//+++++++++++++++++++++++++++++++++++++++++added (08/09/14) [simon]
+	
+	public ParseTree makeCopy_keepOriginalID() {
+		AssignmentExpression result = (AssignmentExpression) super.makeCopy_keepOriginalID();
+		result.opr = this.opr;
+		return result;
+	}
+	
+	//------------------------------------------------------------------
 
 	/**
 	 * Gets the expression of the left operand.

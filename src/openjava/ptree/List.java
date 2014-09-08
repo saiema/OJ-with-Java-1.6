@@ -212,6 +212,27 @@ public abstract class List extends ParseTreeObject implements ParseTree {
 
 		return result;
 	}
+	
+	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//+++++++++++++++++++++++++++++++++++++++++added (08/09/14) [simon]
+	
+	public ParseTree makeRecursiveCopy_keepOriginalID() {
+		List result = (List) clone_keepOriginalID();
+		result.contents = new Vector();
+
+		Enumeration it = contents.elements();
+		while (it.hasMoreElements()) {
+			Object elem = it.nextElement();
+			if (elem instanceof ParseTree) {
+				elem = ((ParseTree) elem).makeRecursiveCopy_keepOriginalID();
+			}
+			result.contents_addElement(elem);
+		}
+
+		return result;
+	}
+	
+	//------------------------------------------------------------------
 
 	/**
 	 * Accepts a <code>ParseTreeVisitor</code> object as the role of a

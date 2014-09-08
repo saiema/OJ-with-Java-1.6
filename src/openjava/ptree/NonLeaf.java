@@ -25,6 +25,9 @@ import openjava.tools.DebugOut;
  */
 public abstract class NonLeaf extends ParseTreeObject implements ParseTree {
 	private String comment = "";
+	private String generics = "";				//added (08/09/14) [simon]
+	protected Integer mutGenLimit = 0;			//added (08/09/14) [simon]
+	protected boolean hasMutGenLimit = false;	//added (08/09/14) [simon]
 
 	protected final void replaceChildWith(
 		ParseTree dist,
@@ -110,6 +113,56 @@ public abstract class NonLeaf extends ParseTreeObject implements ParseTree {
 
 		return result;
 	}
+	
+	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//+++++++++++++++++++++++++++++++++++++++++added (08/09/14) [simon]
+	
+	public ParseTree makeRecursiveCopy_keepOriginalID() {
+		NonLeaf result = (NonLeaf) makeCopy_keepOriginalID();
+
+		Object newc[] = new Object[contents.length];
+		for (int i = 0; i < contents.length; ++i) {
+			if (contents[i] instanceof ParseTree) {
+				ParseTree src = (ParseTree) contents[i];
+				newc[i] = (ParseTree) src.makeRecursiveCopy_keepOriginalID();
+			} else if (contents[i] instanceof String[]) {
+				String[] srcary = (String[]) contents[i];
+				String[] destary = new String[srcary.length];
+				System.arraycopy(srcary, 0, destary, 0, srcary.length);
+				newc[i] = destary;
+			} else if (contents[i] instanceof TypeName[]) {
+				TypeName[] srcary = (TypeName[]) contents[i];
+				TypeName[] destary = new TypeName[srcary.length];
+				for (int j = 0; j < srcary.length; ++j) {
+					destary[j] = (TypeName) srcary[j].makeRecursiveCopy_keepOriginalID();
+				}
+				newc[i] = destary;
+			} else if (contents[i] instanceof VariableDeclarator[]) {
+				VariableDeclarator[] srcary =
+					(VariableDeclarator[]) contents[i];
+				VariableDeclarator[] destary =
+					new VariableDeclarator[srcary.length];
+				for (int j = 0; j < srcary.length; ++j) {
+					//VariableDe
+					destary[j] =
+						(VariableDeclarator) srcary[j].makeRecursiveCopy_keepOriginalID();
+				}
+				newc[i] = destary;
+			} else if (contents[i] instanceof Object[]) {
+				System.err.println(
+					"makeRecursiveCopy() not supported in " + getClass());
+				newc[i] = contents[i];
+			} else {
+				newc[i] = contents[i];
+			}
+		}
+
+		result.set(newc);
+
+		return result;
+	}
+	
+	//------------------------------------------------------------------
 
 	/**
 	 * Tests if this nonleaf-node's value equals to the specified
@@ -347,6 +400,7 @@ public abstract class NonLeaf extends ParseTreeObject implements ParseTree {
 	 * @param  comment  the Comment object to set
 	 */
 	public void setComment(String comment) {
+		if (comment == null) comment = "";	//added (08/09/14) [simon]
 		this.comment = comment;
 	}
 
@@ -358,6 +412,29 @@ public abstract class NonLeaf extends ParseTreeObject implements ParseTree {
 	public String getComment() {
 		return this.comment;
 	}
+	
+	//+++++++++++++++++++++++++++++++++++++++++++++++++
+	//+++++++++++++++++++++++++added (08/09/14) [simon]
+	
+	public void setGenerics(String generics) {
+		if (generics == null) generics = "";
+		this.generics = generics;
+	}
+	
+	public void setMutGenLimit(Integer limit) {
+		this.hasMutGenLimit = true;
+		this.mutGenLimit = limit;
+	}
+	
+	public Integer getMutGenLimit() {
+		return this.mutGenLimit;
+	}
+	
+	public boolean hasMutGenLimit() {
+		return this.hasMutGenLimit;
+	}
+	
+	//---------------------------------------------------
 
 	/**
 	 * Accepts a <code>ParseTreeVisitor</code> object as the role of a
