@@ -3415,6 +3415,8 @@ ForStatement ForStatement( Environment env ) :
     String					identifierString = "";
     String					modifierString = "";
     int						modifierInt = -1;
+	MutableInteger			blockedForMGL = new MutableInteger(-1);
+	Literal					singleStatementMGL = null;
 
     DebugOut.println( "#ForStatement()" );
 }
@@ -3464,10 +3466,10 @@ ForStatement ForStatement( Environment env ) :
 	    ]
     )
     
-    ")"
+    ")" [ LOOKAHEAD(2) "//mutGenLimit" [ LOOKAHEAD(2) singleStatementMGL=Literal() {blockedForMGL.setIntValue(-2);} ] ]	//added (10/09/14) [simon]
     (
         LOOKAHEAD(1)
-        p6=BlockedBody( env )
+        p6=BlockedBodyGuardedStatement( env, blockedForMGL )								//modified (10/09/14) [simon]
         { body = p6; }
     |
         p7=Statement( env )
@@ -3487,7 +3489,15 @@ ForStatement ForStatement( Environment env ) :
 		    result = new ForStatement( new ExpressionList(), p4, p5, body );
 		}
     }
-    { return result; }
+    {
+		if (singleStatementMGL != null) {											//modified (10/09/14) [simon]
+		   result.setMutGenLimit(Integer.parseInt(singleStatementMGL.toString()));	//modified (10/09/14) [simon]
+		}																			//modified (10/09/14) [simon]
+		if (blockedForMGL.intValue() > 0) {											//modified (10/09/14) [simon]
+		   result.setMutGenLimit(blockedForMGL.intValue());							//modified (10/09/14) [simon]
+		}																			//modified (10/09/14) [simon]
+		return result;
+	 }
 }
 
 VariableDeclarator[] VariableDeclaratorList( Environment env ) :
@@ -3571,7 +3581,7 @@ ReturnStatement ReturnStatement( Environment env ) :
 {
     ReturnStatement		result;
     Expression			p1 = null;
-
+	Literal				mut = null;					//added (10/09/14) [simon]
     DebugOut.println( "#ReturnStatement()" );
 }
 {
@@ -3580,7 +3590,7 @@ ReturnStatement ReturnStatement( Environment env ) :
          LOOKAHEAD( { (getToken(1).kind != SEMICOLON)} )
          p1=Expression( env )
     ]
-    ";"
+    ";" [ LOOKAHEAD(2) "//mutGenLimit" [ LOOKAHEAD(2) mut=Literal()] ]	//added (10/09/14) [simon]
     {
 	if (p1 != null) {
 	    result = new ReturnStatement( p1 );
@@ -3588,7 +3598,12 @@ ReturnStatement ReturnStatement( Environment env ) :
 	    result = new ReturnStatement();
 	}
     }
-    { return result; }
+    {
+	   if (mut != null) {												//added (10/09/14) [simon]
+		  result.setMutGenLimit(Integer.parseInt(mut.toString())); 		//added (10/09/14) [simon]
+	   }																//added (10/09/14) [simon]
+	   return result;
+	}
 }
 
 ThrowStatement ThrowStatement( Environment env ) :

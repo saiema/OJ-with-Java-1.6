@@ -76,7 +76,12 @@ public class ClassEnvironment extends ClosedEnvironment
     }
 
     public OJClass lookupBind(String name) {
-        String current = currentClassName();
+        //String current = currentClassName();					//modified (10/09/14) [simon]
+    	OJClass type = (OJClass)this.symbol_table.get(name);	//added (10/09/14) [simon]
+    	if (type != null) {										//added (10/09/14) [simon]
+    		return type;										//added (10/09/14) [simon]
+    	}														//added (10/09/14) [simon]
+    	String current = currentClassName();					//added (10/09/14) [simon]
         OJClass declarer = lookupClass(current);
         if (declarer == null) {
 	    System.err.println( "unexpected error : unknown class " + current);

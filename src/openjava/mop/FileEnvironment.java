@@ -74,7 +74,8 @@ public class FileEnvironment extends Environment {
     }
 
     public FileEnvironment(Environment e) {
-        this(e, null, null, null);
+        //this(e, null, null, null);						//modified (10/09/14) [simon]
+        this(e, (String)null, (String)null, (File)null);	//modified (10/09/14) [simon]
     }
 
     public FileEnvironment(
@@ -84,6 +85,18 @@ public class FileEnvironment extends Environment {
         this(e, comp_unit.getPackage(), mainname);
         setCompilationUnit(comp_unit);
     }
+    
+    //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    //+++++++++++++++++++++++++++++++++++++added (10/09/14) [simon]
+    public FileEnvironment(
+    		Environment e,
+    		CompilationUnit comp_unit,
+    		String mainname,
+    		File file) {
+    			this(e, comp_unit.getPackage(), mainname, file);
+    			setCompilationUnit(comp_unit);
+    }
+    //--------------------------------------------------------------
 
     public String toString() {
         StringWriter str_writer = new StringWriter();

@@ -579,6 +579,8 @@ public class OJClass implements OJMember {
 			/* the java.lang.Class's returns always false */
 			if (!clazz.isPrimitive())
 				return false;
+			if (this == OJSystem.BOOLEAN) return clazz == OJSystem.BOOLEAN;		//added (10/09/14) [simon]
+			else if (clazz == OJSystem.BOOLEAN) return false;					//added (10/09/14) [simon]
 			if (clazz == OJSystem.CHAR) {
 				return (
 					primitiveTypeWidth(this)
@@ -2512,6 +2514,8 @@ class OJClassSourceCode extends OJClassImp {
 					try {
 						OJClass clazz = OJClass.forParseTree(this.env, holder, d);
 						this.classes.addElement(clazz);
+					} catch (AmbiguousClassesException ex) {													//modified (10/09/14) [simon]
+						//this exception has no real use because it's thrown every time a class is reloaded   	//modified (10/09/14) [simon]
 					} catch (Exception ex) {
 						/***** here should be error-handling */
 						ex.printStackTrace();

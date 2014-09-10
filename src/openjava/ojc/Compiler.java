@@ -125,7 +125,8 @@ public class Compiler {
     void initFileEnv() {
         for (int i = 0; i < files.length; ++i) {
             file_env[i] =
-                new FileEnvironment(OJSystem.env, null, null, files[i]);
+                //new FileEnvironment(OJSystem.env, null, null, files[i]);					//modified (10/09/14) [simon]
+            	new FileEnvironment(OJSystem.env, (String)null, (String)null, files[i]);	//added (10/09/14) [simon]
         }
     }
 
