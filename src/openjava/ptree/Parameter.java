@@ -55,7 +55,17 @@ public class Parameter extends NonLeaf {
 		set(modiflist, type_specifier, declname);
 		this.isVarargs = isVarargs;
 	}
-
+	
+	// +++++++++++++++++++++++++++++++++++++++
+	// +++++++++++++++added (15/09/14) [simon]
+	public Parameter(
+			ModifierList modiflist,
+			TypeName type_specifier,
+			String declname) {
+			this(modiflist, type_specifier, declname, false);
+		}
+	// ---------------------------------------
+	
 	/**
 	 * Allocates a new object.
 	 * 

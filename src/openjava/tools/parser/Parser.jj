@@ -1046,7 +1046,7 @@ ClassDeclaration TypeDeclaration( ClassEnvironment env ) :
     ClassDeclaration			p1;
     Token ctoken = getToken( 1 ).specialToken;
     String comment = getComment();
-	Literal mut	= null;							//added (08/09/14) [simon]
+	MutableInteger	mgl = new MutableInteger(-1);	//added (11/09/14) [simon]
     MemberDeclaration     		md;
 }
 {
@@ -1055,19 +1055,19 @@ ClassDeclaration TypeDeclaration( ClassEnvironment env ) :
 		LOOKAHEAD( ( Identifier() | "abstract" | "final" | "public" )*
 		   "class" )
   
-        p1 = ClassDeclaration( env ) [ LOOKAHEAD(2) "//mutGenLimit" [ LOOKAHEAD(2) mut=Literal() ]]	//added (08/09/14) [simon]
+        p1 = ClassDeclarationWithMGL( env, mgl ) //added (08/09/14) [simon] //modified (11/09/14) [simon]
     |   
     	LOOKAHEAD((Modifier())* "enum" Identifier())
-    	md = EnumDeclaration(env)
+    	md = EnumDeclarationWithMGL( env, mgl )	//modified (11/09/14) [simon]
     	{
-    	  p1 = new ClassDeclaration(md); [ LOOKAHEAD(2) "//mutGenLimit" [ LOOKAHEAD(2) mut=Literal() ]]	//added (08/09/14) [simon]
+    	  p1 = new ClassDeclaration(md);
     	}
     |
-        p1 = InterfaceDeclaration( env ) [ LOOKAHEAD(2) "//mutGenLimit" [ LOOKAHEAD(2) mut=Literal() ]]	//added (08/09/14) [simon]
+        p1 = InterfaceDeclarationWithMGL( env, mgl ) //added (08/09/14) [simon] //modified (11/09/14) [simon]
     )
     {
         result = p1;
-		if (mut != null) result.setMutGenLimit(Integer.parseInt(mut.toString()));	//added (08/09/14) [simon]
+		if (mgl.intValue() >= 0) result.setMutGenLimit(mgl.intValue());	//added (11/09/14) [simon]
 		result.setComment( comment );
 		return result;
     }
@@ -1215,7 +1215,22 @@ int Modifier() :
  * Declaration syntax follows.
  */
 
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++modified (11/09/14) [simon]
 ClassDeclaration ClassDeclaration( ClassEnvironment env ) :
+{
+    ClassDeclaration		p1;
+}
+{
+    p1 = ClassDeclarationWithMGL( env, null )
+
+    { return p1; }
+}
+//--------------------------------------------------------------------------
+
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++added (11/09/14) [simon]
+ClassDeclaration ClassDeclarationWithMGL( ClassEnvironment env, MutableInteger mgl ) :
 {
     ModifierList		    p1;
     ClassDeclaration		p2;
@@ -1225,10 +1240,11 @@ ClassDeclaration ClassDeclaration( ClassEnvironment env ) :
 {
     p1 = ClassModifiersOpt( env )
 
-    p2 = UnmodifiedClassDeclaration( env )
+    p2 = UnmodifiedClassDeclarationWithMGL( env, mgl )
     { p2.setModifiers( p1 ); }
     { return p2; }
 }
+//--------------------------------------------------------------------------
 
 ModifierList ClassModifiersOpt( Environment env ) :
 {
@@ -1255,7 +1271,21 @@ ModifierList ClassModifiersOpt( Environment env ) :
     { return result; }
 }
 
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++modified (11/09/14) [simon]
 ClassDeclaration UnmodifiedClassDeclaration( ClassEnvironment env ) :
+{
+    ClassDeclaration		result;
+}
+{
+    result = UnmodifiedClassDeclarationWithMGL( env, null )
+    { return result; }
+}
+//----------------------------------------------------------------------
+
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++added (11/09/14) [simon]
+ClassDeclaration UnmodifiedClassDeclarationWithMGL( ClassEnvironment env, MutableInteger mgl ) :
 {
     ClassDeclaration		result;
     String					p1;
@@ -1288,6 +1318,7 @@ ClassDeclaration UnmodifiedClassDeclaration( ClassEnvironment env ) :
     }
     { return result; }
 }
+//----------------------------------------------------------------------
 
 TypeParameterList TypeParameters(Environment env):
 {
@@ -1371,19 +1402,34 @@ TypeName[] ImplementsPhraseOpt( Environment env ) :
     { return null; }
 }
 
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//++++++++++++++++++++++++++++++++modified (11/09/14) [simon]
 MemberDeclarationList ClassBody( ClassEnvironment env ) :
+{
+    MemberDeclarationList	p1;
+}
+{
+    p1 = ClassBodyWithMGL( env, null )
+    { return p1; }
+}
+//-------------------------------------------------------------
+
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//++++++++++++++++++++++++++++++++added (11/09/14) [simon]
+MemberDeclarationList ClassBodyWithMGL( ClassEnvironment env, MutableInteger mgl ) :
 {
     MemberDeclarationList	p1;
 
     DebugOut.println( "#ClassBody()" );
 }
 {
-    "{"
+    "{" [ LOOKAHEAD(2, {mgl != null && mgl.intValue() == -1}) "//mutGenLimit" [ LOOKAHEAD(2) mut=Literal() {mgl.setIntValue(Integer.parseInt(mut.toString()));}]]
     ( ";" )*
     p1=ClassBodyDeclarationListOpt( env )
     "}"
     { return p1; }
 }
+//-------------------------------------------------------------
 
 MemberDeclarationList ClassBodyDeclarationListOpt( ClassEnvironment env ) :
 {
@@ -1505,7 +1551,21 @@ MemberDeclarationList ClassBodyDeclaration( ClassEnvironment env ) :
 
 }
 
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++modified (11/09/14) [simon]
 MemberDeclaration EnumDeclaration(ClassEnvironment env):
+{
+	MemberDeclaration md;
+}
+{
+   md = EnumDeclarationWithMGL( env, null )
+   {return md;}
+}
+//-------------------------------------------------------
+
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++added (11/09/14) [simon]
+MemberDeclaration EnumDeclarationWithMGL( ClassEnvironment env, MutableInteger mgl ):
 {
 	int modifierInt = 0;
 	ModifierList modifierList = new ModifierList();
@@ -1530,20 +1590,20 @@ MemberDeclaration EnumDeclaration(ClassEnvironment env):
   }
   [ tn = ImplementsPhraseOpt(newEnv) ]
   
-   "{"
+   "{" [ LOOKAHEAD(2, {mgl != null && mgl.intValue() == -1}) "//mutGenLimit" [ LOOKAHEAD(2) mut=Literal() {mgl.setIntValue(Integer.parseInt(mut.toString()));} ]]	//added (08/09/14) [simon] //modified (11/09/14) [simon]
     [ enumConstant = EnumConstant(newEnv, identifier) 
       { enumConstantsList.add(enumConstant);} 
       ( LOOKAHEAD(2) "," enumConstant = EnumConstant(newEnv, identifier) {enumConstantsList.add(enumConstant);} )* 
     ]
     [ "," ]
     [ ";" mdl = ClassBodyDeclarationListOpt(newEnv)]
-   "}" [ LOOKAHEAD(2) "//mutGenLimit" [ LOOKAHEAD(2) mut=Literal() ]]	//added (08/09/14) [simon]
+   "}"
    {
 	  md = new EnumDeclaration(modifierList, identifier, tn, enumConstantsList, mdl);
-	  if (mut != null) md.setMutGenLimit(Integer.parseInt(mut.toString()));		//added (08/09/14) [simon]
 	  return md;
    }
 }
+//-------------------------------------------------------------------------------------------------
 
 EnumConstant EnumConstant(ClassEnvironment env, String enumClass):
 {
@@ -1693,7 +1753,21 @@ ModifierList MemberModifiersOpt( Environment env ) :
     { return result; }
 }
 
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++modified (11/09/14) [simon]
 ClassDeclaration InterfaceDeclaration( ClassEnvironment env ) :
+{
+    ClassDeclaration		p2;
+}
+{
+    p2=InterfaceDeclarationWithMGL( env, null )
+    { return p2; }
+}
+//----------------------------------------------------------------
+
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++added (11/09/14) [simon]
+ClassDeclaration InterfaceDeclarationWithMGL( ClassEnvironment env, MutableInteger mgl ) :
 {
     ModifierList		p1;
     ClassDeclaration		p2;
@@ -1702,10 +1776,11 @@ ClassDeclaration InterfaceDeclaration( ClassEnvironment env ) :
 }
 {
     p1=InterfaceModifiersOpt( env )
-    p2=UnmodifiedInterfaceDeclaration( env )
+    p2=UnmodifiedInterfaceDeclarationWithMGL( env, mgl )
     { p2.setModifiers( p1 ); }
     { return p2; }
 }
+//----------------------------------------------------------------
 
 ModifierList InterfaceModifiersOpt( Environment env ) :
 {
@@ -1772,7 +1847,21 @@ ModifierList NestedInterfaceModifiersOpt( ClassEnvironment env ) :
     { return result; }
 }
 
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//++++++++++++++++++++++++++++++++++++++++++modified (11/09/14) [simon]
 ClassDeclaration UnmodifiedInterfaceDeclaration( ClassEnvironment env ) :
+{
+    ClassDeclaration		result;
+}
+{
+    result = UnmodifiedInterfaceDeclarationWithMGL( env, null )
+    { return result; }
+}
+//-----------------------------------------------------------------------
+
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//++++++++++++++++++++++++++++++++++++++++++added (11/09/14) [simon]
+ClassDeclaration UnmodifiedInterfaceDeclarationWithMGL( ClassEnvironment env, MutableInteger mgl ) :
 {
     ClassDeclaration		result;
     String			p1;
@@ -1786,22 +1875,40 @@ ClassDeclaration UnmodifiedInterfaceDeclaration( ClassEnvironment env ) :
     mm=InstantiatesPhraseOpt( env )
     p2=ExtendsPhraseOpt( env )
     sf=OpenJavaDeclSuffixListOpt( env )
-    p3=InterfaceBody( env )
+    p3=InterfaceBodyWithMGL( env, mgl )
     {
 	result = new ClassDeclaration( null, p1, null, p2, null, p3, false );
 	result.setSuffixes( sf );
     }
     { return result; }
 }
+//-----------------------------------------------------------------------
 
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//++++++++++++++++++++++++++++++++++++++++++modified (11/09/14) [simon]
 MemberDeclarationList InterfaceBody( ClassEnvironment env ) :
 {
     MemberDeclarationList	p1;
 }
 {
-    "{" p1=InterfaceBodyDeclarationListOpt( env ) "}"
+    p1 = InterfaceBodyWithMGL( env, null )
     { return p1; }
 }
+//-----------------------------------------------------------------------
+
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//++++++++++++++++++++++++++++++++++++++++++added (11/09/14) [simon]
+MemberDeclarationList InterfaceBodyWithMGL( ClassEnvironment env, MutableInteger mgl ) :
+{
+    MemberDeclarationList	p1;
+}
+{
+    "{" [ LOOKAHEAD(2, {mgl != null && mgl.intValue() == -1}) "//mutGenLimit" [ LOOKAHEAD(2) mut=Literal() {mgl.setIntValue(Integer.parseInt(mut.toString()));}]]
+	p1=InterfaceBodyDeclarationListOpt( env )
+	"}"
+    { return p1; }
+}
+//-----------------------------------------------------------------------
 
 MemberDeclarationList InterfaceBodyDeclarationListOpt( ClassEnvironment env ) :
 {
@@ -1987,10 +2094,10 @@ ConstructorDeclaration ConstructorDeclaration( Environment base_env ) :
     p3=FormalParameters( env )
     p4=ThrowsPhraseOpt( base_env )
     sf=OpenJavaDeclSuffixListOpt( env )
-    "{"
+    "{" [ LOOKAHEAD(2) "//mutGenLimit" [ LOOKAHEAD(2) mut=Literal() ]]			//added (08/09/14) [simon]
     p5=ExplicitConstructorInvocationOpt( env )
     p6=BlockOrStatementListOpt( env )
-    "}" [ LOOKAHEAD(2) "//mutGenLimit" [ LOOKAHEAD(2) mut=Literal() ]]			//added (08/09/14) [simon]
+    "}" 
     {
 	result = new ConstructorDeclaration( p1, p2, p3, p4, p5, p6 );
 	result.setSuffixes( sf );

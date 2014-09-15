@@ -50,9 +50,11 @@ public abstract class ParseTreeObject
 	final ParseTreeObject getParent() {
 		return parent;
 	}
-	protected final void setParent(ParseTreeObject parent) {
+	
+	public final void setParent(ParseTreeObject parent) { //modified (15/09/14) [simon] {private -> public}
 		this.parent = parent;
 	}
+	
 	public final void replace(ParseTree replacement)
 		throws ParseTreeException {
 		ParseTreeObject p = getParent();
