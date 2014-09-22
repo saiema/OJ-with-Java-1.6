@@ -1500,7 +1500,7 @@ MemberDeclarationList ClassBodyWithMGL( ClassEnvironment env, MutableInteger mgl
     DebugOut.println( "#ClassBody()" );
 }
 {
-    "{" [ LOOKAHEAD(2, {mgl != null && mgl.intValue() == -1}) <MUT_GEN_LIMIT> {System.out.println("//mutGenLimit found!");}/*"//mutGenLimit"*/ [ LOOKAHEAD(2) mut=Literal() {mgl.setIntValue(Integer.parseInt(mut.toString()));}]]
+    "{" [ LOOKAHEAD(2, {mgl != null && mgl.intValue() == -1}) <MUT_GEN_LIMIT> /*"//mutGenLimit"*/ [ LOOKAHEAD(2) mut=Literal() {mgl.setIntValue(Integer.parseInt(mut.toString()));}]]
     ( ";" )*
     p1=ClassBodyDeclarationListOpt( env )
     "}"
@@ -1667,7 +1667,7 @@ MemberDeclaration EnumDeclarationWithMGL( ClassEnvironment env, MutableInteger m
   }
   [ tn = ImplementsPhraseOpt(newEnv) ]
   
-   "{" [ LOOKAHEAD(2, {mgl != null && mgl.intValue() == -1}) <MUT_GEN_LIMIT> {System.out.println("//mutGenLimit found!");} /*"//mutGenLimit"*/ [ LOOKAHEAD(2) mut=Literal() {mgl.setIntValue(Integer.parseInt(mut.toString()));} ]]	//added (08/09/14) [simon] //modified (11/09/14) [simon]
+   "{" [ LOOKAHEAD(2, {mgl != null && mgl.intValue() == -1}) <MUT_GEN_LIMIT>  /*"//mutGenLimit"*/ [ LOOKAHEAD(2) mut=Literal() {mgl.setIntValue(Integer.parseInt(mut.toString()));} ]]	//added (08/09/14) [simon] //modified (11/09/14) [simon]
     [ enumConstant = EnumConstant(newEnv, identifier) 
       { enumConstantsList.add(enumConstant);} 
       ( LOOKAHEAD(2) "," enumConstant = EnumConstant(newEnv, identifier) {enumConstantsList.add(enumConstant);} )* 
@@ -1732,7 +1732,7 @@ MemberDeclarationList MethodOrFieldDeclaration( Environment base_env ) :
 	[ 
 		tpl = TypeParameters(base_env) 
 	]
-    p2 = Type( base_env )
+    p2 = TypeOptionalComments( base_env, p1 != null && !p1.isEmpty() )
 	
     (
         LOOKAHEAD( Identifier() "(" )
@@ -1770,7 +1770,7 @@ MemberDeclarationList MethodOrFieldDeclaration( Environment base_env ) :
 			result.add( fld2 );
 			}
 	    )*
-        ";" [ LOOKAHEAD(2) <MUT_GEN_LIMIT> {System.out.println("//mutGenLimit found!");} [ LOOKAHEAD(2) mut=Literal() {System.out.println("mutGenLimit: " + mut.toString());}]] //added (08/09/14) [simon]
+        ";" [ LOOKAHEAD(2) <MUT_GEN_LIMIT>  [ LOOKAHEAD(2) mut=Literal() ]] //added (08/09/14) [simon]
 		{																						//added (08/09/14) [simon]
 		  if (mut != null) {																	//added (08/09/14) [simon]
 			for (int i = 0; i < fd.size(); i++) {												//added (08/09/14) [simon]
@@ -1818,7 +1818,7 @@ StatementList MethodBodyWithMGL( Environment env, MutableInteger mgl ) :
     p1=BlockedBodyWithMGL( env, mgl )
     { return p1; }
 |
-    ";" [ LOOKAHEAD(2) <MUT_GEN_LIMIT> {System.out.println("//mutGenLimit found!");} [ LOOKAHEAD(2) mut=Literal() {System.out.println("mutGenLimit: " + mut.toString());}]]
+    ";" [ LOOKAHEAD(2) <MUT_GEN_LIMIT>  [ LOOKAHEAD(2) mut=Literal() ]]
     {
 	 if (mut != null) mgl.setIntValue(Integer.parseInt(mut.toString()));
 	 return null;
@@ -2005,7 +2005,7 @@ MemberDeclarationList InterfaceBodyWithMGL( ClassEnvironment env, MutableInteger
 	Literal					mut = null;
 }
 {
-    "{" [ LOOKAHEAD(2, {mgl != null && mgl.intValue() == -1}) <MUT_GEN_LIMIT> {System.out.println("//mutGenLimit found!");} [ LOOKAHEAD(2) mut=Literal() {mgl.setIntValue(Integer.parseInt(mut.toString()));System.out.println("mutGenLimit: " + mut.toString());}]]
+    "{" [ LOOKAHEAD(2, {mgl != null && mgl.intValue() == -1}) <MUT_GEN_LIMIT>  [ LOOKAHEAD(2) mut=Literal() {mgl.setIntValue(Integer.parseInt(mut.toString()));System.out.println("mutGenLimit: " + mut.toString());}]]
 	p1=InterfaceBodyDeclarationListOpt( env )
 	"}"
     { return p1; }
@@ -2196,7 +2196,7 @@ ConstructorDeclaration ConstructorDeclaration( Environment base_env ) :
     p3=FormalParameters( env )
     p4=ThrowsPhraseOpt( base_env )
     sf=OpenJavaDeclSuffixListOpt( env )
-    "{" [ LOOKAHEAD(2) <MUT_GEN_LIMIT> {System.out.println("//mutGenLimit found!");} [ LOOKAHEAD(2) mut=Literal() {System.out.println("mutGenLimit: " + mut.toString());}]]			//added (08/09/14) [simon]
+    "{" [ LOOKAHEAD(2) <MUT_GEN_LIMIT>  [ LOOKAHEAD(2) mut=Literal() ]]			//added (08/09/14) [simon]
     p5=ExplicitConstructorInvocationOpt( env )
     p6=BlockOrStatementListOpt( env )
     "}" 
@@ -2291,12 +2291,30 @@ MemberInitializer MemberInitializer( Environment env ) :
  * Type, name and expression syntax follows.
  */
 
+// +++++++++++++++++++++++++++++++++++++++++++++++++
+// ++++++++++++++++++++++modified (17/09/14) [simon]
 TypeName Type( Environment env ) :
 {
     TypeName			result;
     String			    p1;
     Hashtable			p2;
     int				    p3;
+}
+{
+    result = TypeOptionalComments(env, true)
+    { return result; }
+}
+// -------------------------------------------------
+
+// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// +++++++++++++++++++++++++++++++added (17/09/14) [simon] {copied from old OJ}
+TypeName TypeOptionalComments( Environment env, boolean checkForComments ) :
+{
+    TypeName			result;
+    String			    p1;
+    Hashtable			p2;
+    int				    p3;
+	String				comment = checkForComments?getComment():null;
 }
 {
     ( p1 = PrimitiveType() | p1 = Name() )
@@ -2307,9 +2325,11 @@ TypeName Type( Environment env ) :
     	System.out.println("p2: " + p2);
     	System.out.println("p3: " + p3);*/
 		result = new TypeName( p1, p3, p2 );
+		result.setComment(comment);
     }
     { return result; }
 }
+// ----------------------------------------------------------------------------
 
 TypeName TypeWithoutDims( Environment env ) :
 {
@@ -2752,28 +2772,69 @@ Expression RelationalExpression( Environment env ) :
     { return result; }
 }
 
+// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// ++++++++++++deleted (22/09/14) [simon] {replaced with old OJ implementation}
+//Expression ShiftExpression( Environment env ) :
+//{
+//    Expression			result;
+//    Expression			p1;
+//    String			    p2;
+//    Expression			p3;
+//}
+//{
+//    p1=AdditiveExpression( env )
+//    { result = p1;}
+//    (   
+//     // The following statement is obsolete
+//      // ( "<<" | ">>" | ">>>" ) 
+//      
+//     ( "<<" | RSIGNEDSHIFT() | RUNSIGNEDSHIFT() ) 
+//        
+//        { p2 = getToken( 0 ).image; }
+//         p3=AdditiveExpression( env )
+//        { result = new BinaryExpression( result, p2, p3 ); }
+//    )*
+//    { return result; }
+//}
+// ----------------------------------------------------------------------------
+
+// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// +++++++++++++++++++++++++++++++added (22/09/14) [simon] {copied from old OJ}
 Expression ShiftExpression( Environment env ) :
 {
     Expression			result;
     Expression			p1;
-    String			    p2;
+    String			p2;
     Expression			p3;
 }
 {
     p1=AdditiveExpression( env )
-    { result = p1;}
-    (   
-     // The following statement is obsolete
-      // ( "<<" | ">>" | ">>>" ) 
-      
-     ( "<<" | RSIGNEDSHIFT() | RUNSIGNEDSHIFT() ) 
-        
-        { p2 = getToken( 0 ).image; }
+    { result = p1; }
+    (
+        p2 = SHIFTOP()
          p3=AdditiveExpression( env )
         { result = new BinaryExpression( result, p2, p3 ); }
     )*
     { return result; }
 }
+// -----------------------------------------------------------------------------
+
+// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// ++++++++++++++++++++++++++++++++added (22/09/14) [simon] {copied from old OJ}
+String SHIFTOP() :
+{
+ String op = null;
+}
+{
+  (LOOKAHEAD({getToken(1).image == "<" && getToken(2).image == "<"})
+  "<" "<" {return "<<";}
+  
+  |
+  LOOKAHEAD({getToken(1).image == ">" && getToken(2).image == ">"})
+  ">" ">" {op = ">>";} [">" {op = op + ">";}])
+  {return null;}
+}
+// -----------------------------------------------------------------------------
 
 Expression AdditiveExpression( Environment env ) :
 {
@@ -3213,7 +3274,7 @@ StatementList BlockedBodyWithMGL( Environment env, MutableInteger mutGenLimit) :
 	Literal				mut = null;
 }
 {
-    "{" [ LOOKAHEAD(2, {mutGenLimit != null && mutGenLimit.intValue() == -1}) <MUT_GEN_LIMIT> {System.out.println("//mutGenLimit found!");} [ LOOKAHEAD(2) mut=Literal() {System.out.println("mutGenLimit: " + mut.toString());} ] ] p1=BlockOrStatementListOpt( env ) "}"
+    "{" [ LOOKAHEAD(2, {mutGenLimit != null && mutGenLimit.intValue() == -1}) <MUT_GEN_LIMIT>  [ LOOKAHEAD(2) mut=Literal()  ] ] p1=BlockOrStatementListOpt( env ) "}"
     {
 	   if (mut != null) {
 		  mutGenLimit.setIntValue(Integer.parseInt(mut.toString()));
@@ -3340,7 +3401,7 @@ StatementList BlockOrStatement( Environment env ) :
     //LOOKAHEAD( { LocalVariableDeclarationLookahead( env ) } )
     
     LOOKAHEAD((Modifier())* TypeWithoutSemantics() Identifier() )
-    p2 = LocalVariableDeclaration( env ) ";" [ LOOKAHEAD(2) <MUT_GEN_LIMIT> {System.out.println("//mutGenLimit found!");} [ LOOKAHEAD(2) mut=Literal() {System.out.println("mutGenLimit: " + mut.toString());}]]		//added (08/09/14) [simon]
+    p2 = LocalVariableDeclaration( env ) ";" [ LOOKAHEAD(2) <MUT_GEN_LIMIT>  [ LOOKAHEAD(2) mut=Literal() ]]		//added (08/09/14) [simon]
     { //System.out.println("LocalVariableDeclaration: " + p2.toString());
 	 if (mut!=null) {																//added (08/09/14) [simon]
 		 for (int i=0; i<p2.size(); i++) {											//added (08/09/14) [simon]
@@ -3431,7 +3492,7 @@ ExpressionStatement ExpressionStatement( Environment env ) :
     DebugOut.println( "#ExpressionStatement()" );
 }
 {
-    p1 = StatementExpression( env ) ";" [ LOOKAHEAD(2) <MUT_GEN_LIMIT> {System.out.println("//mutGenLimit found!");} [ LOOKAHEAD(2) mut=Literal() {System.out.println("mutGenLimit: " + mut.toString());}]]	//added (08/09/14) [simon]
+    p1 = StatementExpression( env ) ";" [ LOOKAHEAD(2) <MUT_GEN_LIMIT>  [ LOOKAHEAD(2) mut=Literal() ]]	//added (08/09/14) [simon]
     {
 	   ExpressionStatement res = new ExpressionStatement(p1);				//modified (08/09/14) [simon]
     	if (mut != null) {													//modified (08/09/14) [simon]
@@ -3472,7 +3533,7 @@ SwitchStatement SwitchStatement( Environment env ) :
     DebugOut.println( "#SwitchStatement()" );
 }
 {
-    "switch" "(" p1=Expression( env ) ")" "{" [ LOOKAHEAD(2) <MUT_GEN_LIMIT> {System.out.println("//mutGenLimit found!");} [ LOOKAHEAD(2) mut=Literal() {System.out.println("mutGenLimit: " + mut.toString());}]]	//added (08/09/14) [simon]
+    "switch" "(" p1=Expression( env ) ")" "{" [ LOOKAHEAD(2) <MUT_GEN_LIMIT>  [ LOOKAHEAD(2) mut=Literal() ]]	//added (08/09/14) [simon]
      ( LOOKAHEAD( "case" | "default" )
          { exprs = new ExpressionList(); }
          ( LOOKAHEAD( "case" | "default" )
@@ -3521,7 +3582,7 @@ IfStatement IfStatement( Environment env ) :
     DebugOut.println( "#IfStatement()" );
 }
 {
-    "if" "(" p1=Expression( env ) ")" [ LOOKAHEAD(2) <MUT_GEN_LIMIT> {System.out.println("//mutGenLimit found!");} [ LOOKAHEAD(2) singleStatementMGL=Literal() {blockedIfMGL.setIntValue(-2);System.out.println("mutGenLimit: " + singleStatementMGL.toString());} ] ]	//added (08/09/14) [simon]
+    "if" "(" p1=Expression( env ) ")" [ LOOKAHEAD(2) <MUT_GEN_LIMIT>  [ LOOKAHEAD(2) singleStatementMGL=Literal() {blockedIfMGL.setIntValue(-2);System.out.println("mutGenLimit: " + singleStatementMGL.toString());} ] ]	//added (08/09/14) [simon]
     ( LOOKAHEAD(1)
         p2=BlockedBodyWithMGL( env, blockedIfMGL )			//modified (08/09/14) [simon]
         { true_part = p2; }
@@ -3562,7 +3623,7 @@ WhileStatement WhileStatement( Environment env ) :
     DebugOut.println( "#WhileStatement()" );
 }
 {
-    "while" "(" p1=Expression( env ) ")" [ LOOKAHEAD(2) <MUT_GEN_LIMIT> {System.out.println("//mutGenLimit found!");} [ LOOKAHEAD(2) singleStatementMGL=Literal() {blockedWhileMGL.setIntValue(-2);System.out.println("mutGenLimit: " + singleStatementMGL.toString());} ] ]	//added (08/09/14) [simon]
+    "while" "(" p1=Expression( env ) ")" [ LOOKAHEAD(2) <MUT_GEN_LIMIT>  [ LOOKAHEAD(2) singleStatementMGL=Literal() {blockedWhileMGL.setIntValue(-2);System.out.println("mutGenLimit: " + singleStatementMGL.toString());} ] ]	//added (08/09/14) [simon]
     ( LOOKAHEAD(1)
         p2=BlockedBodyWithMGL( env,  blockedWhileMGL)							//modified (08/09/14) [simon]
         { body = p2; }
@@ -3600,7 +3661,7 @@ DoWhileStatement DoWhileStatement( Environment env ) :
         p2=Statement( env )
         { body = new StatementList( p2 ); }
     )
-    "while" "(" p3=Expression( env ) ")" ";" [ LOOKAHEAD(2) <MUT_GEN_LIMIT> {System.out.println("//mutGenLimit found!");} [ LOOKAHEAD(2) mut=Literal() {System.out.println("mutGenLimit: " + mut.toString());} ] ]	//added (08/09/14) [simon]
+    "while" "(" p3=Expression( env ) ")" ";" [ LOOKAHEAD(2) <MUT_GEN_LIMIT>  [ LOOKAHEAD(2) mut=Literal()  ] ]	//added (08/09/14) [simon]
     {
 		DoWhileStatement doWhlStmnt = new DoWhileStatement( body, p3 );			//modified (08/09/14) [simon]
 		if (mut != null) {														//modified (08/09/14) [simon]
@@ -3675,7 +3736,7 @@ ForStatement ForStatement( Environment env ) :
 	    ]
     )
     
-    ")" [ LOOKAHEAD(2) <MUT_GEN_LIMIT> {System.out.println("//mutGenLimit found!");} [ LOOKAHEAD(2) singleStatementMGL=Literal() {blockedForMGL.setIntValue(-2);System.out.println("mutGenLimit: " + singleStatementMGL.toString());} ] ]	//added (10/09/14) [simon]
+    ")" [ LOOKAHEAD(2) <MUT_GEN_LIMIT>  [ LOOKAHEAD(2) singleStatementMGL=Literal() {blockedForMGL.setIntValue(-2);System.out.println("mutGenLimit: " + singleStatementMGL.toString());} ] ]	//added (10/09/14) [simon]
     (
         LOOKAHEAD(1)
         p6=BlockedBodyWithMGL( env, blockedForMGL )								//modified (10/09/14) [simon]
@@ -3799,7 +3860,7 @@ ReturnStatement ReturnStatement( Environment env ) :
          LOOKAHEAD( { (getToken(1).kind != SEMICOLON)} )
          p1=Expression( env )
     ]
-    ";" [ LOOKAHEAD(2) <MUT_GEN_LIMIT> {System.out.println("//mutGenLimit found!");} [ LOOKAHEAD(2) mut=Literal() {System.out.println("mutGenLimit: " + mut.toString());}] ]	//added (10/09/14) [simon]
+    ";" [ LOOKAHEAD(2) <MUT_GEN_LIMIT>  [ LOOKAHEAD(2) mut=Literal() ] ]	//added (10/09/14) [simon]
     {
 	if (p1 != null) {
 	    result = new ReturnStatement( p1 );
