@@ -38,13 +38,6 @@ public class Literal extends Leaf implements Expression {
 
 	protected int id = -1;
 
-	private static Literal constantTrue_ = null;
-	private static Literal constantFalse_ = null;
-	private static Literal constantNull_ = null;
-	private static Literal constantEmptyString_ = null;
-	private static Literal constantZero_ = null;
-	private static Literal constantOne_ = null;
-
 	/**
 	 * Allocates a new object.
 	 * If you want to make <code>String</code> literal like
@@ -166,40 +159,26 @@ public class Literal extends Leaf implements Expression {
 	}
 
 	public static Literal constantTrue() {
-		if (constantTrue_ == null) {
-			constantTrue_ = new Literal(Literal.BOOLEAN, "true");
-		}
-		return constantTrue_;
+		return new Literal(Literal.BOOLEAN, "true");
 	}
 	public static Literal constantFalse() {
-		if (constantFalse_ == null) {
-			constantFalse_ = new Literal(Literal.BOOLEAN, "false");
-		}
-		return constantFalse_;
+		return new Literal(Literal.BOOLEAN, "false");
 	}
+
 	public static Literal constantNull() {
-		if (constantNull_ == null) {
-			constantNull_ = new Literal(Literal.NULL, "null");
-		}
-		return constantNull_;
+		return new Literal(Literal.NULL, "null");
 	}
+
 	public static Literal constantEmptyString() {
-		if (constantEmptyString_ == null) {
-			constantEmptyString_ = new Literal(Literal.STRING, "\"\"");
-		}
-		return constantEmptyString_;
+		return new Literal(Literal.STRING, "\"\"");
 	}
+
 	public static Literal constantZero() {
-		if (constantZero_ == null) {
-			constantZero_ = new Literal(Literal.INTEGER, "0");
-		}
-		return constantZero_;
+		return new Literal(Literal.INTEGER, "0");
 	}
+
 	public static Literal constantOne() {
-		if (constantOne_ == null) {
-			constantOne_ = new Literal(Literal.INTEGER, "1");
-		}
-		return constantOne_;
+		return new Literal(Literal.INTEGER, "1");
 	}
 
 	public OJClass getType(Environment env) throws Exception {

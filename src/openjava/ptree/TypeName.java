@@ -155,12 +155,16 @@ public class TypeName extends NonLeaf {
 	}
 
 	/**
-	 * Gets the type name of this type specifier.
+	 * Gets the type name of this type specifiºer.
 	 *
 	 * @return  the type name.
 	 */
 	public String getName() {
-		return (String) elementAt(0);
+		String tname = (String) elementAt(0);
+		if (this.getGenerics() != null && !this.getGenerics().isEmpty()) {
+			tname += this.getGenerics();
+		}
+		return tname;
 	}
 
 	/**

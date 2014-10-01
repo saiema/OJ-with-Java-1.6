@@ -421,6 +421,13 @@ public abstract class NonLeaf extends ParseTreeObject implements ParseTree {
 		this.generics = generics;
 	}
 	
+	// ++++++++++++++++++++++++++++++++++++++++++++++++
+	// ++++++++++++++++++++++++added (01/10/14) [simon]
+	public String getGenerics() {
+		return this.generics == null?"":this.generics;
+	}
+	// ------------------------------------------------
+	
 	public void setMutGenLimit(Integer limit) {
 		this.hasMutGenLimit = true;
 		this.mutGenLimit = limit;

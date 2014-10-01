@@ -1053,7 +1053,7 @@ public class Parser implements ParserConstants {
     p2 = ExtendsPhraseOpt(env);
     p3 = ImplementsPhraseOpt(env);
     sf = OpenJavaDeclSuffixListOpt(env);
-    p4 = ClassBody(env);
+    p4 = ClassBodyWithMGL(env, mgl);
                 result = new ClassDeclaration( null, p1, tpl, p2, p3, p4 );
                 result.setSuffixes( sf );
       {if (true) return result;}
