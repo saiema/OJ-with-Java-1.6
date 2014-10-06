@@ -237,6 +237,20 @@ public class OJSystem {
 			return null;
 		return classname.substring(0, pack);
 	}
+	
+	// +++++++++++++++++++++++++++++
+	// +++++added (06/10/14) [simon]
+	public static void clean() {
+		env.clear();
+		additionalClasses.clear();
+		javac = null;
+		table.clear();
+		orderingLock = null;
+		waited = null;
+		underConstruction.clear();
+		waitingPool.clear();
+	}
+	// ----------------------------
 
 	/** internal use only */
 	public static Object orderingLock;

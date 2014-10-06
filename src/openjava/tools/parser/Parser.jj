@@ -212,12 +212,16 @@ public class Parser
     
     private static final boolean modifierCheckWithoutEnvParam( Token t ) {
     	//System.out.println("modifierCheck: " + t.image);
-		if (pureModifierCheck( t ))  return true;
-		if (t.kind != IDENTIFIER)  return false;
-		Class meta = toExecutable( globalFileEnvironment, globalFileEnvironment.currentClassName() );
-		//System.out.println("meta: " + meta);
-		if (meta == null)  return false;
-		return invokeOJClass_isRegisteredModifier( meta, t.image );
+		// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+		// modified (06/10/14) [simon] {this method it's giving me problems and can't see the point in not using roughModifierCheck}
+		return pureModifierCheck( t );
+		//if (pureModifierCheck( t ))  return true;
+		//if (t.kind != IDENTIFIER)  return false;
+		//Class meta = toExecutable( globalFileEnvironment, globalFileEnvironment.currentClassName() );
+		////System.out.println("meta: " + meta);
+		//if (meta == null)  return false;
+		//return invokeOJClass_isRegisteredModifier( meta, t.image );
+		// ---------------------------------------------------------------------------------------------------------------------------
     }
 
     private String consumeKeyword( int ptr ) {
@@ -478,14 +482,25 @@ public class Parser
 				    					    
 					ptr++;
 
-					if(getToken(ptr).kind == GT)
-						number--;// subtract one from the number if encountering a " >"
+					// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+					// +++deleted (06/10/14) [simon] {closing > are not skipped correctly}
+					//if(getToken(ptr).kind == GT)
+					//	number--;// subtract one from the number if encountering a " >"
+					// ------------------------------------------------------------------
 
 					if(ptr > 500)
 						break; // if reading 500 tokens cannot finish this loop, this parser thinks this is not a generic type but a relational operator. Then the parser jumps out of the loop.	
 				}
-				while( (getToken(ptr).kind != GT) && (number != 0));
-				ptr++;
+				while( (getToken(ptr).kind != GT));// && (number != 0));
+				// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+				// modified (06/10/14) [simon] {closing > are now skipped correctly}
+				//consume closing >
+				while (number > 0 && getToken(ptr).kind == GT) {
+					ptr++;
+					number--;
+				}
+				//ptr++;
+				// -----------------------------------------------------------------
 		    }
 		    
 		    while (getToken( ptr ).kind == DOT
@@ -901,6 +916,7 @@ TOKEN :
  * GT is re-defined below to be compatiable with Java 1.5  
  * | < GT: ">" >
  */
+| < GT: ">" >
 | < LT: "<" >
 | < BANG: "!" >
 | < TILDE: "~" >
@@ -922,7 +938,7 @@ TOKEN :
 | < BIT_OR: "|" >
 | < XOR: "^" >
 | < REM: "%" >
-| < LSHIFT: "<<" >
+/*| < LSHIFT: "<<" >*/
 /*
  * These two tokens are commentd out because they are re-defined below to be compatiable with Java 1.5
  * | < RSIGNEDSHIFT: ">>" >
@@ -944,25 +960,25 @@ TOKEN :
 
 /* >'s need special attention due to generics syntax. */
 /* The whole part is added for Java 1.5 */
-TOKEN :
-{
-  < RUNSIGNEDSHIFT: ">>>" >
-  {
-     matchedToken.kind = GT;
-     ((MyToken)matchedToken).realKind = RUNSIGNEDSHIFT;
-     input_stream.backup(2);
-     matchedToken.image = ">";
-  }
-| < RSIGNEDSHIFT: ">>" >
-  {
-     matchedToken.kind = GT;
-     ((MyToken)matchedToken).realKind = RSIGNEDSHIFT;
-     input_stream.backup(1);
-     matchedToken.image = ">";
-  }
-| < GT: ">" >
-
-}
+//TOKEN :
+//{
+//  < RUNSIGNEDSHIFT: ">>>" >
+//  {
+//     matchedToken.kind = GT;
+//     ((MyToken)matchedToken).realKind = RUNSIGNEDSHIFT;
+//     input_stream.backup(2);
+//     matchedToken.image = ">";
+//  }
+//| < RSIGNEDSHIFT: ">>" >
+//  {
+//     matchedToken.kind = GT;
+//     ((MyToken)matchedToken).realKind = RSIGNEDSHIFT;
+//     input_stream.backup(1);
+//     matchedToken.image = ">";
+//  }
+//| < GT: ">" >
+//
+//}
 
 /*****************************************
  * Syntactical Descriptions              *
@@ -2433,7 +2449,7 @@ String TypeArguments():
    }
    ( "," p1 = TypeArgument() 
    {
-   		typeArguementsName.append("," + p1);
+   		typeArguementsName.append(", " + p1); //modified (06/10/14) [simon] {use ", " instead of ","}
    }
    )* ">"
    {
@@ -3930,27 +3946,27 @@ TryStatement TryStatement( Environment base_env ) :
     { return result; }
 }
 
-/* We use productions to match >>>, >> and > so that we can keep the
- * type declaration syntax with generics clean
- */
-
-void RUNSIGNEDSHIFT():
-{}
-{
-  ( LOOKAHEAD({ getToken(1).kind == GT &&
-                ((MyToken)getToken(1)).realKind == RUNSIGNEDSHIFT} )
-   ">" ">" ">"
-  )
-}
-
-void RSIGNEDSHIFT():
-{}
-{
-  ( LOOKAHEAD({ getToken(1).kind == GT &&
-                ((MyToken)getToken(1)).realKind == RSIGNEDSHIFT} )
-  ">" ">"
-  )
-}
+///* We use productions to match >>>, >> and > so that we can keep the
+// * type declaration syntax with generics clean
+// */
+//
+//void RUNSIGNEDSHIFT():
+//{}
+//{
+//  ( LOOKAHEAD({ getToken(1).kind == GT &&
+//                ((MyToken)getToken(1)).realKind == RUNSIGNEDSHIFT} )
+//   ">" ">" ">"
+//  )
+//}
+//
+//void RSIGNEDSHIFT():
+//{}
+//{
+//  ( LOOKAHEAD({ getToken(1).kind == GT &&
+//                ((MyToken)getToken(1)).realKind == RSIGNEDSHIFT} )
+//  ">" ">"
+//  )
+//}
 
 
 /* Annotation syntax follows. */
@@ -4104,7 +4120,7 @@ void RelationalExpressionWithoutSematics():
 void ShiftExpressionWithoutSematics():
 {}
 {
-  AdditiveExpressionWithoutSematics() ( ( "<<" | RSIGNEDSHIFT() | RUNSIGNEDSHIFT() ) AdditiveExpressionWithoutSematics() )*
+  AdditiveExpressionWithoutSematics() ( ( SHIFTOP()/*"<<" | RSIGNEDSHIFT() | RUNSIGNEDSHIFT()*/ ) AdditiveExpressionWithoutSematics() )*
 }
 
 void AdditiveExpressionWithoutSematics():

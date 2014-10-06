@@ -102,9 +102,9 @@ public interface TokenIDPublisher {
   public static final int BIT_OR =		ParserConstants.BIT_OR;
   public static final int XOR =			ParserConstants.XOR;
   public static final int REM =			ParserConstants.REM;
-  public static final int LSHIFT =		ParserConstants.LSHIFT;
-  public static final int RSIGNEDSHIFT =	ParserConstants.RSIGNEDSHIFT;
-  public static final int RUNSIGNEDSHIFT =	ParserConstants.RUNSIGNEDSHIFT;
+//  public static final int LSHIFT =		ParserConstants.LSHIFT;
+//  public static final int RSIGNEDSHIFT =	ParserConstants.RSIGNEDSHIFT;
+//  public static final int RUNSIGNEDSHIFT =	ParserConstants.RUNSIGNEDSHIFT;
   public static final int PLUSASSIGN =	ParserConstants.PLUSASSIGN;
   public static final int MINUSASSIGN =	ParserConstants.MINUSASSIGN;
   public static final int STARASSIGN =	ParserConstants.STARASSIGN;

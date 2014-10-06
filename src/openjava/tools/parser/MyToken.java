@@ -10,7 +10,7 @@ public class MyToken extends Token
      this.image = image;
   }
 
-  int realKind = JavaParserConstants.GT;
+  int realKind = ParserConstants.GT;
 
   /**
    * Returns a new Token object.

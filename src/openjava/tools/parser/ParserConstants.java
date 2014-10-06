@@ -175,49 +175,49 @@ public interface ParserConstants {
   /** RegularExpression Id. */
   int ASSIGN = 91;
   /** RegularExpression Id. */
-  int LT = 92;
+  int GT = 92;
   /** RegularExpression Id. */
-  int BANG = 93;
+  int LT = 93;
   /** RegularExpression Id. */
-  int TILDE = 94;
+  int BANG = 94;
   /** RegularExpression Id. */
-  int HOOK = 95;
+  int TILDE = 95;
   /** RegularExpression Id. */
-  int COLON = 96;
+  int HOOK = 96;
   /** RegularExpression Id. */
-  int EQ = 97;
+  int COLON = 97;
   /** RegularExpression Id. */
-  int LE = 98;
+  int EQ = 98;
   /** RegularExpression Id. */
-  int GE = 99;
+  int LE = 99;
   /** RegularExpression Id. */
-  int NE = 100;
+  int GE = 100;
   /** RegularExpression Id. */
-  int SC_OR = 101;
+  int NE = 101;
   /** RegularExpression Id. */
-  int SC_AND = 102;
+  int SC_OR = 102;
   /** RegularExpression Id. */
-  int INCR = 103;
+  int SC_AND = 103;
   /** RegularExpression Id. */
-  int DECR = 104;
+  int INCR = 104;
   /** RegularExpression Id. */
-  int PLUS = 105;
+  int DECR = 105;
   /** RegularExpression Id. */
-  int MINUS = 106;
+  int PLUS = 106;
   /** RegularExpression Id. */
-  int STAR = 107;
+  int MINUS = 107;
   /** RegularExpression Id. */
-  int SLASH = 108;
+  int STAR = 108;
   /** RegularExpression Id. */
-  int BIT_AND = 109;
+  int SLASH = 109;
   /** RegularExpression Id. */
-  int BIT_OR = 110;
+  int BIT_AND = 110;
   /** RegularExpression Id. */
-  int XOR = 111;
+  int BIT_OR = 111;
   /** RegularExpression Id. */
-  int REM = 112;
+  int XOR = 112;
   /** RegularExpression Id. */
-  int LSHIFT = 113;
+  int REM = 113;
   /** RegularExpression Id. */
   int PLUSASSIGN = 114;
   /** RegularExpression Id. */
@@ -243,13 +243,7 @@ public interface ParserConstants {
   /** RegularExpression Id. */
   int ELLIPSIS = 125;
   /** RegularExpression Id. */
-  int RUNSIGNEDSHIFT = 126;
-  /** RegularExpression Id. */
-  int RSIGNEDSHIFT = 127;
-  /** RegularExpression Id. */
-  int GT = 128;
-  /** RegularExpression Id. */
-  int STUFF_TO_IGNORE = 130;
+  int STUFF_TO_IGNORE = 127;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -354,6 +348,7 @@ public interface ParserConstants {
     "\".\"",
     "\"@\"",
     "\"=\"",
+    "\">\"",
     "\"<\"",
     "\"!\"",
     "\"~\"",
@@ -375,7 +370,6 @@ public interface ParserConstants {
     "\"|\"",
     "\"^\"",
     "\"%\"",
-    "\"<<\"",
     "\"+=\"",
     "\"-=\"",
     "\"*=\"",
@@ -388,9 +382,6 @@ public interface ParserConstants {
     "\">>=\"",
     "\">>>=\"",
     "\"...\"",
-    "\">>>\"",
-    "\">>\"",
-    "\">\"",
     "\"\\u001a\"",
     "<STUFF_TO_IGNORE>",
   };

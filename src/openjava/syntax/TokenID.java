@@ -123,9 +123,9 @@ public interface TokenID {
 	public static final int BIT_OR = TokenIDPublisher.BIT_OR;
 	public static final int XOR = TokenIDPublisher.XOR;
 	public static final int REM = TokenIDPublisher.REM;
-	public static final int LSHIFT = TokenIDPublisher.LSHIFT;
-	public static final int RSIGNEDSHIFT = TokenIDPublisher.RSIGNEDSHIFT;
-	public static final int RUNSIGNEDSHIFT = TokenIDPublisher.RUNSIGNEDSHIFT;
+//	public static final int LSHIFT = TokenIDPublisher.LSHIFT;
+//	public static final int RSIGNEDSHIFT = TokenIDPublisher.RSIGNEDSHIFT;
+//	public static final int RUNSIGNEDSHIFT = TokenIDPublisher.RUNSIGNEDSHIFT;
 	public static final int PLUSASSIGN = TokenIDPublisher.PLUSASSIGN;
 	public static final int MINUSASSIGN = TokenIDPublisher.MINUSASSIGN;
 	public static final int STARASSIGN = TokenIDPublisher.STARASSIGN;

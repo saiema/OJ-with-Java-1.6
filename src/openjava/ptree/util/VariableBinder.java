@@ -135,8 +135,9 @@ public class VariableBinder extends ScopeHandler {
 
 			//System.out.println("identifier: " + identifier);
 			//System.out.println("type: " + type);
-			for(String type: types)
-				record(getEnvironment(), type, identifier);
+			for(String type: types) {
+				record(getEnvironment(), type.trim(), identifier); //modified (06/10/14) [simon] {call trim() on type}
+			}
 		}
 		else{
 			OJClass OBJECT = OJClass.forClass(Object.class);
@@ -173,6 +174,16 @@ public class VariableBinder extends ScopeHandler {
 	
 	private static void bindName(Environment env, String type, String name) {
 		//System.out.println("before bindName: " + name+ ": " + type);
+		// +++++++++++++++++++++++++++++++++++++++++++++++++++++++
+		// added (06/10/14) [simon] {clean generics before binding}
+		String noGenericsType = type;
+		int firstLT = noGenericsType.indexOf('<');
+		if (firstLT > 0) {
+			noGenericsType = noGenericsType.substring(0, firstLT);
+		}
+		type = noGenericsType;
+		// -------------------------------------------------------
+		
 		String qtypename = env.toQualifiedName(type);
 		//System.out.println("bindName: " + name+ ": " + qtypename);
 		try {

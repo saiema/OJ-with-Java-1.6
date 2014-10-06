@@ -18,7 +18,6 @@ import openjava.ptree.ClassLiteral;
 import openjava.ptree.ConstructorDeclaration;
 import openjava.ptree.MethodDeclaration;
 import openjava.ptree.TypeName;
-import openjava.ptree.TypeParameter;
 
 /**
  * The class <code>TypeNameQualifier</code> is a utility class
@@ -99,7 +98,20 @@ public class TypeNameQualifier extends ScopeHandler {
 
 	public void visit(TypeName tname)
 		throws openjava.ptree.ParseTreeException {
-		tname.setName(qualify(tname.getName()));
+		// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+		// modified (06/10/14) [simon]
+		// {when getting the qualified name of a type, generics are removed
+		// and re added after the qualified name is found}
+		String typeNameNoGenerics = tname.getName();
+		String generics = "";
+		int firstLT = typeNameNoGenerics.indexOf("<");
+		int lastGT = typeNameNoGenerics.lastIndexOf(">");
+		if (firstLT > 0) {
+			generics = tname.getName().substring(firstLT, lastGT+1);
+			typeNameNoGenerics = tname.getName().substring(0, firstLT);
+		}
+		tname.setName(qualify(typeNameNoGenerics) + generics);
+		// -------------------------------------------------------------------------
 		super.visit(tname);
 	}
 	/*

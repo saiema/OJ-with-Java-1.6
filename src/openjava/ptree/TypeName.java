@@ -161,7 +161,7 @@ public class TypeName extends NonLeaf {
 	 */
 	public String getName() {
 		String tname = (String) elementAt(0);
-		if (this.getGenerics() != null && !this.getGenerics().isEmpty()) {
+		if (!tname.contains("<") && this.getGenerics() != null && !this.getGenerics().isEmpty()) {
 			tname += this.getGenerics();
 		}
 		return tname;

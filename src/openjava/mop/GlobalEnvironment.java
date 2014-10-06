@@ -44,6 +44,13 @@ public class GlobalEnvironment
             out.print( str + " " );
         }
     }
+    
+    // +++++++++++++++++++++++
+    // added (06/10/14) [simon]
+    public void clear() {
+    	this.table.clear();
+    }
+    // -----------------------
 
     /**
      * Gets the package name.
