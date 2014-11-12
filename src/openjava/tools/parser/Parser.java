@@ -2549,7 +2549,8 @@ public class Parser implements ParserConstants {
       }
       jj_consume_token(COMMA);
       p1 = TypeArgument();
-                typeArguementsName.append(", " + p1);
+                typeArguementsName.append(", " + p1); //modified (06/10/14) [simon] {use ", " instead of ","}
+
     }
     jj_consume_token(GT);
                 result = typeArguementsName.toString() + ">";
@@ -4188,7 +4189,7 @@ public class Parser implements ParserConstants {
       jj_consume_token(MUT_GEN_LIMIT);
       if (jj_2_82(2)) {
         singleStatementMGL = Literal();
-                                                                                                                   blockedIfMGL.setIntValue(-2);System.out.println("mutGenLimit: " + singleStatementMGL.toString());
+                                                                                                                   blockedIfMGL.setIntValue(-2);/*System.out.println("mutGenLimit: " + singleStatementMGL.toString());*/
       } else {
         ;
       }

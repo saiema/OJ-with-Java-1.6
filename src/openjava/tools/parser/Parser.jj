@@ -3598,7 +3598,7 @@ IfStatement IfStatement( Environment env ) :
     DebugOut.println( "#IfStatement()" );
 }
 {
-    "if" "(" p1=Expression( env ) ")" [ LOOKAHEAD(2) <MUT_GEN_LIMIT>  [ LOOKAHEAD(2) singleStatementMGL=Literal() {blockedIfMGL.setIntValue(-2);System.out.println("mutGenLimit: " + singleStatementMGL.toString());} ] ]	//added (08/09/14) [simon]
+    "if" "(" p1=Expression( env ) ")" [ LOOKAHEAD(2) <MUT_GEN_LIMIT>  [ LOOKAHEAD(2) singleStatementMGL=Literal() {blockedIfMGL.setIntValue(-2);/*System.out.println("mutGenLimit: " + singleStatementMGL.toString());*/} ] ]	//added (08/09/14) [simon]
     ( LOOKAHEAD(1)
         p2=BlockedBodyWithMGL( env, blockedIfMGL )			//modified (08/09/14) [simon]
         { true_part = p2; }
