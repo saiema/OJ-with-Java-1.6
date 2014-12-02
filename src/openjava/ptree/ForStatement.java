@@ -72,6 +72,10 @@ public class ForStatement extends NonLeaf implements Statement, ParseTree {
 			set(null, null, null, expr, iterator, stmts, null);
 		} else {
 			set(tspec, vdecls, null, expr, iterator, stmts, null, null);
+			VariableDeclarator[] varDecls = this.getInitDecls();
+			for (VariableDeclarator vd : varDecls) {
+				vd.setParent(this);
+			}
 		}
 	}
 	/***
