@@ -3290,11 +3290,15 @@ StatementList BlockedBodyWithMGL( Environment env, MutableInteger mutGenLimit) :
 	Literal				mut = null;
 }
 {
-    "{" [ LOOKAHEAD(2, {mutGenLimit != null && mutGenLimit.intValue() == -1}) <MUT_GEN_LIMIT>  [ LOOKAHEAD(2) mut=Literal()  ] ] p1=BlockOrStatementListOpt( env ) "}"
+    "{"
+	[ LOOKAHEAD(2, {mutGenLimit != null && mutGenLimit.intValue() == -1}) <MUT_GEN_LIMIT>  [ LOOKAHEAD(2) mut=Literal()  ] ] p1=BlockOrStatementListOpt( env )
+	{String afterComment = getComment();}
+	"}"
     {
 	   if (mut != null) {
 		  mutGenLimit.setIntValue(Integer.parseInt(mut.toString()));
 	   }
+	   p1.setAfterComment(afterComment);
 	   return p1;
 	}
 }
@@ -3360,12 +3364,17 @@ LabeledStatement LabeledStatement( Environment env ) :
 {
     String				p1;
     Statement			p2;
-
+	LabeledStatement	result;
     DebugOut.println( "#LabeledStatement()" );
+	String				comment = getComment();
 }
 {
     p1=Identifier() ":" p2=Statement( env )
-    { return new LabeledStatement( p1, p2 ); }
+    {
+	 result = new LabeledStatement( p1, p2 );
+	 result.setComment(comment);
+	 return result;
+	 }
 }
 
 Block Block( Environment env ) :
@@ -3373,10 +3382,18 @@ Block Block( Environment env ) :
 {
     StatementList		p1;
     DebugOut.println( "#Block()" );
+	Block				result;
 }
 {
-    "{" p1=BlockOrStatementListOpt( env ) "}"
-    { return new Block( p1 ); }
+    "{"
+	p1=BlockOrStatementListOpt( env )
+	{String afterComment = getComment();}
+	"}"
+    {
+	 result = new Block( p1 );
+	 result.setAfterComment(afterComment);
+	 return result;
+	 }
 }
 
 StatementList BlockOrStatementListOpt( Environment env ) :
@@ -3506,6 +3523,7 @@ ExpressionStatement ExpressionStatement( Environment env ) :
     Expression			p1;
 	Literal				mut = null;					//added (08/09/14) [simon]
     DebugOut.println( "#ExpressionStatement()" );
+	String				comment = getComment();
 }
 {
     p1 = StatementExpression( env ) ";" [ LOOKAHEAD(2) <MUT_GEN_LIMIT>  [ LOOKAHEAD(2) mut=Literal() ]]	//added (08/09/14) [simon]
@@ -3514,7 +3532,8 @@ ExpressionStatement ExpressionStatement( Environment env ) :
     	if (mut != null) {													//modified (08/09/14) [simon]
     		res.setMutGenLimit(Integer.parseInt(mut.toString()));			//modified (08/09/14) [simon]
     	}    																//modified (08/09/14) [simon]
-    	return res;															//modified (08/09/14) [simon]
+    	res.setComment(comment);
+		return res;															//modified (08/09/14) [simon]
 	 }
 }
 
@@ -3547,6 +3566,7 @@ SwitchStatement SwitchStatement( Environment env ) :
     ExpressionList  exprs;
 	Literal mut = null;							//added (08/09/14) [simon]
     DebugOut.println( "#SwitchStatement()" );
+	String				comment = getComment();
 }
 {
     "switch" "(" p1=Expression( env ) ")" "{" [ LOOKAHEAD(2) <MUT_GEN_LIMIT>  [ LOOKAHEAD(2) mut=Literal() ]]	//added (08/09/14) [simon]
@@ -3564,6 +3584,7 @@ SwitchStatement SwitchStatement( Environment env ) :
 		if (mut != null) {														//modified (08/09/14) [simon]
 		   swstmt.setMutGenLimit(Integer.parseInt(mut.toString())); 			//modified (08/09/14) [simon]
 		}																		//modified (08/09/14) [simon]
+		swstmt.setComment(comment);
 		return swstmt;															//modified (08/09/14) [simon]
 	  }
 }
@@ -3596,6 +3617,7 @@ IfStatement IfStatement( Environment env ) :
 	MutableInteger blockedIfMGL = new MutableInteger(-1);				//added (08/09/14) [simon]
 	Literal singleStatementMGL = null;									//added (08/09/14) [simon]
     DebugOut.println( "#IfStatement()" );
+	String				comment = getComment();
 }
 {
     "if" "(" p1=Expression( env ) ")" [ LOOKAHEAD(2) <MUT_GEN_LIMIT>  [ LOOKAHEAD(2) singleStatementMGL=Literal() {blockedIfMGL.setIntValue(-2);/*System.out.println("mutGenLimit: " + singleStatementMGL.toString());*/} ] ]	//added (08/09/14) [simon]
@@ -3624,6 +3646,7 @@ IfStatement IfStatement( Environment env ) :
 		if (blockedIfMGL.intValue() > 0) {												//modified (08/09/14) [simon]
 		   ifstmnt.setMutGenLimit(blockedIfMGL.intValue());								//modified (08/09/14) [simon]
 		}																				//modified (08/09/14) [simon]
+		ifstmnt.setComment(comment);
 		return ifstmnt;																	//modified (08/09/14) [simon]
 	}
 }
@@ -3637,6 +3660,7 @@ WhileStatement WhileStatement( Environment env ) :
 	MutableInteger blockedWhileMGL = new MutableInteger(-1);			//added (08/09/14) [simon]
 	Literal 	   singleStatementMGL = null;							//added (08/09/14) [simon]
     DebugOut.println( "#WhileStatement()" );
+	String				comment = getComment();
 }
 {
     "while" "(" p1=Expression( env ) ")" [ LOOKAHEAD(2) <MUT_GEN_LIMIT>  [ LOOKAHEAD(2) singleStatementMGL=Literal() {blockedWhileMGL.setIntValue(-2);System.out.println("mutGenLimit: " + singleStatementMGL.toString());} ] ]	//added (08/09/14) [simon]
@@ -3655,6 +3679,7 @@ WhileStatement WhileStatement( Environment env ) :
 		if (blockedWhileMGL.intValue() > 0) {											//modified (08/09/14) [simon]
 		   whlStmnt.setMutGenLimit(blockedWhileMGL.intValue());							//modified (08/09/14) [simon]
 		}																				//modified (08/09/14) [simon]
+		whlStmnt.setComment(comment);
 		return whlStmnt;																//modified (08/09/14) [simon]
 	}
 }
@@ -3667,6 +3692,7 @@ DoWhileStatement DoWhileStatement( Environment env ) :
     StatementList  		body;
 	Literal				mut = null;					//added (08/09/14) [simon]
     DebugOut.println( "#DoWhileStatement()" );
+	String				comment = getComment();
 }
 {
     "do"
@@ -3683,6 +3709,7 @@ DoWhileStatement DoWhileStatement( Environment env ) :
 		if (mut != null) {														//modified (08/09/14) [simon]
 		   doWhlStmnt.setMutGenLimit(Integer.parseInt(mut.toString()));			//modified (08/09/14) [simon]
 		}																		//modified (08/09/14) [simon]
+		doWhlStmnt.setComment(comment);
 		return doWhlStmnt; }
 }
 
@@ -3703,6 +3730,7 @@ ForStatement ForStatement( Environment env ) :
     int						modifierInt = -1;
 	MutableInteger			blockedForMGL = new MutableInteger(-1);
 	Literal					singleStatementMGL = null;
+	String					comment = getComment();
 
     DebugOut.println( "#ForStatement()" );
 }
@@ -3782,6 +3810,7 @@ ForStatement ForStatement( Environment env ) :
 		if (blockedForMGL.intValue() > 0) {											//modified (10/09/14) [simon]
 		   result.setMutGenLimit(blockedForMGL.intValue());							//modified (10/09/14) [simon]
 		}																			//modified (10/09/14) [simon]
+		result.setComment(comment);
 		return result;
 	 }
 }
@@ -3831,6 +3860,7 @@ BreakStatement BreakStatement( Environment env ) :
     String			p1 = null;
 
     DebugOut.println( "#BreakStatement()" );
+	String			comment = getComment();
 }
 {
     "break" [ p1=Identifier() ] ";"
@@ -3841,7 +3871,10 @@ BreakStatement BreakStatement( Environment env ) :
 	    result = new BreakStatement();
 	}
     }
-    { return result; }
+    {
+	 result.setComment(comment);
+	 return result;
+	 }
 }
 
 ContinueStatement ContinueStatement( Environment env ) :
@@ -3850,6 +3883,7 @@ ContinueStatement ContinueStatement( Environment env ) :
     String			p1 = null;
 
     DebugOut.println( "#ContinueStatement()" );
+	String			comment = getComment();
 }
 {
     "continue" [ p1=Identifier() ] ";"
@@ -3860,7 +3894,10 @@ ContinueStatement ContinueStatement( Environment env ) :
 	    result = new ContinueStatement();
 	}
     }
-    { return result; }
+    {
+	 result.setComment(comment);
+	 return result;
+	 }
 }
 
 ReturnStatement ReturnStatement( Environment env ) :
@@ -3869,6 +3906,7 @@ ReturnStatement ReturnStatement( Environment env ) :
     Expression			p1 = null;
 	Literal				mut = null;					//added (10/09/14) [simon]
     DebugOut.println( "#ReturnStatement()" );
+	String				comment = getComment();
 }
 {
     "return"
@@ -3888,6 +3926,7 @@ ReturnStatement ReturnStatement( Environment env ) :
 	   if (mut != null) {												//added (10/09/14) [simon]
 		  result.setMutGenLimit(Integer.parseInt(mut.toString())); 		//added (10/09/14) [simon]
 	   }																//added (10/09/14) [simon]
+	   result.setComment(comment);
 	   return result;
 	}
 }
@@ -3931,6 +3970,7 @@ TryStatement TryStatement( Environment base_env ) :
     CatchList  catches = new CatchList();
 
     DebugOut.println( "#TryStatement()" );
+	String				comment = getComment();
 }
 {
     "try" p1=BlockedBody( env )
@@ -3943,7 +3983,10 @@ TryStatement TryStatement( Environment base_env ) :
          "finally" p4=BlockedBody( new ClosedEnvironment( base_env ) )
     ]
     { result = new TryStatement( p1, catches, p4 ); }
-    { return result; }
+    {
+	 result.setComment(comment);
+	 return result;
+	 }
 }
 
 ///* We use productions to match >>>, >> and > so that we can keep the

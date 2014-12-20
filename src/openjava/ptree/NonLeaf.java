@@ -197,9 +197,12 @@ public abstract class NonLeaf extends ParseTreeObject implements ParseTree {
 	 * @param  p  list's element
 	 */
 	protected void set(Object[] ptrees) {
+		setContents(ptrees, this);
+	}
+	
+	private void setContents(Object[] ptrees, ParseTreeObject parent) {
 		contents = ptrees;
 		for (int i = 0; i < contents.length; ++i) {
-			
 			if (contents[i] instanceof ParseTreeObject) {
 				((ParseTreeObject) contents[i]).setParent(this);
 				

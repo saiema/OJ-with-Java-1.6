@@ -26,6 +26,9 @@ import openjava.ptree.util.ParseTreeVisitor;
  * @see openjava.ptree.Statement
  */
 public class Block extends NonLeaf implements Statement {
+	
+	private String afterComment = "";
+	
 	/**
 	 * Allocates a new object.
 	 *
@@ -66,6 +69,17 @@ public class Block extends NonLeaf implements Statement {
 
 	public void accept(ParseTreeVisitor v) throws ParseTreeException {
 		v.visit(this);
+	}
+	
+	public void setAfterComment(String comment) {
+		if (comment == null) {
+			comment = "";
+		}
+		this.afterComment = comment;
+	}
+	
+	public String getAfterComment() {
+		return this.afterComment;
 	}
 
 }

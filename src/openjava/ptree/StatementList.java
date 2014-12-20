@@ -17,6 +17,8 @@ import openjava.ptree.util.ParseTreeVisitor;
 public class StatementList extends List {
 	private static final String LNLN = ParseTreeObject.LN + ParseTreeObject.LN;
 
+	private String afterComment = "";
+	
 	public StatementList() {
 		super(LNLN);
 	}
@@ -125,5 +127,16 @@ public class StatementList extends List {
 
 	public void accept(ParseTreeVisitor v) throws ParseTreeException {
 		v.visit(this);
+	}
+	
+	public void setAfterComment(String comment) {
+		if (comment == null) {
+			comment = "";
+		}
+		this.afterComment = comment;
+	}
+	
+	public String getAfterComment() {
+		return this.afterComment;
 	}
 }
