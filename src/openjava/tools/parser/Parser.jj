@@ -3072,9 +3072,17 @@ Expression PrimaryExpression( Environment env ) :
 	|
 	    p5 = Arguments( env )
 	    {
-			FieldAccess base = (FieldAccess) result;
-			Expression expr = base.getReferenceExpr();
-			String name = base.getName();
+			//FIX FOR PrimaryPrefix returning a Variable+++++
+			String name = null;
+			Expression expr = null;
+			if (result instanceof Variable) {
+				name = ((Variable)result).toString();
+			} else {
+				FieldAccess base = (FieldAccess) result;
+				expr = base.getReferenceExpr();
+				name = base.getName();
+			}
+			//------------------------------------------------
 			result = new MethodCall( expr, name, p5 );
 	    }
 	)
@@ -3113,7 +3121,23 @@ Expression PrimaryPrefix( Environment env ) :
     { return p1; }
 |
     p1=TempFieldAccess( env )
-    { return p1; }
+    {
+	 //FIX FOR VARIABLE PARSED AS FIELDACCESS++++++++++++++++++++++++++++++++++++++++
+	 if (((FieldAccess)p1).getReferenceExpr() == null) {
+		 OJField[] fields = env.lookupClass(env.currentClassName()).getAllFields();
+         String p1Name = ((FieldAccess)p1).getName();
+         boolean found = false;
+         for (OJField f : fields) {
+			 found = f.getName().compareTo(p1Name) == 0;
+			 if (found) break;
+         }
+         if (!found) {
+			 p1 = new Variable(p1Name);
+		 }
+     }
+	 //-------------------------------------------------------------------------------
+	 return p1;
+	}
   )
 }
 
