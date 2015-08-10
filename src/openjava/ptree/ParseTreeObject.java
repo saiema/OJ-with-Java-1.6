@@ -52,6 +52,9 @@ public abstract class ParseTreeObject
 	}
 	
 	public final void setParent(ParseTreeObject parent) { //modified (15/09/14) [simon] {private -> public}
+//		if (this instanceof Literal) {
+//			System.out.println();
+//		}
 		this.parent = parent;
 	}
 	
@@ -191,6 +194,10 @@ public abstract class ParseTreeObject
 
 	/** The idCount counts up generated ptree objects */
 	private static int idCount = 0;
+	
+	public static final void resetObjectID() {
+		idCount = 0;
+	}
 
 	public static final int lastObjectID() {
 		return idCount;

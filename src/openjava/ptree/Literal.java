@@ -207,4 +207,5 @@ public class Literal extends Leaf implements Expression {
 	public void accept(ParseTreeVisitor v) throws ParseTreeException {
 		v.visit(this);
 	}
+	
 }

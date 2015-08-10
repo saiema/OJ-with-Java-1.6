@@ -25,9 +25,6 @@ public class SelfAccess extends Leaf implements Expression {
 	public static final int THIS = 0;
 	public static final int SUPER = 1;
 
-	private static SelfAccess _constantSuper = null;
-	private static SelfAccess _constantThis = null;
-
 	protected String qualifier = null;
 
 	int id = -1;
@@ -75,17 +72,11 @@ public class SelfAccess extends Leaf implements Expression {
 	}
 
 	public static SelfAccess constantSuper() {
-		if (_constantSuper == null) {
-			_constantSuper = new SelfAccess(SUPER);
-		}
-		return _constantSuper;
+		return new SelfAccess(SUPER);
 	}
 
 	public static SelfAccess constantThis() {
-		if (_constantThis == null) {
-			_constantThis = new SelfAccess();
-		}
-		return _constantThis;
+		return new SelfAccess();
 	}
 
 	public void accept(ParseTreeVisitor v) throws ParseTreeException {
