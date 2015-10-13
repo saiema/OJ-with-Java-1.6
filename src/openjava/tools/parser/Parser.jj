@@ -1072,7 +1072,8 @@ String ImportDeclaration() :
 }
 {
     "import"
-    ["static" { strbuf.append("static "); }]    
+    ["static" { strbuf.append("static "); }]
+    
     Identifier()
     { strbuf.append( getToken( 0 ).image ); }
     ( LOOKAHEAD(2)
@@ -2428,7 +2429,8 @@ String Name() :
     	{ strbuf.append( "." + p1 );}
       [ LOOKAHEAD(2) p2 = TypeArguments() {  strbuf.append(p2); } ]	
     )*
-    ( LOOKAHEAD(2) "[" "]"    {strbuf.append( "[]" );} )*
+    ( LOOKAHEAD(2) "[" "]"
+    {strbuf.append( "[]" );} )*
     
     {
     	return strbuf.toString(); 
@@ -2782,7 +2784,8 @@ Expression RelationalExpression( Environment env ) :
     { result = p1; }
     (
         ( "<" | ">" | "<=" | ">=" ) { p2 = getToken( 0 ).image;}
-        p3=ShiftExpression( env )      
+        p3=ShiftExpression( env )
+      
         { result = new BinaryExpression( result, p2, p3 ); }
     )*
     { return result; }
@@ -2895,7 +2898,8 @@ Expression UnaryExpression( Environment env ) :
     Expression			p2;
 }
 {
-   (    
+   (
+    
     LOOKAHEAD( "+" | "-" )
     (
         "+" { p1 = UnaryExpression.PLUS; }
@@ -3434,7 +3438,8 @@ StatementList BlockOrStatementListOpt( Environment env ) :
 	         && getToken( 1 ).kind != EOF
 	         && getToken( 1 ).kind != CASE
 	         && getToken( 1 ).kind != _DEFAULT ) } )
-        p1=BlockOrStatement( env )      
+        p1=BlockOrStatement( env )
+      
         { result.addAll( p1 ); }
     )+
     { return result; }
@@ -3784,15 +3789,17 @@ ForStatement ForStatement( Environment env ) :
     	identifierString = Identifier() ":" 
     	p4 = Expression(env)
     |
-	   // [ LOOKAHEAD( { (getToken( 1 ).kind != SEMICOLON) } )
+	   // [ LOOKAHEAD( { (getToken( 1 ).kind != SEMICOLON) } )
+
 	    [ LOOKAHEAD( (Modifier())* TypeWithoutSemantics() Identifier() )
 	        (
 		    LOOKAHEAD( { LocalVariableDeclarationLookaheadWithoutEnv( ) } )
 		    p1=Type( env )
-		    p2=VariableDeclaratorList( env )
-		|
-		    p3=StatementExpressionList( env )
+		    p2=VariableDeclaratorList( env ) 
 	        )
+	    ]
+	    [ LOOKAHEAD( { (getToken( 1 ).kind != SEMICOLON) })
+	        p3=StatementExpressionList( env )
 	    ]
 	    ";"
 	    [ LOOKAHEAD( { (getToken( 1 ).kind != SEMICOLON) } )
