@@ -166,6 +166,15 @@ public class TypeName extends NonLeaf {
 		}
 		return tname;
 	}
+	
+	/**
+	 * Gets the type name of this type specifier without generics
+	 * 
+	 * @return the type name without generics
+	 */
+	public String getNameWithoutGenerics() {
+		return (String) elementAt(0);
+	}
 
 	/**
 	 * Sets the type name of this type specifier.
