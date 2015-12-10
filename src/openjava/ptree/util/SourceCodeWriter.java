@@ -16,6 +16,9 @@ import java.io.StringWriter;
 import java.util.Enumeration;
 
 import openjava.ptree.AllocationExpression;
+import openjava.ptree.Annotation;
+import openjava.ptree.AnnotationDeclaration;
+import openjava.ptree.AnnotationsList;
 import openjava.ptree.ArrayAccess;
 import openjava.ptree.ArrayAllocationExpression;
 import openjava.ptree.ArrayInitializer;
@@ -1568,6 +1571,23 @@ public class SourceCodeWriter extends ParseTreeVisitor {
 	public void visit(TypeParameter p) throws ParseTreeException {
 		
 		out.print(p.toString());		
+	}
+	
+	
+	@Override
+	public void visit(Annotation a) throws ParseTreeException {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void visit(AnnotationsList al) throws ParseTreeException {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void visit(AnnotationDeclaration ad) throws ParseTreeException {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

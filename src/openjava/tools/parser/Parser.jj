@@ -2204,7 +2204,7 @@ ConstructorDeclaration ConstructorDeclaration( Environment base_env ) :
     StatementList		p6;
     Hashtable			sf;
 	Literal mut = null;			//added (08/09/14) [simon]
-
+	String comments = getComment();	
     DebugOut.println( "#ConstructorDeclaration()" );
 }
 {
@@ -2223,6 +2223,7 @@ ConstructorDeclaration ConstructorDeclaration( Environment base_env ) :
 	if (mut != null) {															//added (08/09/14) [simon]
 	  result.setMutGenLimit(Integer.parseInt(mut.toString()));					//added (08/09/14) [simon]
 	}																			//added (08/09/14) [simon]
+	if (comments != null) result.setComment(comments);
 	return result;
     }
 }

@@ -219,4 +219,12 @@ public class MethodDeclaration extends NonLeaf implements MemberDeclaration {
 	public void accept(ParseTreeVisitor v) throws ParseTreeException {
 		v.visit(this);
 	}
+	
+	public void setAnnotations(AnnotationsList annotations) {
+		setElementAt(annotations, 7);
+	}
+	
+	public AnnotationsList getAnnotations() {
+		return (AnnotationsList) elementAt(7);
+	}
 }

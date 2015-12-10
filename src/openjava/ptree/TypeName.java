@@ -167,6 +167,15 @@ public class TypeName extends NonLeaf {
 		return tname;
 	}
 	
+	public String getSimpleName() {
+		String tname = getName();
+		int lastDot = tname.lastIndexOf('.');
+		if (lastDot > 0) {
+			tname = tname.substring(lastDot+1);
+		}
+		return tname;
+	}
+	
 	/**
 	 * Gets the type name of this type specifier without generics
 	 * 

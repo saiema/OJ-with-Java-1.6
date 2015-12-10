@@ -23,6 +23,7 @@ package openjava.ptree;
  * @see openjava.ptree.ConstructorDeclaration
  * @see openjava.ptree.MemberInitializer
  * @see openjava.ptree.ClassDeclaration
+ * @see openjava.ptree.AnnotationDeclaration
  */
 public interface MemberDeclaration extends ParseTree {
 	/** The FIELD is a kind of MemberDeclaration */
@@ -42,6 +43,9 @@ public interface MemberDeclaration extends ParseTree {
 
 	/** This is same as STATICINIT */
 	public static final int STATICINITIALIZER = 32;
+	
+	/** The ANNOTATION is a kind of MemberDeclaration */
+	public static final int ANNOTATION = 9901;
 
 	public boolean equals(ParseTree p);
 

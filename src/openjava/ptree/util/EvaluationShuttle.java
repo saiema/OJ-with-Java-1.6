@@ -13,6 +13,9 @@ package openjava.ptree.util;
 
 import openjava.mop.Environment;
 import openjava.ptree.AllocationExpression;
+import openjava.ptree.Annotation;
+import openjava.ptree.AnnotationDeclaration;
+import openjava.ptree.AnnotationsList;
 import openjava.ptree.ArrayAccess;
 import openjava.ptree.ArrayAllocationExpression;
 import openjava.ptree.ArrayInitializer;
@@ -334,6 +337,18 @@ public abstract class EvaluationShuttle extends ParseTreeVisitor {
 	public Statement evaluateDown(WhileStatement p) throws ParseTreeException {
 		return p;
 	}
+	
+	public Annotation evaluateDown(Annotation p) throws ParseTreeException {
+		return p;
+	}
+	
+	public AnnotationsList evaluateDown(AnnotationsList p) throws ParseTreeException {
+		return p;
+	}
+	
+	public AnnotationDeclaration evaluateDown(AnnotationDeclaration p) throws ParseTreeException {
+		return p;
+	}
 
 	public Expression evaluateUp(AllocationExpression p)
 		throws ParseTreeException {
@@ -545,6 +560,18 @@ public abstract class EvaluationShuttle extends ParseTreeVisitor {
 		return p;
 	}
 	public Statement evaluateUp(WhileStatement p) throws ParseTreeException {
+		return p;
+	}
+	
+	public Annotation evaluateUp(Annotation p) throws ParseTreeException {
+		return p;
+	}
+	
+	public AnnotationsList evaluateUp(AnnotationsList p) throws ParseTreeException {
+		return p;
+	}
+	
+	public AnnotationDeclaration evaluateUp(AnnotationDeclaration p) throws ParseTreeException {
 		return p;
 	}
 
@@ -1247,6 +1274,42 @@ public abstract class EvaluationShuttle extends ParseTreeVisitor {
 
 	public void visit(WhileStatement p) throws ParseTreeException {
 		Statement newp = this.evaluateDown(p);
+		if (newp != p) {
+			p.replace(newp);
+			return;
+		}
+		p.childrenAccept(this);
+		newp = this.evaluateUp(p);
+		if (newp != p)
+			p.replace(newp);
+	}
+	
+	public void visit(Annotation p) throws ParseTreeException {
+		Annotation newp = this.evaluateDown(p);
+		if (newp != p) {
+			p.replace(newp);
+			return;
+		}
+		p.childrenAccept(this);
+		newp = this.evaluateUp(p);
+		if (newp != p)
+			p.replace(newp);
+	}
+	
+	public void visit(AnnotationsList p) throws ParseTreeException {
+		AnnotationsList newp = this.evaluateDown(p);
+		if (newp != p) {
+			p.replace(newp);
+			return;
+		}
+		p.childrenAccept(this);
+		newp = this.evaluateUp(p);
+		if (newp != p)
+			p.replace(newp);
+	}
+	
+	public void visit(AnnotationDeclaration p) throws ParseTreeException {
+		AnnotationDeclaration newp = this.evaluateDown(p);
 		if (newp != p) {
 			p.replace(newp);
 			return;

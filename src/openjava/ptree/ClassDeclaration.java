@@ -261,4 +261,12 @@ public class ClassDeclaration extends NonLeaf implements Statement, MemberDeclar
 	public boolean isEnumeration() {
 		return _isEnum;
 	}
+	
+	public void setAnnotations(AnnotationsList annotations) {
+		setElementAt(annotations, 8);
+	}
+	
+	public AnnotationsList getAnnotations() {
+		return (AnnotationsList) elementAt(8);
+	}
 }

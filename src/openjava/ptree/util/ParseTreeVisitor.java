@@ -12,6 +12,9 @@
 package openjava.ptree.util;
 
 import openjava.ptree.AllocationExpression;
+import openjava.ptree.Annotation;
+import openjava.ptree.AnnotationDeclaration;
+import openjava.ptree.AnnotationsList;
 import openjava.ptree.ArrayAccess;
 import openjava.ptree.ArrayAllocationExpression;
 import openjava.ptree.ArrayInitializer;
@@ -203,5 +206,13 @@ public abstract class ParseTreeVisitor {
 	public abstract void visit(EnumConstantList p) throws ParseTreeException;
 	public abstract void visit(TypeParameter p) throws ParseTreeException;
 	public abstract void visit(TypeParameterList p) throws ParseTreeException;
+	
+	/**
+	 * Added to support annotations
+	 */
+	
+	public abstract void visit(Annotation a) throws ParseTreeException;
+	public abstract void visit(AnnotationsList al) throws ParseTreeException;
+	public abstract void visit(AnnotationDeclaration ad) throws ParseTreeException;
 
 }
