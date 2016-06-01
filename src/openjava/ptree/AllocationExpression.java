@@ -199,5 +199,26 @@ public class AllocationExpression extends NonLeaf implements Expression {
 	public void accept(ParseTreeVisitor v) throws ParseTreeException {
 		v.visit(this);
 	}
+	
+	//added 24-05-16
+	@Override
+	public ParseTree makeRecursiveCopy_keepOriginalID(COPY_SCOPE scope) {
+		switch (scope) {
+			case NODE : {
+				AllocationExpression res = (AllocationExpression) makeCopy_keepOriginalID();
+				TypeName newTypeName = (TypeName) (getClassType()==null?null:getClassType().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
+				ExpressionList newArguments = (ExpressionList) (getArguments()==null?null:getArguments().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
+				Expression newEncloser = (Expression) (getEncloser()==null?null:getEncloser().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
+				MemberDeclarationList body = (MemberDeclarationList) (getClassBody()==null?null:getClassBody().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
+				res.setArguments(newArguments);
+				res.setClassBody(body);
+				res.setClassType(newTypeName);
+				res.setEncloser(newEncloser);
+				res.copyAdditionalInfo(this);
+				return res;
+			}
+			default : return getParent().makeRecursiveCopy_keepOriginalID(scope);
+		}
+	}
 
 }

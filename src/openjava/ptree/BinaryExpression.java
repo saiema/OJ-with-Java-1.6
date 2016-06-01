@@ -150,51 +150,51 @@ public class BinaryExpression extends NonLeaf implements Expression {
 	
 	//------------------------------------------------------------------
 
-	private final boolean needsLeftPar(Expression leftexpr) {
-		if (leftexpr instanceof AssignmentExpression
-			|| leftexpr instanceof ConditionalExpression) {
-			return true;
-		}
+//	private final boolean needsLeftPar(Expression leftexpr) {
+//		if (leftexpr instanceof AssignmentExpression
+//			|| leftexpr instanceof ConditionalExpression) {
+//			return true;
+//		}
+//
+//		int op = strength(getOperator());
+//
+//		if (leftexpr instanceof InstanceofExpression) {
+//			if (op > strength(INSTANCEOF))
+//				return true;
+//			return false;
+//		}
+//
+//		if (!(leftexpr instanceof BinaryExpression))
+//			return false;
+//
+//		BinaryExpression lbexpr = (BinaryExpression) leftexpr;
+//		if (op > strength(lbexpr.getOperator()))
+//			return true;
+//		return false;
+//	}
 
-		int op = strength(getOperator());
-
-		if (leftexpr instanceof InstanceofExpression) {
-			if (op > strength(INSTANCEOF))
-				return true;
-			return false;
-		}
-
-		if (!(leftexpr instanceof BinaryExpression))
-			return false;
-
-		BinaryExpression lbexpr = (BinaryExpression) leftexpr;
-		if (op > strength(lbexpr.getOperator()))
-			return true;
-		return false;
-	}
-
-	private final boolean needsRightPar(Expression rightexpr) {
-		if (rightexpr instanceof AssignmentExpression
-			|| rightexpr instanceof ConditionalExpression) {
-			return true;
-		}
-
-		int op = strength(getOperator());
-
-		if (rightexpr instanceof InstanceofExpression) {
-			if (op >= strength(INSTANCEOF))
-				return true;
-			return false;
-		}
-
-		if (!(rightexpr instanceof BinaryExpression))
-			return false;
-
-		BinaryExpression lbexpr = (BinaryExpression) rightexpr;
-		if (op >= strength(lbexpr.getOperator()))
-			return true;
-		return false;
-	}
+//	private final boolean needsRightPar(Expression rightexpr) {
+//		if (rightexpr instanceof AssignmentExpression
+//			|| rightexpr instanceof ConditionalExpression) {
+//			return true;
+//		}
+//
+//		int op = strength(getOperator());
+//
+//		if (rightexpr instanceof InstanceofExpression) {
+//			if (op >= strength(INSTANCEOF))
+//				return true;
+//			return false;
+//		}
+//
+//		if (!(rightexpr instanceof BinaryExpression))
+//			return false;
+//
+//		BinaryExpression lbexpr = (BinaryExpression) rightexpr;
+//		if (op >= strength(lbexpr.getOperator()))
+//			return true;
+//		return false;
+//	}
 
 	/**
 	 * Returns the strength of the union of the operator.
@@ -391,6 +391,23 @@ public class BinaryExpression extends NonLeaf implements Expression {
 		if (type == OJSystem.NULLTYPE)
 			return 0; /*****/
 		return OTHER;
+	}
+
+	@Override
+	public ParseTree makeRecursiveCopy_keepOriginalID(COPY_SCOPE scope) {
+		switch (scope) {
+			case NODE : {
+				BinaryExpression res = (BinaryExpression) makeCopy_keepOriginalID();
+				Expression leftCopy = (Expression) (getLeft()==null?null:getLeft().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
+				Expression rightCopy = (Expression) (getRight()==null?null:getRight().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
+				res.setLeft(leftCopy);
+				res.setRight(rightCopy);
+				res.setOperator(getOperator());
+				res.copyAdditionalInfo(this);
+				return res;
+			}
+			default : return getParent().makeRecursiveCopy_keepOriginalID(scope);
+		}
 	}
 
 }

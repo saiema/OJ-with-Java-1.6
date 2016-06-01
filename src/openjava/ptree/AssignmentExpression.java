@@ -178,4 +178,21 @@ public class AssignmentExpression extends NonLeaf implements Expression {
 	public OJClass getType(Environment env) throws Exception {
 		return getLeft().getType(env);
 	}
+
+	@Override
+	public ParseTree makeRecursiveCopy_keepOriginalID(COPY_SCOPE scope) {
+		switch (scope) {
+			case NODE : {
+				AssignmentExpression res = (AssignmentExpression) makeCopy_keepOriginalID();
+				Expression leftCopy = (Expression) (getLeft()==null?null:getLeft().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
+				Expression rightCopy = (Expression) (getRight()==null?null:getRight().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
+				res.setLeft(leftCopy);
+				res.setRight(rightCopy);
+				res.setOperator(getOperator());
+				res.copyAdditionalInfo(this);
+				return res;
+			}
+			default : return getParent().makeRecursiveCopy_keepOriginalID(scope);
+		}
+	}
 }

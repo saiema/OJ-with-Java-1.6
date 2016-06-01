@@ -136,6 +136,13 @@ public abstract class ParseTreeObject
 	public abstract ParseTree makeRecursiveCopy_keepOriginalID();
 	
 	//------------------------------------------------------------------
+	
+	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//+++++++++++++++++++++++++++++++++++++++++added (24/05/16) [simon]
+	
+	public abstract ParseTree makeRecursiveCopy_keepOriginalID(COPY_SCOPE scope);
+	
+	//------------------------------------------------------------------
 
 	/**
 	 * Tests if this parse-tree-node's value equals to the specified

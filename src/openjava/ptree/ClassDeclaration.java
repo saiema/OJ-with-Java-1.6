@@ -269,4 +269,48 @@ public class ClassDeclaration extends NonLeaf implements Statement, MemberDeclar
 	public AnnotationsList getAnnotations() {
 		return (AnnotationsList) elementAt(8);
 	}
+
+	@Override
+	public ParseTree makeRecursiveCopy_keepOriginalID(COPY_SCOPE scope) {
+		switch (scope) {
+			case NODE:
+			case CLASS_DECLARATION: {
+				ClassDeclaration res = (ClassDeclaration) makeCopy_keepOriginalID();
+				res.beInterface(isInterface());
+				res.set_isEnum(isEnumeration());
+				AnnotationsList annListCopy = (AnnotationsList) (getAnnotations()==null?null:getAnnotations().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
+				res.setAnnotations(annListCopy);
+				TypeName[] tnamesCopy = new TypeName[getBaseclasses().length];
+				for (int i = 0; i < getBaseclasses().length; i++) {
+					TypeName tn = getBaseclasses()[i];
+					TypeName tnCopy = (TypeName) (tn==null?null:tn.makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
+					tnamesCopy[i] = tnCopy;
+				}
+				res.setBaseclasses(tnamesCopy);
+				MemberDeclarationList bodyCopy = (MemberDeclarationList) (getBody()==null?null:getBody().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
+				res.setBody(bodyCopy);
+				EnumConstantList enumCopy = (EnumConstantList) (getEnumConstants()==null?null:getEnumConstants().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
+				res.setEnumConstants(enumCopy);
+				TypeName[] interfaces = getInterfaces();
+				TypeName[] interfacesCopy = null;
+				if (interfaces != null) {
+					interfacesCopy = new TypeName[interfaces.length];
+					for (int i = 0; i < interfaces.length; i++) {
+						interfacesCopy[i] = (TypeName) (interfaces[i]==null?null:interfaces[i].makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
+					}
+				}
+				res.setInterfaces(interfacesCopy);
+				res.setMetaclass(getMetaclass());
+				ModifierList modifiersCopy = (ModifierList) (getModifiers()==null?null:getModifiers().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
+				res.setModifiers(modifiersCopy);
+				res.setName(getName());
+				res.setSuffixes(getSuffixes());
+				TypeParameterList paramsCopy = (TypeParameterList) (getTypeParameters()==null?null:getTypeParameters().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
+				res.setTypeParameters(paramsCopy);
+				res.copyAdditionalInfo(this);
+				return res;
+			}
+			default : return getParent().makeRecursiveCopy_keepOriginalID(scope);
+		}
+	}
 }

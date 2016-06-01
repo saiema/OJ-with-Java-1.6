@@ -66,4 +66,18 @@ public class BreakStatement extends NonLeaf implements Statement {
 		v.visit(this);
 	}
 
+	@Override
+	public ParseTree makeRecursiveCopy_keepOriginalID(COPY_SCOPE scope) {
+		switch (scope) {
+			case NODE:
+			case STATEMENT: {
+				BreakStatement res = (BreakStatement) makeCopy_keepOriginalID();
+				res.setLabel(getLabel());
+				res.copyAdditionalInfo(this);
+				return res;
+			}
+			default : return getParent().makeRecursiveCopy_keepOriginalID(scope);
+		}
+	}
+
 }

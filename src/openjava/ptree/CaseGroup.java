@@ -39,4 +39,19 @@ public class CaseGroup extends NonLeaf {
 		v.visit(this);
 	}
 
+	@Override
+	public ParseTree makeRecursiveCopy_keepOriginalID(COPY_SCOPE scope) {
+		switch (scope) {
+			case NODE : {
+				CaseGroup res = (CaseGroup) makeCopy_keepOriginalID();
+				ExpressionList labelsCopy = (ExpressionList) (getLabels()==null?null:getLabels().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
+				StatementList stListCopy = (StatementList) (getStatements()==null?null:getStatements().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
+				res.set(labelsCopy, stListCopy);
+				res.copyAdditionalInfo(this);
+				return res;
+			}
+			default : return getParent().makeRecursiveCopy_keepOriginalID(scope);
+		}
+	}
+
 }

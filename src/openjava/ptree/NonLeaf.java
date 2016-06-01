@@ -164,6 +164,54 @@ public abstract class NonLeaf extends ParseTreeObject implements ParseTree {
 	
 	//------------------------------------------------------------------
 
+	
+	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//+++++++++++++++++++++++++++++++++++++++++added (24/05/16) [simon]
+	//TODO: complete
+//	public ParseTree makeRecursiveCopy_keepOriginalID(COPY_SCOPE scope) {
+//		NonLeaf result = (NonLeaf) makeCopy_keepOriginalID();
+//
+//		Object newc[] = new Object[contents.length];
+//		for (int i = 0; i < contents.length; ++i) {
+//			if (contents[i] instanceof ParseTree) {
+//				ParseTree src = (ParseTree) contents[i];
+//				newc[i] = (ParseTree) src.makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE);
+//			} else if (contents[i] instanceof String[]) {
+//				String[] srcary = (String[]) contents[i];
+//				String[] destary = new String[srcary.length];
+//				System.arraycopy(srcary, 0, destary, 0, srcary.length);
+//				newc[i] = destary;
+//			} else if (contents[i] instanceof TypeName[]) {
+//				TypeName[] srcary = (TypeName[]) contents[i];
+//				TypeName[] destary = new TypeName[srcary.length];
+//				for (int j = 0; j < srcary.length; ++j) {
+//					destary[j] = (TypeName) srcary[j].makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE);
+//				}
+//				newc[i] = destary;
+//			} else if (contents[i] instanceof VariableDeclarator[]) {
+//				VariableDeclarator[] srcary = (VariableDeclarator[]) contents[i];
+//				VariableDeclarator[] destary = new VariableDeclarator[srcary.length];
+//				for (int j = 0; j < srcary.length; ++j) {
+//					// VariableDe
+//					destary[j] = (VariableDeclarator) srcary[j].makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE);
+//				}
+//				newc[i] = destary;
+//			} else if (contents[i] instanceof Object[]) {
+//				System.err.println("makeRecursiveCopy() not supported in " + getClass());
+//				newc[i] = contents[i];
+//			} else {
+//				newc[i] = contents[i];
+//			}
+//		}
+//
+//		result.set(newc);
+//
+//		return result;
+//	}
+		
+		//------------------------------------------------------------------
+	
+	
 	/**
 	 * Tests if this nonleaf-node's value equals to the specified
 	 * ptree-node's.
@@ -466,6 +514,12 @@ public abstract class NonLeaf extends ParseTreeObject implements ParseTree {
 				ptree.accept(visitor);
 			}
 		}
+	}
+	
+	protected void copyAdditionalInfo(NonLeaf o) {
+		setComment(o.getComment());
+		setGenerics(o.getGenerics());
+		setMutGenLimit(o.getMutGenLimit());
 	}
 
 }

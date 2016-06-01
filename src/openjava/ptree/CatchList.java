@@ -116,4 +116,20 @@ public class CatchList extends List {
 	public void accept(ParseTreeVisitor v) throws ParseTreeException {
 		v.visit(this);
 	}
+
+	@Override
+	public ParseTree makeRecursiveCopy_keepOriginalID(COPY_SCOPE scope) {
+		switch (scope) {
+			case NODE : {
+				CatchList res = (CatchList) makeCopy_keepOriginalID();
+				for (int i = 0; i < size(); i++) {
+					CatchBlock cblock = get(i);
+					CatchBlock cblockCopy = (CatchBlock) (cblock==null?null:cblock.makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
+					res.add(cblockCopy);
+				}
+				return res;
+			}
+			default : return getParent().makeRecursiveCopy_keepOriginalID(scope);
+		}
+	}
 }

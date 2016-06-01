@@ -81,4 +81,18 @@ public class ClassLiteral extends NonLeaf
         v.visit( this );
     }
 
+	@Override
+	public ParseTree makeRecursiveCopy_keepOriginalID(COPY_SCOPE scope) {
+		switch (scope) {
+			case NODE : {
+				ClassLiteral res = (ClassLiteral) makeCopy_keepOriginalID();
+				TypeName tnameCopy = (TypeName) (getTypeName()==null?null:getTypeName().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
+				res.setTypeName(tnameCopy);
+				res.copyAdditionalInfo(this);
+				return res;
+			}
+			default : return getParent().makeRecursiveCopy_keepOriginalID(scope);
+		}
+	}
+
 }

@@ -24,6 +24,8 @@ import openjava.ptree.util.ParseTreeVisitor;
  * @see openjava.ptree.NonLeaf
  */
 public interface ParseTree {
+	
+	public static enum COPY_SCOPE {NODE, STATEMENT, STATEMENT_LIST, MEMBER_DECLARATION, CLASS_DECLARATION, COMPILATION_UNIT};
 
 	public void replace(ParseTree replacement) throws ParseTreeException;
 
@@ -41,7 +43,14 @@ public interface ParseTree {
 	public ParseTree makeRecursiveCopy_keepOriginalID();
 	
 	//------------------------------------------------------------------
+	
+	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//+++++++++++++++++++++++++++++++++++++++++added (24/05/16) [simon]
 
+	public ParseTree makeRecursiveCopy_keepOriginalID(COPY_SCOPE scope);
+	
+	//------------------------------------------------------------------
+	
 	/**
 	 * Makes a new copy of this nonleaf-node as a ptree-node.
 	 * The objects contained by the new object are same as

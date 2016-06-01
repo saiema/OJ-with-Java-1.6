@@ -116,4 +116,20 @@ public class CaseGroupList extends List {
 	public void accept(ParseTreeVisitor v) throws ParseTreeException {
 		v.visit(this);
 	}
+
+	@Override
+	public ParseTree makeRecursiveCopy_keepOriginalID(COPY_SCOPE scope) {
+		switch (scope) {
+			case NODE : {
+				CaseGroupList res = (CaseGroupList) makeCopy_keepOriginalID();
+				for (int i = 0; i < size(); i++) {
+					CaseGroup cgroup = get(i);
+					CaseGroup cgroupCopy = (CaseGroup) (cgroup==null?null:cgroup.makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
+					res.add(cgroupCopy);
+				}
+				return res;
+			}
+			default : return getParent().makeRecursiveCopy_keepOriginalID(scope);
+		}
+	}
 }

@@ -82,4 +82,20 @@ public class Block extends NonLeaf implements Statement {
 		return this.afterComment;
 	}
 
+	@Override
+	public ParseTree makeRecursiveCopy_keepOriginalID(COPY_SCOPE scope) {
+		switch (scope) {
+			case NODE : {
+				Block res = (Block) makeCopy_keepOriginalID();
+				StatementList stListCopy = (StatementList) (getStatements()==null?null:getStatements().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
+				String afterCommentsCopy = getAfterComment();
+				res.setStatements(stListCopy);
+				res.setAfterComment(afterCommentsCopy);
+				res.copyAdditionalInfo(this);
+				return res;
+			}
+			default : return getParent().makeRecursiveCopy_keepOriginalID(scope);
+		}
+	}
+
 }
