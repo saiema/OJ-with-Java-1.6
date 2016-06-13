@@ -228,4 +228,37 @@ public class ConstructorDeclaration
 		v.visit(this);
 	}
 
+	@Override
+	public ParseTree makeRecursiveCopy_keepOriginalID(COPY_SCOPE scope) {
+		switch (scope) {
+			case MEMBER_DECLARATION:
+			case NODE : {
+				ConstructorDeclaration res = (ConstructorDeclaration) makeCopy_keepOriginalID();
+				StatementList bodyCopy = (StatementList) (getBody()==null?null:getBody().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
+				ConstructorInvocation invCopy = (ConstructorInvocation) (getConstructorInvocation()==null?null:getConstructorInvocation().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
+				ModifierList modsCopy = (ModifierList) (getModifiers()==null?null:getModifiers().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
+				String nameCopy = getName();
+				ParameterList paramsCopy = (ParameterList) (getParameters()==null?null:getParameters().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
+				Hashtable suffixesCopy = getSuffixes();
+				TypeName[] throwsCopy = null;
+				if (getThrows() != null) {
+					throwsCopy = new TypeName[getThrows().length];
+					for (int i = 0; i < getThrows().length; i++) {
+						throwsCopy[i] = (TypeName) (getThrows()[i]==null?null:getThrows()[i].makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
+					}
+				}
+				res.setBody(bodyCopy);
+				res.setConstructorInvocation(invCopy);
+				res.setModifiers(modsCopy);
+				res.setName(nameCopy);
+				res.setParameters(paramsCopy);
+				res.setSuffixes(suffixesCopy);
+				res.setThrows(throwsCopy);
+				res.copyAdditionalInfo(this);
+				return res;
+			}
+			default : return getParent().makeRecursiveCopy_keepOriginalID(scope);
+		}
+	}
+
 }

@@ -43,4 +43,21 @@ public class EnumConstantList extends List {
 		
 	}
 
+
+	@Override
+	public ParseTree makeRecursiveCopy_keepOriginalID(COPY_SCOPE scope) {
+		switch (scope) {
+			case NODE : {
+				EnumConstantList res = (EnumConstantList) makeCopy_keepOriginalID();
+				for (int i = 0; i < size(); i++) {
+					EnumConstant econst = get(i);
+					EnumConstant econstCopy = (EnumConstant) (econst==null?null:econst.makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
+					res.add(econstCopy);
+				}
+				return res;
+			}
+			default : return getParent().makeRecursiveCopy_keepOriginalID(scope);
+		}
+	}
+
 }

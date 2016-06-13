@@ -235,4 +235,38 @@ public class ForStatement extends NonLeaf implements Statement, ParseTree {
 		v.visit(this);
 	}
 
+	@Override //TODO: finish
+	public ParseTree makeRecursiveCopy_keepOriginalID(COPY_SCOPE scope) {
+		switch (scope) {
+			case STATEMENT:
+			case NODE: {
+				ForStatement res = (ForStatement) makeCopy_keepOriginalID();
+				Expression condCopy = (Expression) (getCondition()==null?null:getCondition().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
+				String idCopy = getIdentifier();
+				ExpressionList incCopy = (ExpressionList) (getIncrement()==null?null:getIncrement().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
+				ExpressionList initCopy = (ExpressionList) (getInit()==null?null:getInit().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
+				VariableDeclarator[] varDeclCopy = null;
+				if (getInitDecls() != null) {
+					int size = getInitDecls().length;
+					varDeclCopy = new VariableDeclarator[size];
+					for (int i = 0; i < size; i++) {
+						VariableDeclarator vdecl = getInitDecls()[i];
+						varDeclCopy[i] = (VariableDeclarator) (vdecl==null?null:vdecl.makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
+					}
+				}
+				TypeName initDeclTypeCopy = (TypeName) (getInitDeclType()==null?null:getInitDeclType().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
+				String modsCopy = getModifier();
+				StatementList bodyCopy = (StatementList) (getStatements()==null?null:getStatements().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
+				res.setCondition(condCopy);
+				res.setIncrement(incCopy);
+				res.setInit(initCopy);
+				res.setInitDecl(initDeclTypeCopy, varDeclCopy);
+				res.setStatements(bodyCopy);
+				res.copyAdditionalInfo(this);
+				return res;
+			}
+			default : return getParent().makeRecursiveCopy_keepOriginalID(scope);
+		}
+	}
+
 }

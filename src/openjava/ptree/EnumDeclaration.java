@@ -70,7 +70,7 @@ public class EnumDeclaration extends NonLeaf implements MemberDeclaration{
      * Get the an inner class 
      * 
      */
-    public MemberDeclarationList getClassBodayDeclaration() {
+    public MemberDeclarationList getClassBodyDeclaration() {
         return (MemberDeclarationList) elementAt(4);
     }
 	
@@ -78,6 +78,33 @@ public class EnumDeclaration extends NonLeaf implements MemberDeclaration{
 	public void accept(ParseTreeVisitor visitor) throws ParseTreeException {
 		visitor.visit(this);
 		
+	}
+
+	@Override
+	public ParseTree makeRecursiveCopy_keepOriginalID(COPY_SCOPE scope) {
+		switch (scope) {
+			case MEMBER_DECLARATION:
+			case NODE: {
+				EnumDeclaration res = (EnumDeclaration) makeCopy_keepOriginalID();
+				MemberDeclarationList cbodyDeclCopy = (MemberDeclarationList) (getClassBodyDeclaration()==null?null:getClassBodyDeclaration().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
+				EnumConstantList enConstListCopy = (EnumConstantList) (getEnumConstantList()==null?null:getEnumConstantList().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
+				TypeName[] implListCopy = null;
+				if (getImplementsList() != null) {
+					int implSize = getImplementsList().length;
+					implListCopy = new TypeName[implSize];
+					for (int i = 0; i < implSize; i++) {
+						TypeName tn = getImplementsList()[i];
+						implListCopy[i] = (TypeName) (tn==null?null:tn.makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
+					}
+				}
+				ModifierList modsCopy = (ModifierList) (getModifiers()==null?null:getModifiers().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
+				String nameCopy = getName();
+				res.set(modsCopy, nameCopy, implListCopy, enConstListCopy, cbodyDeclCopy);
+				res.copyAdditionalInfo(this);
+				return res;
+			}
+			default : return getParent().makeRecursiveCopy_keepOriginalID(scope);
+		}
 	}
 
 }

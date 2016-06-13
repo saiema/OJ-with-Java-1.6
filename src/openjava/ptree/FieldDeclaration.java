@@ -182,4 +182,31 @@ public class FieldDeclaration extends NonLeaf implements MemberDeclaration {
 		return (AnnotationsList) elementAt(3);
 	}
 
+	@Override
+	public ParseTree makeRecursiveCopy_keepOriginalID(COPY_SCOPE scope) {
+		switch (scope) {
+			case MEMBER_DECLARATION:
+			case NODE: {
+				FieldDeclaration res = (FieldDeclaration) makeCopy_keepOriginalID();
+				AnnotationsList annCopy = (AnnotationsList) (getAnnotations()==null?null:getAnnotations().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
+				VariableInitializer initCopy = (VariableInitializer) (getInitializer()==null?null:getInitializer().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
+				ModifierList modsCopy = (ModifierList) (getModifiers()==null?null:getModifiers().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
+				Hashtable suffixesCopy = getSuffixes();
+				TypeName tspecCopy = (TypeName) (getTypeSpecifier()==null?null:getTypeSpecifier().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
+				String varCopy = getVariable();
+				VariableDeclarator varDeclCopy = (VariableDeclarator) (getVariableDeclarator()==null?null:getVariableDeclarator().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
+				res.setAnnotations(annCopy);
+				res.setInitializer(initCopy);
+				res.setModifiers(modsCopy);
+				res.setSuffixes(suffixesCopy);
+				res.setTypeSpecifier(tspecCopy);
+				res.setVariable(varCopy);
+				res.setVariableDeclarator(varDeclCopy);
+				res.copyAdditionalInfo(this);
+				return res;
+			}
+			default : return getParent().makeRecursiveCopy_keepOriginalID(scope);
+		}
+	}
+
 }

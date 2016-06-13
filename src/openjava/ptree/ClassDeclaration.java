@@ -66,7 +66,7 @@ public class ClassDeclaration extends NonLeaf implements Statement, MemberDeclar
     	super();
     	set_isEnum(true);
     	TypeName[] ifaces = (((EnumDeclaration )enumDeclaration).getImplementsList() == null) ? new TypeName[0] : ((EnumDeclaration )enumDeclaration).getImplementsList();
-    	set(((EnumDeclaration )enumDeclaration).getModifiers(), ((EnumDeclaration )enumDeclaration).getName(), null, new TypeName[0], ifaces, ((EnumDeclaration )enumDeclaration).getClassBodayDeclaration(), false, ((EnumDeclaration )enumDeclaration).getEnumConstantList());
+    	set(((EnumDeclaration )enumDeclaration).getModifiers(), ((EnumDeclaration )enumDeclaration).getName(), null, new TypeName[0], ifaces, ((EnumDeclaration )enumDeclaration).getClassBodyDeclaration(), false, ((EnumDeclaration )enumDeclaration).getEnumConstantList());
     }
     
     

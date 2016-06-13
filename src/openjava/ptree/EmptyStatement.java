@@ -35,4 +35,17 @@ public class EmptyStatement extends NonLeaf implements Statement {
 		v.visit(this);
 	}
 
+	@Override
+	public ParseTree makeRecursiveCopy_keepOriginalID(COPY_SCOPE scope) {
+		switch (scope) {
+			case STATEMENT:
+			case NODE : {
+				EmptyStatement res = (EmptyStatement) makeCopy_keepOriginalID();
+				res.copyAdditionalInfo(this);
+				return res;
+			}
+			default : return getParent().makeRecursiveCopy_keepOriginalID(scope);
+		}
+	}
+
 }

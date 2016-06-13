@@ -222,4 +222,22 @@ public class FieldAccess extends NonLeaf implements Expression {
 		}
 	}
 
+	@Override
+	public ParseTree makeRecursiveCopy_keepOriginalID(COPY_SCOPE scope) {
+		switch (scope) {
+			case NODE: {
+				FieldAccess res = (FieldAccess) makeCopy_keepOriginalID();
+				String nameCopy = getName();
+				Expression refExprCopy = (Expression) (getReferenceExpr()==null?null:getReferenceExpr().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
+				TypeName refTypeCopy = (TypeName) (getReferenceType()==null?null:getReferenceType().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
+				res.setReferenceExpr(refExprCopy);
+				res.setReferenceType(refTypeCopy);
+				res.setName(nameCopy);
+				res.copyAdditionalInfo(this);
+				return res;
+			}
+			default : return getParent().makeRecursiveCopy_keepOriginalID(scope);
+		}
+	}
+
 }

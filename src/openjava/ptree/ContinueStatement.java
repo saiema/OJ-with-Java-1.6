@@ -65,4 +65,19 @@ public class ContinueStatement extends NonLeaf implements Statement {
 		v.visit(this);
 	}
 
+	@Override
+	public ParseTree makeRecursiveCopy_keepOriginalID(COPY_SCOPE scope) {
+		switch (scope) {
+			case STATEMENT:
+			case NODE: {
+				ContinueStatement res = (ContinueStatement) makeCopy_keepOriginalID();
+				String labelCopy = getLabel();
+				res.setLabel(labelCopy);
+				res.copyAdditionalInfo(this);
+				return res;
+			}
+			default : return getParent().makeRecursiveCopy_keepOriginalID(scope);
+		}
+	}
+
 }

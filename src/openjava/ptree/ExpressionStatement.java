@@ -59,4 +59,19 @@ public class ExpressionStatement extends NonLeaf implements Statement {
 		v.visit(this);
 	}
 
+	@Override
+	public ParseTree makeRecursiveCopy_keepOriginalID(COPY_SCOPE scope) {
+		switch (scope) {
+			case STATEMENT:
+			case NODE: {
+				ExpressionStatement res = (ExpressionStatement) makeCopy_keepOriginalID();
+				Expression exprCopy = (Expression) (getExpression()==null?null:getExpression().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
+				res.setExpression(exprCopy);
+				res.copyAdditionalInfo(this);
+				return res;
+			}
+			default : return getParent().makeRecursiveCopy_keepOriginalID(scope);
+		}
+	}
+
 }
