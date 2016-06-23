@@ -229,4 +229,21 @@ public class TypeName extends NonLeaf {
 		v.visit(this);
 	}
 
+	@Override
+	public ParseTree makeRecursiveCopy_keepOriginalID(COPY_SCOPE scope) {
+		switch (scope) {
+			case NODE : {
+				TypeName res = (TypeName) makeCopy_keepOriginalID();
+				int dimCopy = getDimension();
+				String nameCopy = getNameWithoutGenerics();
+				res.set(nameCopy);
+				res.setDimension(dimCopy);
+				res.suffixes = suffixes;
+				res.copyAdditionalInfo(this);
+				return res;
+			}
+			default : return getParent().makeRecursiveCopy_keepOriginalID(scope);
+		}
+	}
+
 }

@@ -139,4 +139,22 @@ public class StatementList extends List {
 	public String getAfterComment() {
 		return this.afterComment;
 	}
+
+	@Override
+	public ParseTree makeRecursiveCopy_keepOriginalID(COPY_SCOPE scope) {
+		switch (scope) {
+			case STATEMENT_LIST:
+			case NODE : {
+				StatementList res = (StatementList) makeCopy_keepOriginalID();
+				for (int i = 0; i < size(); i++) {
+					Statement st = get(i);
+					Statement stCopy = (Statement) (st==null?null:st.makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
+					res.add(stCopy);
+				}
+				res.setAfterComment(getAfterComment());
+				return res;
+			}
+			default : return getParent().makeRecursiveCopy_keepOriginalID(scope);
+		}
+	}
 }

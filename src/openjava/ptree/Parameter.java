@@ -153,4 +153,25 @@ public class Parameter extends NonLeaf {
 		return (AnnotationsList) elementAt(3);
 	}
 
+	@Override
+	public ParseTree makeRecursiveCopy_keepOriginalID(COPY_SCOPE scope) {
+		switch (scope) {
+			case NODE : {
+				Parameter res = (Parameter) makeCopy_keepOriginalID();
+				AnnotationsList annCopy = (AnnotationsList) (getAnnotations()==null?null:getAnnotations().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
+				ModifierList modsCopy = (ModifierList) (getModifiers()==null?null:getModifiers().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
+				TypeName typeSpecCopy = (TypeName) (getTypeSpecifier()==null?null:getTypeSpecifier().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
+				String varCopy = getVariable();
+				res.setAnnotations(annCopy);
+				res.setModifiers(modsCopy);
+				res.setTypeSpecifier(typeSpecCopy);
+				res.setVariable(varCopy);
+				res.isVarargs = isVarargs();
+				res.copyAdditionalInfo(this);
+				return res;
+			}
+			default : return getParent().makeRecursiveCopy_keepOriginalID(scope);
+		}
+	}
+
 }

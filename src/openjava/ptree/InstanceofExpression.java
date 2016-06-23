@@ -52,18 +52,6 @@ public class InstanceofExpression extends NonLeaf implements Expression {
 		super();
 	}
 
-	private final boolean needsLeftPar(Expression lexpr) {
-		if (lexpr instanceof AssignmentExpression
-			|| lexpr instanceof ConditionalExpression) {
-			return true;
-		}
-		/* this is too strict for + */
-		if (lexpr instanceof BinaryExpression) {
-			return true;
-		}
-		return false;
-	}
-
 	/**
 	 * Gets the expression of the left operand to be tested
 	 * in this expression.
@@ -110,6 +98,22 @@ public class InstanceofExpression extends NonLeaf implements Expression {
 
 	public void accept(ParseTreeVisitor v) throws ParseTreeException {
 		v.visit(this);
+	}
+
+	@Override
+	public ParseTree makeRecursiveCopy_keepOriginalID(COPY_SCOPE scope) {
+		switch (scope) {
+			case NODE : {
+				InstanceofExpression res = (InstanceofExpression) makeCopy_keepOriginalID();
+				Expression exprCopy = (Expression) (getExpression()==null?null:getExpression().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
+				TypeName typeCopy = (TypeName) (getTypeSpecifier()==null?null:getTypeSpecifier().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
+				res.setLeft(exprCopy);
+				res.setTypeSpecifier(typeCopy);
+				res.copyAdditionalInfo(this);
+				return res;
+			}
+			default : return getParent().makeRecursiveCopy_keepOriginalID(scope);
+		}
 	}
 
 }

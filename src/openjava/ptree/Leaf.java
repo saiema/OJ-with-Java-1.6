@@ -173,4 +173,19 @@ public class Leaf extends ParseTreeObject implements ParseTree {
 		v.visit(this);
 	}
 
+	@Override
+	public ParseTree makeRecursiveCopy_keepOriginalID(COPY_SCOPE scope) {
+		switch (scope) {
+			case NODE : {
+				Leaf res = (Leaf) makeCopy_keepOriginalID();
+				res.tokenID = tokenID;
+				res.textString = textString;
+				res.line = line;
+				res.charBegin = charBegin;
+				return res;
+			}
+			default : return getParent().makeRecursiveCopy_keepOriginalID(scope);
+		}
+	}
+
 }

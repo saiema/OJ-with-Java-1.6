@@ -83,4 +83,21 @@ public class SwitchStatement extends NonLeaf implements Statement {
 		v.visit(this);
 	}
 
+	@Override
+	public ParseTree makeRecursiveCopy_keepOriginalID(COPY_SCOPE scope) {
+		switch (scope) {
+			case STATEMENT:
+			case NODE : {
+				SwitchStatement res = (SwitchStatement) makeCopy_keepOriginalID();
+				CaseGroupList cgroupCopy = (CaseGroupList) (getCaseGroupList()==null?null:getCaseGroupList().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
+				Expression exprCopy = (Expression) (getExpression()==null?null:getExpression().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
+				res.setCaseGroupList(cgroupCopy);
+				res.setExpression(exprCopy);
+				res.copyAdditionalInfo(this);
+				return res;
+			}
+			default : return getParent().makeRecursiveCopy_keepOriginalID(scope);
+		}
+	}
+
 }

@@ -227,4 +227,45 @@ public class MethodDeclaration extends NonLeaf implements MemberDeclaration {
 	public AnnotationsList getAnnotations() {
 		return (AnnotationsList) elementAt(7);
 	}
+
+	@Override
+	public ParseTree makeRecursiveCopy_keepOriginalID(COPY_SCOPE scope) {
+		switch (scope) {
+			case MEMBER_DECLARATION:
+			case NODE : {
+				MethodDeclaration res = (MethodDeclaration) makeCopy_keepOriginalID();
+				AnnotationsList annCopy = (AnnotationsList) (getAnnotations()==null?null:getAnnotations().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
+				StatementList bodyCopy = (StatementList) (getBody()==null?null:getBody().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
+				String genTypesCopy = getGenericsTypeParameters();
+				ModifierList modsCopy = (ModifierList) (getModifiers()==null?null:getModifiers().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
+				String nameCopy = getName();
+				ParameterList paramsCopy = (ParameterList) (getParameters()==null?null:getParameters().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
+				TypeName retTypeCopy = (TypeName) (getReturnType()==null?null:getReturnType().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
+				Hashtable suffixCopy = getSuffixes();
+				TypeName[] throwsCopy = null;
+				if (getThrows() != null) {
+					int throwsSize = getThrows().length;
+					throwsCopy = new TypeName[throwsSize];
+					for (int i = 0; i < throwsSize; i++) {
+						TypeName currType = getThrows()[i];
+						throwsCopy[i] = (TypeName) (currType==null?null:currType.makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
+					}
+				}
+				TypeParameterList typeParamsCopy = (TypeParameterList) (getTypeParameterList()==null?null:getTypeParameterList().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
+				res.setAnnotations(annCopy);
+				res.setBody(bodyCopy);
+				res.setGenericsTypeParameters(genTypesCopy);
+				res.setModifiers(modsCopy);
+				res.setName(nameCopy);
+				res.setParameters(paramsCopy);
+				res.setReturnType(retTypeCopy);
+				res.setSuffixes(suffixCopy);
+				res.setThrows(throwsCopy);
+				res.setTypeParameterList(typeParamsCopy);
+				res.copyAdditionalInfo(this);
+				return res;
+			}
+			default : return getParent().makeRecursiveCopy_keepOriginalID(scope);
+		}
+	}
 }

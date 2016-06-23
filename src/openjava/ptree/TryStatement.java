@@ -126,4 +126,23 @@ public class TryStatement extends NonLeaf implements Statement, ParseTree {
 		v.visit(this);
 	}
 
+	@Override
+	public ParseTree makeRecursiveCopy_keepOriginalID(COPY_SCOPE scope) {
+		switch (scope) {
+			case STATEMENT:
+			case NODE : {
+				TryStatement res = (TryStatement) makeCopy_keepOriginalID();
+				StatementList bodyCopy = (StatementList) (getBody()==null?null:getBody().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
+				CatchList catchListCopy = (CatchList) (getCatchList()==null?null:getCatchList().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
+				StatementList finallyCopy = (StatementList) (getFinallyBody()==null?null:getFinallyBody().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
+				res.setBody(bodyCopy);
+				res.setCatchList(catchListCopy);
+				res.setFinallyBody(finallyCopy);
+				res.copyAdditionalInfo(this);
+				return res;
+			}
+			default : return getParent().makeRecursiveCopy_keepOriginalID(scope);
+		}
+	}
+
 }

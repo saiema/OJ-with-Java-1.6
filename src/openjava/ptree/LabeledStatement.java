@@ -78,4 +78,21 @@ public class LabeledStatement extends NonLeaf implements Statement {
 		v.visit(this);
 	}
 
+	@Override
+	public ParseTree makeRecursiveCopy_keepOriginalID(COPY_SCOPE scope) {
+		switch (scope) {
+			case STATEMENT:
+			case NODE : {
+				LabeledStatement res = (LabeledStatement) makeCopy_keepOriginalID();
+				String labelCopy = getLabel();
+				Statement stmntCopy = (Statement) (getStatement()==null?null:getStatement().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
+				res.setLabel(labelCopy);
+				res.setStatement(stmntCopy);
+				res.copyAdditionalInfo(this);
+				return res;
+			}
+			default : return getParent().makeRecursiveCopy_keepOriginalID(scope);
+		}
+	}
+
 }

@@ -13,5 +13,16 @@ public class Annotation extends Leaf {
 	public Annotation(String str) {
 		super(str);
 	}
+	
+	@Override
+	public ParseTree makeRecursiveCopy_keepOriginalID(COPY_SCOPE scope) {
+		switch (scope) {
+			case NODE : {
+				Annotation res = (Annotation) super.makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE);
+				return res;
+			}
+			default : return getParent().makeRecursiveCopy_keepOriginalID(scope);
+		}
+	}
 
 }

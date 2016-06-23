@@ -92,5 +92,18 @@ public class SelfAccess extends Leaf implements Expression {
 			return current;
 		return env.lookupClass(env.toQualifiedName(qualifier));
 	}
+	
+	@Override
+	public ParseTree makeRecursiveCopy_keepOriginalID(COPY_SCOPE scope) {
+		switch (scope) {
+			case NODE : {
+				SelfAccess res = (SelfAccess) super.makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE);
+				res.qualifier = qualifier;
+				res.id = id;
+				return res;
+			}
+			default : return getParent().makeRecursiveCopy_keepOriginalID(scope);
+		}
+	}
 
 }

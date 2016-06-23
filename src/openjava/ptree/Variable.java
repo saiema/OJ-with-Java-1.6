@@ -56,5 +56,16 @@ public class Variable extends Leaf implements Expression {
 	public void accept(ParseTreeVisitor v) throws ParseTreeException {
 		v.visit(this);
 	}
+	
+	@Override
+	public ParseTree makeRecursiveCopy_keepOriginalID(COPY_SCOPE scope) {
+		switch (scope) {
+			case NODE : {
+				Variable res = (Variable) super.makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE);
+				return res;
+			}
+			default : return getParent().makeRecursiveCopy_keepOriginalID(scope);
+		}
+	}
 
 }

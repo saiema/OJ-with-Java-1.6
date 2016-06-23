@@ -51,4 +51,21 @@ public class TypeParameterList extends List {
 		visitor.visit(this);		
 	}
 
+
+	@Override
+	public ParseTree makeRecursiveCopy_keepOriginalID(COPY_SCOPE scope) {
+		switch (scope) {
+			case NODE : {
+				TypeParameterList res = (TypeParameterList) makeCopy_keepOriginalID();
+				for (int i = 0; i < size(); i++) {
+					TypeParameter tp = get(i);
+					TypeParameter tpCopy = (TypeParameter) (tp==null?null:tp.makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
+					res.add(tpCopy);
+				}
+				return res;
+			}
+			default : return getParent().makeRecursiveCopy_keepOriginalID(scope);
+		}
+	}
+
 }

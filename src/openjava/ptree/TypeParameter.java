@@ -82,4 +82,20 @@ public class TypeParameter extends NonLeaf implements ParseTree{
 		v.visit(this);
 	}
 
+	@Override
+	public ParseTree makeRecursiveCopy_keepOriginalID(COPY_SCOPE scope) {
+		switch (scope) {
+			case NODE : {
+				TypeParameter res = (TypeParameter) makeCopy_keepOriginalID();
+				String nameCopy = getName();
+				String typeBoundCopy = getTypeBound();
+				res.setName(nameCopy);
+				res.setTypeBounds(typeBoundCopy);
+				res.copyAdditionalInfo(this);
+				return res;
+			}
+			default : return getParent().makeRecursiveCopy_keepOriginalID(scope);
+		}
+	}
+
 }

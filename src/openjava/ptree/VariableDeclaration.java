@@ -196,4 +196,23 @@ public class VariableDeclaration extends NonLeaf implements Statement {
 		v.visit(this);
 	}
 
+	@Override
+	public ParseTree makeRecursiveCopy_keepOriginalID(COPY_SCOPE scope) {
+		switch (scope) {
+			case STATEMENT:
+			case NODE : {
+				VariableDeclaration res = (VariableDeclaration) makeCopy_keepOriginalID();
+				ModifierList modCopy = (ModifierList) (getModifiers()==null?null:getModifiers().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
+				TypeName tpSpecCopy = (TypeName) (getTypeSpecifier()==null?null:getTypeSpecifier().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
+				VariableDeclarator varDeclCopy = (VariableDeclarator) (getVariableDeclarator()==null?null:getVariableDeclarator().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
+				res.setVariableDeclarator(varDeclCopy);
+				res.setModifiers(modCopy);
+				res.setTypeSpecifier(tpSpecCopy);
+				res.copyAdditionalInfo(this);
+				return res;
+			}
+			default : return getParent().makeRecursiveCopy_keepOriginalID(scope);
+		}
+	}
+
 }

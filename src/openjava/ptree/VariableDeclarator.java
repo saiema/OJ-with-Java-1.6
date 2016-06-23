@@ -111,4 +111,22 @@ public class VariableDeclarator extends NonLeaf {
 		v.visit(this);
 	}
 
+	@Override
+	public ParseTree makeRecursiveCopy_keepOriginalID(COPY_SCOPE scope) {
+		switch (scope) {
+			case NODE : {
+				VariableDeclarator res = (VariableDeclarator) makeCopy_keepOriginalID();
+				VariableInitializer varInitCopy = (VariableInitializer) (getInitializer()==null?null:getInitializer().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
+				String varCopy = getVariable();
+				int dimCopy = getDimension();
+				res.setInitializer(varInitCopy);
+				res.setVariable(varCopy);
+				res.dims = dimCopy;
+				res.copyAdditionalInfo(this);
+				return res;
+			}
+			default : return getParent().makeRecursiveCopy_keepOriginalID(scope);
+		}
+	}
+
 }

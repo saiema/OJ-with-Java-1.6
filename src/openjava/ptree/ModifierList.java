@@ -229,4 +229,21 @@ public class ModifierList extends List {
 		v.visit(this);
 	}
 
+	@Override
+	public ParseTree makeRecursiveCopy_keepOriginalID(COPY_SCOPE scope) {
+		switch (scope) {
+			case NODE : {
+				ModifierList res = (ModifierList) makeCopy_keepOriginalID();
+				for (int i = 0; i < size(); i++) {
+					String mod = get(i);
+					String modCopy = mod;
+					res.add(modCopy);
+				}
+				res.setRegular(getRegular());
+				return res;
+			}
+			default : return getParent().makeRecursiveCopy_keepOriginalID(scope);
+		}
+	}
+
 }

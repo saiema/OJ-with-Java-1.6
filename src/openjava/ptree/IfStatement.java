@@ -118,4 +118,23 @@ public class IfStatement extends NonLeaf implements Statement, ParseTree {
 		v.visit(this);
 	}
 
+	@Override
+	public ParseTree makeRecursiveCopy_keepOriginalID(COPY_SCOPE scope) {
+		switch (scope) {
+			case STATEMENT:
+			case NODE: {
+				IfStatement res = (IfStatement) makeCopy_keepOriginalID();
+				Expression condCopy = (Expression) (getExpression()==null?null:getExpression().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
+				StatementList thenCopy = (StatementList) (getStatements()==null?null:getStatements().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
+				StatementList elseCopy = (StatementList) (getElseStatements()==null?null:getElseStatements().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
+				res.setExpression(condCopy);
+				res.setStatements(thenCopy);
+				res.setElseStatements(elseCopy);
+				res.copyAdditionalInfo(this);
+				return res;
+			}
+			default : return getParent().makeRecursiveCopy_keepOriginalID(scope);
+		}
+	}
+
 }

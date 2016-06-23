@@ -235,7 +235,7 @@ public class ForStatement extends NonLeaf implements Statement, ParseTree {
 		v.visit(this);
 	}
 
-	@Override //TODO: finish
+	@Override
 	public ParseTree makeRecursiveCopy_keepOriginalID(COPY_SCOPE scope) {
 		switch (scope) {
 			case STATEMENT:
@@ -262,6 +262,9 @@ public class ForStatement extends NonLeaf implements Statement, ParseTree {
 				res.setInit(initCopy);
 				res.setInitDecl(initDeclTypeCopy, varDeclCopy);
 				res.setStatements(bodyCopy);
+				res.copyAdditionalInfo(this);
+				res.setElementAt(modsCopy, 7);
+				res.setElementAt(idCopy, 6);
 				res.copyAdditionalInfo(this);
 				return res;
 			}

@@ -208,4 +208,16 @@ public class Literal extends Leaf implements Expression {
 		v.visit(this);
 	}
 	
+	@Override
+	public ParseTree makeRecursiveCopy_keepOriginalID(COPY_SCOPE scope) {
+		switch (scope) {
+			case NODE : {
+				Literal res = (Literal) super.makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE);
+				res.id = id;
+				return res;
+			}
+			default : return getParent().makeRecursiveCopy_keepOriginalID(scope);
+		}
+	}
+	
 }

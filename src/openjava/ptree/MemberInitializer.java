@@ -68,4 +68,20 @@ public class MemberInitializer extends NonLeaf implements MemberDeclaration {
 		v.visit(this);
 	}
 
+	@Override
+	public ParseTree makeRecursiveCopy_keepOriginalID(COPY_SCOPE scope) {
+		switch (scope) {
+			case MEMBER_DECLARATION:
+			case NODE : {
+				MemberInitializer res = (MemberInitializer) makeCopy_keepOriginalID();
+				StatementList bodyCopy = (StatementList) (getBody()==null?null:getBody().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
+				res._isStatic = isStatic();
+				res.setBody(bodyCopy);
+				res.copyAdditionalInfo(this);
+				return res;
+			}
+			default : return getParent().makeRecursiveCopy_keepOriginalID(scope);
+		}
+	}
+
 }

@@ -14,7 +14,6 @@ package openjava.ptree;
 import openjava.mop.Environment;
 import openjava.mop.NoSuchMemberException;
 import openjava.mop.OJClass;
-import openjava.mop.OJField;
 import openjava.mop.OJMethod;
 import openjava.mop.Signature;
 import openjava.ptree.util.ParseTreeVisitor;
@@ -231,6 +230,26 @@ public class MethodCall extends NonLeaf implements Expression {
 			return reftype.getAcceptableMethod(name, argtypes, reftype);
 		} catch (NoSuchMemberException e) {
 			return null;
+		}
+	}
+
+	@Override
+	public ParseTree makeRecursiveCopy_keepOriginalID(COPY_SCOPE scope) {
+		switch (scope) {
+			case NODE : {
+				MethodCall res = (MethodCall) makeCopy_keepOriginalID();
+				ExpressionList argsCopy = (ExpressionList) (getArguments()==null?null:getArguments().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
+				String nameCopy = getName();
+				Expression refExprCopy = (Expression) (getReferenceExpr()==null?null:getReferenceExpr().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
+				TypeName refTypeCopy = (TypeName) (getReferenceType()==null?null:getReferenceType().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
+				res.setArguments(argsCopy);
+				res.setName(nameCopy);
+				res.setReferenceExpr(refExprCopy);
+				res.setReferenceType(refTypeCopy);
+				res.copyAdditionalInfo(this);
+				return res;
+			}
+			default : return getParent().makeRecursiveCopy_keepOriginalID(scope);
 		}
 	}
 
