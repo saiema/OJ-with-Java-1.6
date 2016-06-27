@@ -233,10 +233,8 @@ public class MethodDeclaration extends NonLeaf implements MemberDeclaration {
 		switch (scope) {
 			case MEMBER_DECLARATION:
 			case NODE : {
-				MethodDeclaration res = (MethodDeclaration) makeCopy_keepOriginalID();
 				AnnotationsList annCopy = (AnnotationsList) (getAnnotations()==null?null:getAnnotations().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
 				StatementList bodyCopy = (StatementList) (getBody()==null?null:getBody().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
-				String genTypesCopy = getGenericsTypeParameters();
 				ModifierList modsCopy = (ModifierList) (getModifiers()==null?null:getModifiers().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
 				String nameCopy = getName();
 				ParameterList paramsCopy = (ParameterList) (getParameters()==null?null:getParameters().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
@@ -252,16 +250,20 @@ public class MethodDeclaration extends NonLeaf implements MemberDeclaration {
 					}
 				}
 				TypeParameterList typeParamsCopy = (TypeParameterList) (getTypeParameterList()==null?null:getTypeParameterList().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
+				
+				/*
+				ModifierList modiflist,
+				TypeName typespec,
+				String name,
+				ParameterList params,
+				TypeName[] throwlist,
+				StatementList block,
+				TypeParameterList genericsTypeParameters
+				*/
+				MethodDeclaration res = new MethodDeclaration(modsCopy, retTypeCopy, nameCopy, paramsCopy, throwsCopy, bodyCopy, typeParamsCopy);
+				copyObjectIDTo(res);
 				res.setAnnotations(annCopy);
-				res.setBody(bodyCopy);
-				res.setGenericsTypeParameters(genTypesCopy);
-				res.setModifiers(modsCopy);
-				res.setName(nameCopy);
-				res.setParameters(paramsCopy);
-				res.setReturnType(retTypeCopy);
 				res.setSuffixes(suffixCopy);
-				res.setThrows(throwsCopy);
-				res.setTypeParameterList(typeParamsCopy);
 				res.copyAdditionalInfo(this);
 				return res;
 			}

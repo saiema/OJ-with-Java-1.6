@@ -140,7 +140,24 @@ public abstract class ParseTreeObject
 	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//+++++++++++++++++++++++++++++++++++++++++added (24/05/16) [simon]
 	
-	public abstract ParseTree makeRecursiveCopy_keepOriginalID(COPY_SCOPE scope);
+	public ParseTree makeRecursiveCopy_keepOriginalID(COPY_SCOPE scope) {
+		switch (scope) {
+			case NODE : {
+				return shallowCopy_keepOriginalID();
+			}
+			default : return getParent().makeRecursiveCopy_keepOriginalID(scope);
+		}
+	}
+	
+	public ParseTree shallowCopy_keepOriginalID() {
+		ParseTree res = makeCopy_keepOriginalID();
+		((ParseTreeObject)res).setParent(null);
+		return res;
+	}
+	
+	protected void copyObjectIDTo(ParseTreeObject o) {
+		o.setObjectID(getObjectID());
+	}
 	
 	//------------------------------------------------------------------
 

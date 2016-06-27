@@ -54,12 +54,13 @@ public class AnnotationsList extends List {
 	public ParseTree makeRecursiveCopy_keepOriginalID(COPY_SCOPE scope) {
 		switch (scope) {
 			case NODE : {
-				AnnotationsList res = (AnnotationsList) makeCopy_keepOriginalID();
+				AnnotationsList res = new AnnotationsList();
 				for (int i = 0; i < this.size(); i++) {
 					Annotation ann = get(i);
 					Annotation copy = (Annotation) (ann==null?null:ann.makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
 					res.add(copy);
 				}
+				copyObjectIDTo(res);
 				return res;
 			}
 			default : return getParent().makeRecursiveCopy_keepOriginalID(scope);

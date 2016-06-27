@@ -152,13 +152,11 @@ public class ArrayAllocationExpression extends NonLeaf implements Expression {
 	public ParseTree makeRecursiveCopy_keepOriginalID(COPY_SCOPE scope) {
 		switch (scope) {
 			case NODE : {
-				ArrayAllocationExpression res = (ArrayAllocationExpression) makeCopy_keepOriginalID();
 				TypeName tnCopy = (TypeName) (getTypeName()==null?null:getTypeName().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
 				ArrayInitializer arrInitCopy = (ArrayInitializer) (getInitializer()==null?null:getInitializer().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
 				ExpressionList exprListCopy = (ExpressionList) (getDimExprList()==null?null:getDimExprList().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
-				res.setTypeName(tnCopy);
-				res.setInitializer(arrInitCopy);
-				res.setDimExprList(exprListCopy);
+				ArrayAllocationExpression res = new ArrayAllocationExpression(tnCopy, exprListCopy, arrInitCopy);
+				copyObjectIDTo(res);
 				res.copyAdditionalInfo(this);
 				return res;
 			}

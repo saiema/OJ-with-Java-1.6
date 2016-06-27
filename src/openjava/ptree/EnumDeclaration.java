@@ -85,7 +85,6 @@ public class EnumDeclaration extends NonLeaf implements MemberDeclaration{
 		switch (scope) {
 			case MEMBER_DECLARATION:
 			case NODE: {
-				EnumDeclaration res = (EnumDeclaration) makeCopy_keepOriginalID();
 				MemberDeclarationList cbodyDeclCopy = (MemberDeclarationList) (getClassBodyDeclaration()==null?null:getClassBodyDeclaration().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
 				EnumConstantList enConstListCopy = (EnumConstantList) (getEnumConstantList()==null?null:getEnumConstantList().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
 				TypeName[] implListCopy = null;
@@ -99,7 +98,8 @@ public class EnumDeclaration extends NonLeaf implements MemberDeclaration{
 				}
 				ModifierList modsCopy = (ModifierList) (getModifiers()==null?null:getModifiers().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
 				String nameCopy = getName();
-				res.set(modsCopy, nameCopy, implListCopy, enConstListCopy, cbodyDeclCopy);
+				EnumDeclaration res = new EnumDeclaration(modsCopy, nameCopy, implListCopy, enConstListCopy, cbodyDeclCopy);
+				copyObjectIDTo(res);
 				res.copyAdditionalInfo(this);
 				return res;
 			}

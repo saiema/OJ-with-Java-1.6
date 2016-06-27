@@ -40,9 +40,9 @@ public class CaseLabel extends NonLeaf {
 	public ParseTree makeRecursiveCopy_keepOriginalID(COPY_SCOPE scope) {
 		switch (scope) {
 			case NODE : {
-				CaseLabel res = (CaseLabel) makeCopy_keepOriginalID();
 				Expression exprCopy = (Expression) (getExpression()==null?null:getExpression().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
-				res.set((ParseTree) exprCopy);
+				CaseLabel res = new CaseLabel(exprCopy);
+				copyObjectIDTo(res);
 				res.copyAdditionalInfo(this);
 				return res;
 			}

@@ -121,12 +121,13 @@ public class CaseLabelList extends List {
 	public ParseTree makeRecursiveCopy_keepOriginalID(COPY_SCOPE scope) {
 		switch (scope) {
 			case NODE : {
-				CaseLabelList res = (CaseLabelList) makeCopy_keepOriginalID();
+				CaseLabelList res = new CaseLabelList();
 				for (int i = 0; i < size(); i++) {
 					CaseLabel clabel = get(i);
 					CaseLabel clabelCopy = (CaseLabel) (clabel==null?null:clabel.makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
 					res.add(clabelCopy);
 				}
+				copyObjectIDTo(res);
 				return res;
 			}
 			default : return getParent().makeRecursiveCopy_keepOriginalID(scope);

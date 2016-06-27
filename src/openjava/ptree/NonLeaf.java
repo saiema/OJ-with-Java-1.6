@@ -519,7 +519,8 @@ public abstract class NonLeaf extends ParseTreeObject implements ParseTree {
 	protected void copyAdditionalInfo(NonLeaf o) {
 		setComment(o.getComment());
 		setGenerics(o.getGenerics());
-		setMutGenLimit(o.getMutGenLimit());
+		this.hasMutGenLimit = o.hasMutGenLimit;
+		this.mutGenLimit = o.mutGenLimit;
 	}
 
 }

@@ -145,12 +145,13 @@ public class StatementList extends List {
 		switch (scope) {
 			case STATEMENT_LIST:
 			case NODE : {
-				StatementList res = (StatementList) makeCopy_keepOriginalID();
+				StatementList res = new StatementList();
 				for (int i = 0; i < size(); i++) {
 					Statement st = get(i);
 					Statement stCopy = (Statement) (st==null?null:st.makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
 					res.add(stCopy);
 				}
+				copyObjectIDTo(res);
 				res.setAfterComment(getAfterComment());
 				return res;
 			}

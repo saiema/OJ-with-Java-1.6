@@ -122,12 +122,13 @@ public class MemberDeclarationList extends List {
 	public ParseTree makeRecursiveCopy_keepOriginalID(COPY_SCOPE scope) {
 		switch (scope) {
 			case NODE : {
-				MemberDeclarationList res = (MemberDeclarationList) makeCopy_keepOriginalID();
+				MemberDeclarationList res = new MemberDeclarationList();
 				for (int i = 0; i < size(); i++) {
 					MemberDeclaration mdecl = get(i);
 					MemberDeclaration mdeclCopy = (MemberDeclaration) (mdecl==null?null:mdecl.makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
 					res.add(mdeclCopy);
 				}
+				copyObjectIDTo(res);
 				return res;
 			}
 			default : return getParent().makeRecursiveCopy_keepOriginalID(scope);

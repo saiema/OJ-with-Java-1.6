@@ -73,10 +73,9 @@ public class MemberInitializer extends NonLeaf implements MemberDeclaration {
 		switch (scope) {
 			case MEMBER_DECLARATION:
 			case NODE : {
-				MemberInitializer res = (MemberInitializer) makeCopy_keepOriginalID();
 				StatementList bodyCopy = (StatementList) (getBody()==null?null:getBody().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
-				res._isStatic = isStatic();
-				res.setBody(bodyCopy);
+				MemberInitializer res = new MemberInitializer(bodyCopy, isStatic());
+				copyObjectIDTo(res);
 				res.copyAdditionalInfo(this);
 				return res;
 			}

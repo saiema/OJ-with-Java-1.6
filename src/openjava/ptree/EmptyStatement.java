@@ -40,7 +40,8 @@ public class EmptyStatement extends NonLeaf implements Statement {
 		switch (scope) {
 			case STATEMENT:
 			case NODE : {
-				EmptyStatement res = (EmptyStatement) makeCopy_keepOriginalID();
+				EmptyStatement res = new EmptyStatement();
+				copyObjectIDTo(res);
 				res.copyAdditionalInfo(this);
 				return res;
 			}

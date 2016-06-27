@@ -233,12 +233,13 @@ public class ModifierList extends List {
 	public ParseTree makeRecursiveCopy_keepOriginalID(COPY_SCOPE scope) {
 		switch (scope) {
 			case NODE : {
-				ModifierList res = (ModifierList) makeCopy_keepOriginalID();
+				ModifierList res = new ModifierList();
 				for (int i = 0; i < size(); i++) {
 					String mod = get(i);
 					String modCopy = mod;
 					res.add(modCopy);
 				}
+				copyObjectIDTo(res);
 				res.setRegular(getRegular());
 				return res;
 			}

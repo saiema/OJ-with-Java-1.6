@@ -154,16 +154,14 @@ public class CompilationUnit extends NonLeaf {
 
 	@Override
 	public ParseTree makeRecursiveCopy_keepOriginalID(COPY_SCOPE scope) {
-		CompilationUnit res = (CompilationUnit) makeCopy_keepOriginalID();
 		ClassDeclarationList cdeclCopy = (ClassDeclarationList) (getClassDeclarations()==null?null:getClassDeclarations().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
 		String[] declImportsCopy = new String[getDeclaredImports().length];
 		for (int i = 0; i < getDeclaredImports().length;i++) {
 			declImportsCopy[i] = getDeclaredImports()[i];
 		}
 		String pkgCopy = getPackage();
-		res.setClassDeclarations(cdeclCopy);
-		res.setDeclaredImports(declImportsCopy);
-		res.setPackage(pkgCopy);
+		CompilationUnit res = new CompilationUnit(pkgCopy, declImportsCopy, cdeclCopy);
+		copyObjectIDTo(res);
 		res.copyAdditionalInfo(this);
 		return res;
 	}

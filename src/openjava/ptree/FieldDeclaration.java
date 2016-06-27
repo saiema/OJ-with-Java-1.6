@@ -187,21 +187,16 @@ public class FieldDeclaration extends NonLeaf implements MemberDeclaration {
 		switch (scope) {
 			case MEMBER_DECLARATION:
 			case NODE: {
-				FieldDeclaration res = (FieldDeclaration) makeCopy_keepOriginalID();
 				AnnotationsList annCopy = (AnnotationsList) (getAnnotations()==null?null:getAnnotations().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
-				VariableInitializer initCopy = (VariableInitializer) (getInitializer()==null?null:getInitializer().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
 				ModifierList modsCopy = (ModifierList) (getModifiers()==null?null:getModifiers().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
 				Hashtable suffixesCopy = getSuffixes();
-				TypeName tspecCopy = (TypeName) (getTypeSpecifier()==null?null:getTypeSpecifier().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
-				String varCopy = getVariable();
+				TypeName tspec = (TypeName) elementAt(1);
+				TypeName tspecCopy = (TypeName) (tspec==null?null:tspec.makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
 				VariableDeclarator varDeclCopy = (VariableDeclarator) (getVariableDeclarator()==null?null:getVariableDeclarator().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
+				FieldDeclaration res = new FieldDeclaration(modsCopy, tspecCopy, varDeclCopy);
+				copyObjectIDTo(res);
 				res.setAnnotations(annCopy);
-				res.setInitializer(initCopy);
-				res.setModifiers(modsCopy);
 				res.setSuffixes(suffixesCopy);
-				res.setTypeSpecifier(tspecCopy);
-				res.setVariable(varCopy);
-				res.setVariableDeclarator(varDeclCopy);
 				res.copyAdditionalInfo(this);
 				return res;
 			}

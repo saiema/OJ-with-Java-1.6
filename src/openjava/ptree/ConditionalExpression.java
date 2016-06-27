@@ -130,13 +130,11 @@ public class ConditionalExpression extends NonLeaf implements Expression {
 	public ParseTree makeRecursiveCopy_keepOriginalID(COPY_SCOPE scope) {
 		switch (scope) {
 			case NODE : {
-				ConditionalExpression res = (ConditionalExpression) makeCopy_keepOriginalID();
 				Expression condCopy = (Expression) (getCondition()==null?null:getCondition().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
 				Expression trueCaseCopy = (Expression) (getTrueCase()==null?null:getTrueCase().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
 				Expression falseCaseCopy = (Expression) (getFalseCase()==null?null:getFalseCase().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
-				res.setCondition(condCopy);
-				res.setTrueCase(trueCaseCopy);
-				res.setFalseCase(falseCaseCopy);
+				ConditionalExpression res = new ConditionalExpression(condCopy, trueCaseCopy, falseCaseCopy);
+				copyObjectIDTo(res);
 				res.copyAdditionalInfo(this);
 				return res;
 			}

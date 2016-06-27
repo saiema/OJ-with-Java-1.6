@@ -121,12 +121,13 @@ public class ParameterList extends List {
 	public ParseTree makeRecursiveCopy_keepOriginalID(COPY_SCOPE scope) {
 		switch (scope) {
 			case NODE : {
-				ParameterList res = (ParameterList) makeCopy_keepOriginalID();
+				ParameterList res = new ParameterList();
 				for (int i = 0; i < size(); i++) {
 					Parameter param = get(i);
 					Parameter paramCopy = (Parameter) (param==null?null:param.makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
 					res.add(paramCopy);
 				}
+				copyObjectIDTo(res);
 				return res;
 			}
 			default : return getParent().makeRecursiveCopy_keepOriginalID(scope);

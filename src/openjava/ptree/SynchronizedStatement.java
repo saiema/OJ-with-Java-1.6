@@ -85,11 +85,10 @@ public class SynchronizedStatement
 		switch (scope) {
 			case STATEMENT:
 			case NODE : {
-				SynchronizedStatement res = (SynchronizedStatement) makeCopy_keepOriginalID();
 				Expression exprCopy = (Expression) (getExpression()==null?null:getExpression().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
 				StatementList stsCopy = (StatementList) (getStatements()==null?null:getStatements().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
-				res.setExpression(exprCopy);
-				res.setStatements(stsCopy);
+				SynchronizedStatement res = new SynchronizedStatement(exprCopy, stsCopy);
+				copyObjectIDTo(res);
 				res.copyAdditionalInfo(this);
 				return res;
 			}

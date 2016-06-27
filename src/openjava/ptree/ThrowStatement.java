@@ -62,9 +62,9 @@ public class ThrowStatement extends NonLeaf implements Statement {
 		switch (scope) {
 			case STATEMENT:
 			case NODE : {
-				ThrowStatement res = (ThrowStatement) makeCopy_keepOriginalID();
 				Expression exprCopy = (Expression) (getExpression()==null?null:getExpression().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
-				res.setExpression(exprCopy);
+				ThrowStatement res = new ThrowStatement(exprCopy);
+				copyObjectIDTo(res);
 				res.copyAdditionalInfo(this);
 				return res;
 			}

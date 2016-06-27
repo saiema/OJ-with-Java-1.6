@@ -201,13 +201,16 @@ public class VariableDeclaration extends NonLeaf implements Statement {
 		switch (scope) {
 			case STATEMENT:
 			case NODE : {
-				VariableDeclaration res = (VariableDeclaration) makeCopy_keepOriginalID();
 				ModifierList modCopy = (ModifierList) (getModifiers()==null?null:getModifiers().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
 				TypeName tpSpecCopy = (TypeName) (getTypeSpecifier()==null?null:getTypeSpecifier().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
 				VariableDeclarator varDeclCopy = (VariableDeclarator) (getVariableDeclarator()==null?null:getVariableDeclarator().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
-				res.setVariableDeclarator(varDeclCopy);
-				res.setModifiers(modCopy);
-				res.setTypeSpecifier(tpSpecCopy);
+				/*
+				 	ModifierList modifs,
+					TypeName typespec,
+					VariableDeclarator vdeclr
+				 */
+				VariableDeclaration res = new VariableDeclaration(modCopy, tpSpecCopy, varDeclCopy);
+				copyObjectIDTo(res);
 				res.copyAdditionalInfo(this);
 				return res;
 			}

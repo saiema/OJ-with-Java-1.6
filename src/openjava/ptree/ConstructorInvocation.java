@@ -86,11 +86,15 @@ public class ConstructorInvocation extends NonLeaf {
 	public ParseTree makeRecursiveCopy_keepOriginalID(COPY_SCOPE scope) {
 		switch (scope) {
 			case NODE : {
-				ConstructorInvocation res = (ConstructorInvocation) makeCopy_keepOriginalID();
 				ExpressionList argsCopy = (ExpressionList) (getArguments()==null?null:getArguments().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
 				Expression enclCopy = (Expression) (getEnclosing()==null?null:getEnclosing().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
-				res._isSelfInvocation = this._isSelfInvocation;
-				res.set(argsCopy, enclCopy);
+				ConstructorInvocation res = null;
+				if (enclCopy == null) {
+					res = new ConstructorInvocation(argsCopy);
+				} else {
+					res = new ConstructorInvocation(argsCopy, enclCopy);
+				}
+				copyObjectIDTo(res);
 				res.copyAdditionalInfo(this);
 				return res;
 			}

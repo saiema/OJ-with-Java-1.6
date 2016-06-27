@@ -205,15 +205,12 @@ public class AllocationExpression extends NonLeaf implements Expression {
 	public ParseTree makeRecursiveCopy_keepOriginalID(COPY_SCOPE scope) {
 		switch (scope) {
 			case NODE : {
-				AllocationExpression res = (AllocationExpression) makeCopy_keepOriginalID();
 				TypeName newTypeName = (TypeName) (getClassType()==null?null:getClassType().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
 				ExpressionList newArguments = (ExpressionList) (getArguments()==null?null:getArguments().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
 				Expression newEncloser = (Expression) (getEncloser()==null?null:getEncloser().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
 				MemberDeclarationList body = (MemberDeclarationList) (getClassBody()==null?null:getClassBody().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
-				res.setArguments(newArguments);
-				res.setClassBody(body);
-				res.setClassType(newTypeName);
-				res.setEncloser(newEncloser);
+				AllocationExpression res = new AllocationExpression(newEncloser, newTypeName, newArguments, body);
+				copyObjectIDTo(res);
 				res.copyAdditionalInfo(this);
 				return res;
 			}

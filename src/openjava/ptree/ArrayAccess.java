@@ -88,11 +88,10 @@ public class ArrayAccess extends NonLeaf implements Expression {
 	public ParseTree makeRecursiveCopy_keepOriginalID(COPY_SCOPE scope) {
 		switch (scope) {
 			case NODE : {
-				ArrayAccess res = (ArrayAccess) makeCopy_keepOriginalID();
 				Expression refExprCopy = (Expression) (getReferenceExpr()==null?null:getReferenceExpr().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
 				Expression indexExprCopy = (Expression) (getIndexExpr()==null?null:getIndexExpr().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
-				res.setReferenceExpr(refExprCopy);
-				res.setIndexExpr(indexExprCopy);
+				ArrayAccess res = new ArrayAccess(refExprCopy, indexExprCopy);
+				copyObjectIDTo(res);
 				res.copyAdditionalInfo(this);
 				return res;
 			}

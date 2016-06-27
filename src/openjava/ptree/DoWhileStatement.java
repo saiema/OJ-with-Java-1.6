@@ -83,11 +83,10 @@ public class DoWhileStatement extends NonLeaf implements Statement, ParseTree {
 		switch (scope) {
 			case STATEMENT:
 			case NODE: {
-				DoWhileStatement res = (DoWhileStatement) makeCopy_keepOriginalID();
 				Expression condCopy = (Expression) (getExpression()==null?null:getExpression().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
 				StatementList bodyCopy = (StatementList) (getStatements()==null?null:getStatements().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
-				res.setExpression(condCopy);
-				res.setStatements(bodyCopy);
+				DoWhileStatement res = new DoWhileStatement(bodyCopy, condCopy);
+				copyObjectIDTo(res);
 				res.copyAdditionalInfo(this);
 				return res;
 			}

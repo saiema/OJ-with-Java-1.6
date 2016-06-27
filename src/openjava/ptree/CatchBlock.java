@@ -85,11 +85,10 @@ public class CatchBlock extends NonLeaf {
 	public ParseTree makeRecursiveCopy_keepOriginalID(COPY_SCOPE scope) {
 		switch (scope) {
 			case NODE : {
-				CatchBlock res = (CatchBlock) makeCopy_keepOriginalID();
 				StatementList bodyCopy = (StatementList) (getBody()==null?null:getBody().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
 				Parameter paramCopy = (Parameter) (getParameter()==null?null:getParameter().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
-				res.setBody(bodyCopy);
-				res.setParameter(paramCopy);
+				CatchBlock res = new CatchBlock(paramCopy, bodyCopy);
+				copyObjectIDTo(res);
 				res.copyAdditionalInfo(this);
 				return res;
 			}

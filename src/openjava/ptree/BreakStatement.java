@@ -71,8 +71,8 @@ public class BreakStatement extends NonLeaf implements Statement {
 		switch (scope) {
 			case NODE:
 			case STATEMENT: {
-				BreakStatement res = (BreakStatement) makeCopy_keepOriginalID();
-				res.setLabel(getLabel());
+				BreakStatement res = new BreakStatement(getLabel());
+				copyObjectIDTo(res);
 				res.copyAdditionalInfo(this);
 				return res;
 			}

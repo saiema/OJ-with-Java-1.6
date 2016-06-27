@@ -154,13 +154,14 @@ public class ArrayInitializer extends List implements VariableInitializer {
 	public ParseTree makeRecursiveCopy_keepOriginalID(COPY_SCOPE scope) {
 		switch (scope) {
 			case NODE : {
-				ArrayInitializer res = (ArrayInitializer) makeCopy_keepOriginalID();
+				ArrayInitializer res = new ArrayInitializer();
 				for (int i = 0; i < size(); i++) {
 					VariableInitializer vint = get(i);
 					VariableInitializer vintCopy = (VariableInitializer) (vint==null?null:vint.makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
 					res.add(vintCopy);
 				}
 				res.omitRemainder(this._isRemainderOmitted);
+				copyObjectIDTo(res);
 				return res;
 			}
 			default : return getParent().makeRecursiveCopy_keepOriginalID(scope);

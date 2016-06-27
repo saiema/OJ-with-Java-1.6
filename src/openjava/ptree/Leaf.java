@@ -177,7 +177,7 @@ public class Leaf extends ParseTreeObject implements ParseTree {
 	public ParseTree makeRecursiveCopy_keepOriginalID(COPY_SCOPE scope) {
 		switch (scope) {
 			case NODE : {
-				Leaf res = (Leaf) makeCopy_keepOriginalID();
+				Leaf res = (Leaf) super.makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE);
 				res.tokenID = tokenID;
 				res.textString = textString;
 				res.line = line;

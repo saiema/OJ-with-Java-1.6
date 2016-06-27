@@ -233,7 +233,6 @@ public class ConstructorDeclaration
 		switch (scope) {
 			case MEMBER_DECLARATION:
 			case NODE : {
-				ConstructorDeclaration res = (ConstructorDeclaration) makeCopy_keepOriginalID();
 				StatementList bodyCopy = (StatementList) (getBody()==null?null:getBody().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
 				ConstructorInvocation invCopy = (ConstructorInvocation) (getConstructorInvocation()==null?null:getConstructorInvocation().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
 				ModifierList modsCopy = (ModifierList) (getModifiers()==null?null:getModifiers().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
@@ -247,13 +246,9 @@ public class ConstructorDeclaration
 						throwsCopy[i] = (TypeName) (getThrows()[i]==null?null:getThrows()[i].makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
 					}
 				}
-				res.setBody(bodyCopy);
-				res.setConstructorInvocation(invCopy);
-				res.setModifiers(modsCopy);
-				res.setName(nameCopy);
-				res.setParameters(paramsCopy);
+				ConstructorDeclaration res = new ConstructorDeclaration(modsCopy, nameCopy, paramsCopy, throwsCopy, invCopy, bodyCopy);
 				res.setSuffixes(suffixesCopy);
-				res.setThrows(throwsCopy);
+				copyObjectIDTo(res);
 				res.copyAdditionalInfo(this);
 				return res;
 			}

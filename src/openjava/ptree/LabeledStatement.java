@@ -83,11 +83,10 @@ public class LabeledStatement extends NonLeaf implements Statement {
 		switch (scope) {
 			case STATEMENT:
 			case NODE : {
-				LabeledStatement res = (LabeledStatement) makeCopy_keepOriginalID();
 				String labelCopy = getLabel();
 				Statement stmntCopy = (Statement) (getStatement()==null?null:getStatement().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
-				res.setLabel(labelCopy);
-				res.setStatement(stmntCopy);
+				LabeledStatement res = new LabeledStatement(labelCopy, stmntCopy);
+				copyObjectIDTo(res);
 				res.copyAdditionalInfo(this);
 				return res;
 			}

@@ -104,11 +104,10 @@ public class CastExpression extends NonLeaf implements Expression {
 	public ParseTree makeRecursiveCopy_keepOriginalID(COPY_SCOPE scope) {
 		switch (scope) {
 			case NODE : {
-				CastExpression res = (CastExpression) makeCopy_keepOriginalID();
 				Expression exprCopy = (Expression) (getExpression()==null?null:getExpression().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
 				TypeName tnameCopy = (TypeName) (getTypeSpecifier()==null?null:getTypeSpecifier().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
-				res.setExpression(exprCopy);
-				res.setTypeSpecifier(tnameCopy);
+				CastExpression res = new CastExpression(tnameCopy, exprCopy);
+				copyObjectIDTo(res);
 				res.copyAdditionalInfo(this);
 				return res;
 			}

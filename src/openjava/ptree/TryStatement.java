@@ -131,13 +131,16 @@ public class TryStatement extends NonLeaf implements Statement, ParseTree {
 		switch (scope) {
 			case STATEMENT:
 			case NODE : {
-				TryStatement res = (TryStatement) makeCopy_keepOriginalID();
 				StatementList bodyCopy = (StatementList) (getBody()==null?null:getBody().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
 				CatchList catchListCopy = (CatchList) (getCatchList()==null?null:getCatchList().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
 				StatementList finallyCopy = (StatementList) (getFinallyBody()==null?null:getFinallyBody().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
-				res.setBody(bodyCopy);
-				res.setCatchList(catchListCopy);
-				res.setFinallyBody(finallyCopy);
+				/*
+				 	StatementList stmts,
+					CatchList catchlist,
+					StatementList finallee
+				 */
+				TryStatement res = new TryStatement(bodyCopy, catchListCopy, finallyCopy);
+				copyObjectIDTo(res);
 				res.copyAdditionalInfo(this);
 				return res;
 			}

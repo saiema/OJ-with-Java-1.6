@@ -131,12 +131,13 @@ public class ObjectList extends List {
 	public ParseTree makeRecursiveCopy_keepOriginalID(COPY_SCOPE scope) {
 		switch (scope) {
 			case NODE : {
-				ObjectList res = (ObjectList) makeCopy_keepOriginalID();
+				ObjectList res = new ObjectList();
 				for (int i = 0; i < size(); i++) {
 					Object currObj = get(i);
 					Object currObjCopy = currObj;
 					res.add(currObjCopy);
 				}
+				copyObjectIDTo(res);
 				return res;
 			}
 			default : return getParent().makeRecursiveCopy_keepOriginalID(scope);

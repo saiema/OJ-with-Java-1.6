@@ -263,11 +263,10 @@ public class UnaryExpression extends NonLeaf implements Expression {
 	public ParseTree makeRecursiveCopy_keepOriginalID(COPY_SCOPE scope) {
 		switch (scope) {
 			case NODE : {
-				UnaryExpression res = (UnaryExpression) makeCopy_keepOriginalID();
 				Expression exprCopy = (Expression) (getExpression()==null?null:getExpression().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
 				int opCopy = getOperator();
-				res.setExpression(exprCopy);
-				res.setOperator(opCopy);
+				UnaryExpression res = new UnaryExpression(exprCopy, opCopy);
+				copyObjectIDTo(res);
 				res.copyAdditionalInfo(this);
 				return res;
 			}

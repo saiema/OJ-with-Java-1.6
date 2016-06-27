@@ -70,9 +70,8 @@ public class ContinueStatement extends NonLeaf implements Statement {
 		switch (scope) {
 			case STATEMENT:
 			case NODE: {
-				ContinueStatement res = (ContinueStatement) makeCopy_keepOriginalID();
-				String labelCopy = getLabel();
-				res.setLabel(labelCopy);
+				ContinueStatement res = new ContinueStatement(getLabel());
+				copyObjectIDTo(res);
 				res.copyAdditionalInfo(this);
 				return res;
 			}

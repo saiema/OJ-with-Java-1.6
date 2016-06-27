@@ -28,6 +28,7 @@ public class ClassDeclaration extends NonLeaf implements Statement, MemberDeclar
     private Hashtable suffixes = null;
     private boolean _isInterface = false;
     private boolean _isEnum = false;
+    private EnumDeclaration enumDecl = null;
 
     /**
      * Constructs ClassDeclaration from its elements.
@@ -65,6 +66,7 @@ public class ClassDeclaration extends NonLeaf implements Statement, MemberDeclar
     public ClassDeclaration(MemberDeclaration enumDeclaration){
     	super();
     	set_isEnum(true);
+    	this.enumDecl = (EnumDeclaration) enumDeclaration;
     	TypeName[] ifaces = (((EnumDeclaration )enumDeclaration).getImplementsList() == null) ? new TypeName[0] : ((EnumDeclaration )enumDeclaration).getImplementsList();
     	set(((EnumDeclaration )enumDeclaration).getModifiers(), ((EnumDeclaration )enumDeclaration).getName(), null, new TypeName[0], ifaces, ((EnumDeclaration )enumDeclaration).getClassBodyDeclaration(), false, ((EnumDeclaration )enumDeclaration).getEnumConstantList());
     }
@@ -275,38 +277,38 @@ public class ClassDeclaration extends NonLeaf implements Statement, MemberDeclar
 		switch (scope) {
 			case NODE:
 			case CLASS_DECLARATION: {
-				ClassDeclaration res = (ClassDeclaration) makeCopy_keepOriginalID();
-				res.beInterface(isInterface());
-				res.set_isEnum(isEnumeration());
+				ClassDeclaration res = null;
+				if (isEnumeration()) {
+					MemberDeclaration enumDeclCopy = (MemberDeclaration) enumDecl.makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE);
+					res = new ClassDeclaration(enumDeclCopy);
+				} else {
+					ModifierList modifiersCopy = (ModifierList) (getModifiers()==null?null:getModifiers().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
+					String nameCopy = getName();
+					TypeParameterList paramsCopy = (TypeParameterList) (getTypeParameters()==null?null:getTypeParameters().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
+					TypeName[] baseClassesCopy = new TypeName[getBaseclasses().length];
+					for (int i = 0; i < getBaseclasses().length; i++) {
+						TypeName tn = getBaseclasses()[i];
+						TypeName tnCopy = (TypeName) (tn==null?null:tn.makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
+						baseClassesCopy[i] = tnCopy;
+					}
+					TypeName[] interfaces = getInterfaces();
+					TypeName[] interfacesCopy = null;
+					if (interfaces != null) {
+						interfacesCopy = new TypeName[interfaces.length];
+						for (int i = 0; i < interfaces.length; i++) {
+							interfacesCopy[i] = (TypeName) (interfaces[i]==null?null:interfaces[i].makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
+						}
+					}
+					MemberDeclarationList bodyCopy = (MemberDeclarationList) (getBody()==null?null:getBody().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
+					boolean isClassCopy = !this._isInterface;
+					res = new ClassDeclaration(modifiersCopy, nameCopy, paramsCopy, baseClassesCopy, interfacesCopy, bodyCopy, isClassCopy);
+					
+				}
 				AnnotationsList annListCopy = (AnnotationsList) (getAnnotations()==null?null:getAnnotations().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
 				res.setAnnotations(annListCopy);
-				TypeName[] tnamesCopy = new TypeName[getBaseclasses().length];
-				for (int i = 0; i < getBaseclasses().length; i++) {
-					TypeName tn = getBaseclasses()[i];
-					TypeName tnCopy = (TypeName) (tn==null?null:tn.makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
-					tnamesCopy[i] = tnCopy;
-				}
-				res.setBaseclasses(tnamesCopy);
-				MemberDeclarationList bodyCopy = (MemberDeclarationList) (getBody()==null?null:getBody().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
-				res.setBody(bodyCopy);
-				EnumConstantList enumCopy = (EnumConstantList) (getEnumConstants()==null?null:getEnumConstants().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
-				res.setEnumConstants(enumCopy);
-				TypeName[] interfaces = getInterfaces();
-				TypeName[] interfacesCopy = null;
-				if (interfaces != null) {
-					interfacesCopy = new TypeName[interfaces.length];
-					for (int i = 0; i < interfaces.length; i++) {
-						interfacesCopy[i] = (TypeName) (interfaces[i]==null?null:interfaces[i].makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
-					}
-				}
-				res.setInterfaces(interfacesCopy);
 				res.setMetaclass(getMetaclass());
-				ModifierList modifiersCopy = (ModifierList) (getModifiers()==null?null:getModifiers().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
-				res.setModifiers(modifiersCopy);
-				res.setName(getName());
 				res.setSuffixes(getSuffixes());
-				TypeParameterList paramsCopy = (TypeParameterList) (getTypeParameters()==null?null:getTypeParameters().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
-				res.setTypeParameters(paramsCopy);
+				copyObjectIDTo(res);
 				res.copyAdditionalInfo(this);
 				return res;
 			}

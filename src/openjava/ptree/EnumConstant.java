@@ -102,13 +102,13 @@ public class EnumConstant extends NonLeaf implements ParseTree{
 	public ParseTree makeRecursiveCopy_keepOriginalID(COPY_SCOPE scope) {
 		switch (scope) {
 			case NODE : {
-				EnumConstant res = (EnumConstant) makeCopy_keepOriginalID();
 				ExpressionList argsCopy = (ExpressionList) (getArguments()==null?null:getArguments().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
 				MemberDeclarationList clBodyCopy = (MemberDeclarationList) (getClassBody()==null?null:getClassBody().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
 				String enTypeCopy = getEnumType();
 				ModifierList modsCopy = (ModifierList) (getModifiers()==null?null:getModifiers().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
 				String nameCopy = getName();
-				res.set(modsCopy, nameCopy, argsCopy, clBodyCopy, enTypeCopy);
+				EnumConstant res = new EnumConstant(modsCopy, nameCopy, argsCopy, clBodyCopy, enTypeCopy);
+				copyObjectIDTo(res);
 				res.copyAdditionalInfo(this);
 				return res;
 			}

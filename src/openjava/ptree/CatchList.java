@@ -121,12 +121,13 @@ public class CatchList extends List {
 	public ParseTree makeRecursiveCopy_keepOriginalID(COPY_SCOPE scope) {
 		switch (scope) {
 			case NODE : {
-				CatchList res = (CatchList) makeCopy_keepOriginalID();
+				CatchList res = new CatchList();
 				for (int i = 0; i < size(); i++) {
 					CatchBlock cblock = get(i);
 					CatchBlock cblockCopy = (CatchBlock) (cblock==null?null:cblock.makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
 					res.add(cblockCopy);
 				}
+				copyObjectIDTo(res);
 				return res;
 			}
 			default : return getParent().makeRecursiveCopy_keepOriginalID(scope);

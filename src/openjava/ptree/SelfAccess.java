@@ -97,9 +97,13 @@ public class SelfAccess extends Leaf implements Expression {
 	public ParseTree makeRecursiveCopy_keepOriginalID(COPY_SCOPE scope) {
 		switch (scope) {
 			case NODE : {
-				SelfAccess res = (SelfAccess) super.makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE);
-				res.qualifier = qualifier;
-				res.id = id;
+				SelfAccess res = null;
+				if (this.qualifier != null) {
+					res = new SelfAccess(this.qualifier);
+				} else {
+					res = new SelfAccess(this.id);
+				}
+				copyObjectIDTo(res);
 				return res;
 			}
 			default : return getParent().makeRecursiveCopy_keepOriginalID(scope);

@@ -121,12 +121,13 @@ public class ClassDeclarationList extends List {
 	public ParseTree makeRecursiveCopy_keepOriginalID(COPY_SCOPE scope) {
 		switch (scope) {
 			case NODE : {
-				ClassDeclarationList res = (ClassDeclarationList) makeCopy_keepOriginalID();
+				ClassDeclarationList res = new ClassDeclarationList();
 				for (int i = 0; i < size(); i++) {
 					ClassDeclaration cdecl = get(i);
 					ClassDeclaration cdeclCopy = (ClassDeclaration) (cdecl==null?null:cdecl.makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
 					res.add(cdeclCopy);
 				}
+				copyObjectIDTo(res);
 				return res;
 			}
 			default : return getParent().makeRecursiveCopy_keepOriginalID(scope);

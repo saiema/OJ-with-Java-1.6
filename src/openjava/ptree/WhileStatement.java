@@ -86,11 +86,10 @@ public class WhileStatement extends NonLeaf implements Statement, ParseTree {
 		switch (scope) {
 			case STATEMENT:
 			case NODE : {
-				WhileStatement res = (WhileStatement) makeCopy_keepOriginalID();
 				Expression exprCopy = (Expression) (getExpression()==null?null:getExpression().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
 				StatementList bodyCopy = (StatementList) (getStatements()==null?null:getStatements().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
-				res.setExpression(exprCopy);
-				res.setStatements(bodyCopy);
+				WhileStatement res = new WhileStatement(exprCopy, bodyCopy);
+				copyObjectIDTo(res);
 				res.copyAdditionalInfo(this);
 				return res;
 			}
