@@ -84,6 +84,8 @@ public class EnumDeclaration extends NonLeaf implements MemberDeclaration{
 	public ParseTree makeRecursiveCopy_keepOriginalID(COPY_SCOPE scope) {
 		switch (scope) {
 			case MEMBER_DECLARATION:
+			case STATEMENT:
+			case STATEMENT_LIST:
 			case NODE: {
 				MemberDeclarationList cbodyDeclCopy = (MemberDeclarationList) (getClassBodyDeclaration()==null?null:getClassBodyDeclaration().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
 				EnumConstantList enConstListCopy = (EnumConstantList) (getEnumConstantList()==null?null:getEnumConstantList().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));

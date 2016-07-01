@@ -72,6 +72,8 @@ public class MemberInitializer extends NonLeaf implements MemberDeclaration {
 	public ParseTree makeRecursiveCopy_keepOriginalID(COPY_SCOPE scope) {
 		switch (scope) {
 			case MEMBER_DECLARATION:
+			case STATEMENT:
+			case STATEMENT_LIST:
 			case NODE : {
 				StatementList bodyCopy = (StatementList) (getBody()==null?null:getBody().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
 				MemberInitializer res = new MemberInitializer(bodyCopy, isStatic());

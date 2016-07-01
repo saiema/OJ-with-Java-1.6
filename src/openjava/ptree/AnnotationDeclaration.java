@@ -20,6 +20,9 @@ public class AnnotationDeclaration extends NonLeaf implements MemberDeclaration 
 	@Override
 	public ParseTree makeRecursiveCopy_keepOriginalID(COPY_SCOPE scope) {
 		switch (scope) {
+			case MEMBER_DECLARATION:
+			case STATEMENT:
+			case STATEMENT_LIST:
 			case NODE : {
 				AnnotationDeclaration res = new AnnotationDeclaration(getDeclaration());
 				copyObjectIDTo(res);

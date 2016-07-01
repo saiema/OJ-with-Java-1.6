@@ -186,6 +186,8 @@ public class FieldDeclaration extends NonLeaf implements MemberDeclaration {
 	public ParseTree makeRecursiveCopy_keepOriginalID(COPY_SCOPE scope) {
 		switch (scope) {
 			case MEMBER_DECLARATION:
+			case STATEMENT:
+			case STATEMENT_LIST:
 			case NODE: {
 				AnnotationsList annCopy = (AnnotationsList) (getAnnotations()==null?null:getAnnotations().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
 				ModifierList modsCopy = (ModifierList) (getModifiers()==null?null:getModifiers().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
