@@ -109,6 +109,10 @@ public class OJModifier {
 	public final boolean isProtected() {
 		return ((javaModifier & PROTECTED) != 0);
 	}
+	
+	public final boolean isPackaged() {
+		return ((javaModifier & ACCESS) == 0);
+	}
 
 	/**
 	 * Returns true if this modifier includes the <tt>static</tt>

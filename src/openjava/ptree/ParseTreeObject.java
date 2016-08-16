@@ -19,7 +19,7 @@ import java.io.StringWriter;
 import java.util.StringTokenizer;
 
 import openjava.ptree.util.ParseTreeVisitor;
-import openjava.ptree.util.SourceCodeWriter;
+import openjava.ptree.util.SourceCodeWriter;;
 
 /**
  * The ParseTree class presents for the node of parse tree.
@@ -49,6 +49,61 @@ public abstract class ParseTreeObject
 	public /*private*/
 	final ParseTreeObject getParent() {
 		return parent;
+	}
+	
+	/**
+	 * Make a copy of a node using {@code makeRecursiveCopy_keepOriginalID(COPY_SCOPE)}
+	 * and set the parent of the copy as the parent of the original node.
+	 * 
+	 * @param o
+	 * @param scope
+	 * @return
+	 */
+	public final static ParseTreeObject boundedRecursiveCopyOf(ParseTreeObject o, COPY_SCOPE scope) {
+		ParseTreeObject boundedCopy = (ParseTreeObject) o.makeRecursiveCopy_keepOriginalID(scope);
+		ParseTreeObject originalsParent = getParent(o, scope);
+		boundedCopy.setParent(originalsParent);
+		return boundedCopy;
+	}
+	
+	public final static ParseTreeObject getParent(ParseTreeObject o, COPY_SCOPE scope) {
+		if (scope.equals(COPY_SCOPE.NODE)) {
+			return o.getParent();
+		}
+		ParseTreeObject parent = o;
+		while (!nodeReachedScopeLimit(parent, scope)) {
+			parent = parent.getParent();
+		}
+		return parent;
+	}
+	
+	private final static boolean nodeReachedScopeLimit(ParseTreeObject o, COPY_SCOPE scope) {
+		switch (scope) {
+			case CLASS_DECLARATION: {
+				return 	   (o instanceof ClassDeclaration)
+						|| (o instanceof CompilationUnit)
+						|| (o instanceof MemberDeclaration)
+						|| (o instanceof Statement)
+						|| (o instanceof StatementList);
+			}
+			case COMPILATION_UNIT: {
+				return 	   (o instanceof CompilationUnit)
+						|| (o instanceof MemberDeclaration)
+						|| (o instanceof Statement)
+						|| (o instanceof StatementList);
+			}
+			case MEMBER_DECLARATION: {
+				return 	   (o instanceof MemberDeclaration)
+						|| (o instanceof Statement)
+						|| (o instanceof StatementList);
+			}
+			case STATEMENT: return (o instanceof Statement);
+			case STATEMENT_LIST: {
+				return 	   (o instanceof StatementList)
+						|| (o instanceof Statement);
+			}
+			default: return false;
+		}
 	}
 	
 	public final void setParent(ParseTreeObject parent) { //modified (15/09/14) [simon] {private -> public}

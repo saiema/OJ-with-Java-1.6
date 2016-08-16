@@ -131,7 +131,7 @@ public class ExpressionList extends List {
 	public ParseTree makeRecursiveCopy_keepOriginalID(COPY_SCOPE scope) {
 		switch (scope) {
 			case NODE : {
-				ExpressionList res = (ExpressionList) shallowCopy_keepOriginalID();
+				ExpressionList res = new ExpressionList();
 				for (int i = 0; i < size(); i++) {
 					Expression expr = get(i);
 					Expression exprCopy = (Expression) (expr==null?null:expr.makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));

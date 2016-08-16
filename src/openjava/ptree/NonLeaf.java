@@ -28,6 +28,7 @@ public abstract class NonLeaf extends ParseTreeObject implements ParseTree {
 	private String generics = "";				//added (08/09/14) [simon]
 	protected Integer mutGenLimit = 0;			//added (08/09/14) [simon]
 	protected boolean hasMutGenLimit = false;	//added (08/09/14) [simon]
+	private static boolean verbose = false;
 
 	protected final void replaceChildWith(
 		ParseTree dist,
@@ -400,7 +401,7 @@ public abstract class NonLeaf extends ParseTreeObject implements ParseTree {
 		try {
 			ret = contents[i];
 		} catch (ArrayIndexOutOfBoundsException ex) {
-			System.out.println(ex);
+			if (NonLeaf.verbose) System.out.println("NonLeaf#elementAt(int) : " + ex);
 			//throw new NonLeafException( ex.toString() );
 		}
 
@@ -421,7 +422,7 @@ public abstract class NonLeaf extends ParseTreeObject implements ParseTree {
 				((ParseTreeObject) contents[i]).setParent(this);
 			}
 		} catch (ArrayIndexOutOfBoundsException ex) {
-			System.out.println(ex);
+			if (NonLeaf.verbose) System.out.println("NonLeaf#setElementAt(Object, int) : " + ex);
 			//throw new NonLeafException( ex.toString() );
 		}
 	}
