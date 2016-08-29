@@ -70,11 +70,11 @@ public abstract class ParseTreeObject
 		if (scope.equals(COPY_SCOPE.NODE)) {
 			return o.getParent();
 		}
-		ParseTreeObject parent = o;
-		while (!nodeReachedScopeLimit(parent, scope)) {
-			parent = parent.getParent();
+		ParseTreeObject nodeFromScope = o;
+		while (!nodeReachedScopeLimit(nodeFromScope, scope)) {
+			nodeFromScope = nodeFromScope.getParent();
 		}
-		return parent;
+		return nodeFromScope.getParent();
 	}
 	
 	private final static boolean nodeReachedScopeLimit(ParseTreeObject o, COPY_SCOPE scope) {
@@ -238,6 +238,19 @@ public abstract class ParseTreeObject
 		StringWriter strwriter = new StringWriter();
 		PrintWriter out = new PrintWriter(strwriter);
 		SourceCodeWriter writer = new SourceCodeWriter(out);
+		try {
+			this.accept(writer);
+		} catch (ParseTreeException e) {
+			System.err.println("fail in toString()");
+		}
+		out.close();
+		return strwriter.toString();
+	}
+	
+	public String toString(ParseTree target, ParseTree replacement) {
+		StringWriter strwriter = new StringWriter();
+		PrintWriter out = new PrintWriter(strwriter);
+		SourceCodeWriter writer = new SourceCodeWriter(out, target, replacement);
 		try {
 			this.accept(writer);
 		} catch (ParseTreeException e) {

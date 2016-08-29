@@ -81,6 +81,8 @@ public interface ParseTree {
 	 * @return string which presents for this parse-tree
 	 */
 	public String toString();
+	
+	public String toString(ParseTree target, ParseTree replacement);
 
 	/**
 	 * Generates the string expression from this node.  Returned

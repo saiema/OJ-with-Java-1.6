@@ -101,6 +101,10 @@ import openjava.ptree.WhileStatement;
 public class SourceCodeWriter extends ParseTreeVisitor {
 
 	protected PrintWriter out;
+	
+	private ParseTree target;
+	private ParseTree replacement;
+	private boolean replace = false;
 
 	/**
 	 * Why this modifier is not final ?
@@ -206,8 +210,28 @@ public class SourceCodeWriter extends ParseTreeVisitor {
 		super();
 		this.out = out;
 	}
+	
+	public SourceCodeWriter(PrintWriter out, ParseTree target, ParseTree replacement) {
+		this(out);
+		this.target = target;
+		this.replacement = replacement;
+		this.replace = this.target != null && this.replacement != null;
+	}
+	
+	private boolean isSameObject(ParseTree p, ParseTree q) {
+		if (p == null && q == null)
+			return true;
+		if (p == null || q == null)
+			return false;
+		return (p.getObjectID() == q.getObjectID());
+	}
 
 	public void visit(AllocationExpression p) throws ParseTreeException {
+		if (this.replace && isSameObject(p, this.target)) {
+			this.replace = false;
+			this.replacement.accept(this);
+			return;
+		}
 		writeDebugL(p);
 
 		Expression encloser = p.getEncloser();
@@ -238,6 +262,11 @@ public class SourceCodeWriter extends ParseTreeVisitor {
 	}
 
 	public void visit(ArrayAccess p) throws ParseTreeException {
+		if (this.replace && isSameObject(p, this.target)) {
+			this.replace = false;
+			this.replacement.accept(this);
+			return;
+		}
 		writeDebugL(p);
 
 		Expression expr = p.getReferenceExpr();
@@ -260,6 +289,11 @@ public class SourceCodeWriter extends ParseTreeVisitor {
 	}
 
 	public void visit(ArrayAllocationExpression p) throws ParseTreeException {
+		if (this.replace && isSameObject(p, this.target)) {
+			this.replace = false;
+			this.replacement.accept(this);
+			return;
+		}
 		writeDebugL(p);
 
 		out.print("new ");
@@ -284,6 +318,11 @@ public class SourceCodeWriter extends ParseTreeVisitor {
 	}
 
 	public void visit(ArrayInitializer p) throws ParseTreeException {
+		if (this.replace && isSameObject(p, this.target)) {
+			this.replace = false;
+			this.replacement.accept(this);
+			return;
+		}
 		writeDebugL(p);
 
 		out.print("{ ");
@@ -296,6 +335,11 @@ public class SourceCodeWriter extends ParseTreeVisitor {
 	}
 
 	public void visit(AssignmentExpression p) throws ParseTreeException {
+		if (this.replace && isSameObject(p, this.target)) {
+			this.replace = false;
+			this.replacement.accept(this);
+			return;
+		}
 		writeDebugL(p);
 
 		Expression lexpr = p.getLeft();
@@ -315,6 +359,11 @@ public class SourceCodeWriter extends ParseTreeVisitor {
 	}
 
 	public void visit(BinaryExpression p) throws ParseTreeException {
+		if (this.replace && isSameObject(p, this.target)) {
+			this.replace = false;
+			this.replacement.accept(this);
+			return;
+		}
 		writeDebugL(p);
 
 		Expression lexpr = p.getLeft();
@@ -338,6 +387,11 @@ public class SourceCodeWriter extends ParseTreeVisitor {
 	}
 
 	public void visit(Block p) throws ParseTreeException {
+		if (this.replace && isSameObject(p, this.target)) {
+			this.replace = false;
+			this.replacement.accept(this);
+			return;
+		}
 		StatementList stmts = p.getStatements();
 		writeTab();
 		writeDebugL(p);
@@ -347,6 +401,11 @@ public class SourceCodeWriter extends ParseTreeVisitor {
 	}
 
 	public void visit(BreakStatement p) throws ParseTreeException {
+		if (this.replace && isSameObject(p, this.target)) {
+			this.replace = false;
+			this.replacement.accept(this);
+			return;
+		}
 		writeTab();
 		writeDebugL(p);
 
@@ -365,6 +424,11 @@ public class SourceCodeWriter extends ParseTreeVisitor {
 	}
 
 	public void visit(CaseGroup p) throws ParseTreeException {
+		if (this.replace && isSameObject(p, this.target)) {
+			this.replace = false;
+			this.replacement.accept(this);
+			return;
+		}
 		ExpressionList labels = p.getLabels();
 		for (int i = 0; i < labels.size(); ++i) {
 			writeTab();
@@ -385,10 +449,20 @@ public class SourceCodeWriter extends ParseTreeVisitor {
 	}
 
 	public void visit(CaseGroupList p) throws ParseTreeException {
+		if (this.replace && isSameObject(p, this.target)) {
+			this.replace = false;
+			this.replacement.accept(this);
+			return;
+		}
 		writeListWithSuffix(p, NEWLINE);
 	}
 
 	public void visit(CaseLabel p) throws ParseTreeException {
+		if (this.replace && isSameObject(p, this.target)) {
+			this.replace = false;
+			this.replacement.accept(this);
+			return;
+		}
 		Expression expr = p.getExpression();
 		if (expr != null) {
 			out.print("case ");
@@ -400,10 +474,20 @@ public class SourceCodeWriter extends ParseTreeVisitor {
 	}
 
 	public void visit(CaseLabelList p) throws ParseTreeException {
+		if (this.replace && isSameObject(p, this.target)) {
+			this.replace = false;
+			this.replacement.accept(this);
+			return;
+		}
 		writeListWithSuffix(p, NEWLINE);
 	}
 
 	public void visit(CastExpression p) throws ParseTreeException {
+		if (this.replace && isSameObject(p, this.target)) {
+			this.replace = false;
+			this.replacement.accept(this);
+			return;
+		}
 		writeDebugL(p);
 
 		out.print("(");
@@ -428,6 +512,11 @@ public class SourceCodeWriter extends ParseTreeVisitor {
 	}
 
 	public void visit(CatchBlock p) throws ParseTreeException {
+		if (this.replace && isSameObject(p, this.target)) {
+			this.replace = false;
+			this.replacement.accept(this);
+			return;
+		}
 		out.print(" catch ");
 
 		out.print("( ");
@@ -442,10 +531,20 @@ public class SourceCodeWriter extends ParseTreeVisitor {
 	}
 
 	public void visit(CatchList p) throws ParseTreeException {
+		if (this.replace && isSameObject(p, this.target)) {
+			this.replace = false;
+			this.replacement.accept(this);
+			return;
+		}
 		writeList(p);
 	}
 
 	public void visit(ClassDeclaration p) throws ParseTreeException {
+		if (this.replace && isSameObject(p, this.target)) {
+			this.replace = false;
+			this.replacement.accept(this);
+			return;
+		}
 		printComment(p);
 
 		writeTab();
@@ -571,10 +670,20 @@ public class SourceCodeWriter extends ParseTreeVisitor {
 	}
 
 	public void visit(ClassDeclarationList p) throws ParseTreeException {
+		if (this.replace && isSameObject(p, this.target)) {
+			this.replace = false;
+			this.replacement.accept(this);
+			return;
+		}
 		writeListWithDelimiter(p, NEWLINE + NEWLINE);
 	}
 
 	public void visit(ClassLiteral p) throws ParseTreeException {
+		if (this.replace && isSameObject(p, this.target)) {
+			this.replace = false;
+			this.replacement.accept(this);
+			return;
+		}
 		writeDebugL(p);
 		TypeName type = p.getTypeName();
 		type.accept(this);
@@ -583,6 +692,11 @@ public class SourceCodeWriter extends ParseTreeVisitor {
 	}
 
 	public void visit(CompilationUnit p) throws ParseTreeException {
+		if (this.replace && isSameObject(p, this.target)) {
+			this.replace = false;
+			this.replacement.accept(this);
+			return;
+		}
 		out.println("/*");
 		out.println(" * This code was generated by ojc.");
 		out.println(" */");
@@ -617,6 +731,11 @@ public class SourceCodeWriter extends ParseTreeVisitor {
 	}
 
 	public void visit(ConditionalExpression p) throws ParseTreeException {
+		if (this.replace && isSameObject(p, this.target)) {
+			this.replace = false;
+			this.replacement.accept(this);
+			return;
+		}
 		writeDebugL(p);
 
 		Expression condition = p.getCondition();
@@ -649,6 +768,11 @@ public class SourceCodeWriter extends ParseTreeVisitor {
 	}
 
 	public void visit(ConstructorDeclaration p) throws ParseTreeException {
+		if (this.replace && isSameObject(p, this.target)) {
+			this.replace = false;
+			this.replacement.accept(this);
+			return;
+		}
 		writeTab();
 		writeDebugL(p);
 
@@ -711,6 +835,11 @@ public class SourceCodeWriter extends ParseTreeVisitor {
 	}
 
 	public void visit(ConstructorInvocation p) throws ParseTreeException {
+		if (this.replace && isSameObject(p, this.target)) {
+			this.replace = false;
+			this.replacement.accept(this);
+			return;
+		}
 		writeTab();
 		writeDebugL(p);
 
@@ -735,6 +864,11 @@ public class SourceCodeWriter extends ParseTreeVisitor {
 	}
 
 	public void visit(ContinueStatement p) throws ParseTreeException {
+		if (this.replace && isSameObject(p, this.target)) {
+			this.replace = false;
+			this.replacement.accept(this);
+			return;
+		}
 		writeTab();
 		writeDebugL(p);
 
@@ -752,6 +886,11 @@ public class SourceCodeWriter extends ParseTreeVisitor {
 	}
 
 	public void visit(DoWhileStatement p) throws ParseTreeException {
+		if (this.replace && isSameObject(p, this.target)) {
+			this.replace = false;
+			this.replacement.accept(this);
+			return;
+		}
 		writeTab();
 		writeDebugL(p);
 
@@ -779,6 +918,11 @@ public class SourceCodeWriter extends ParseTreeVisitor {
 	}
 
 	public void visit(EmptyStatement p) throws ParseTreeException {
+		if (this.replace && isSameObject(p, this.target)) {
+			this.replace = false;
+			this.replacement.accept(this);
+			return;
+		}
 		writeTab();
 		writeDebugL(p);
 
@@ -791,6 +935,11 @@ public class SourceCodeWriter extends ParseTreeVisitor {
 	 * Added for Java 1.5 Enumeration
 	 */
 	public void visit(EnumDeclaration p) throws ParseTreeException {
+		if (this.replace && isSameObject(p, this.target)) {
+			this.replace = false;
+			this.replacement.accept(this);
+			return;
+		}
 		writeTab();
 		writeDebugL(p);
 
@@ -801,6 +950,11 @@ public class SourceCodeWriter extends ParseTreeVisitor {
 	}
 	
 	public void visit(EnumConstant p) throws ParseTreeException {
+		if (this.replace && isSameObject(p, this.target)) {
+			this.replace = false;
+			this.replacement.accept(this);
+			return;
+		}
 		writeTab();
 		writeDebugL(p);
 
@@ -811,6 +965,11 @@ public class SourceCodeWriter extends ParseTreeVisitor {
 	}
 	
 	public void visit(EnumConstantList p) throws ParseTreeException {
+		if (this.replace && isSameObject(p, this.target)) {
+			this.replace = false;
+			this.replacement.accept(this);
+			return;
+		}
 		writeTab();
 		writeDebugL(p);
 
@@ -821,10 +980,20 @@ public class SourceCodeWriter extends ParseTreeVisitor {
 	}
 
 	public void visit(ExpressionList p) throws ParseTreeException {
+		if (this.replace && isSameObject(p, this.target)) {
+			this.replace = false;
+			this.replacement.accept(this);
+			return;
+		}
 		writeListWithDelimiter(p, ", ");
 	}
 
 	public void visit(ExpressionStatement p) throws ParseTreeException {
+		if (this.replace && isSameObject(p, this.target)) {
+			this.replace = false;
+			this.replacement.accept(this);
+			return;
+		}
 		writeTab();
 		writeDebugL(p);
 
@@ -838,6 +1007,11 @@ public class SourceCodeWriter extends ParseTreeVisitor {
 	}
 
 	public void visit(FieldAccess p) throws ParseTreeException {
+		if (this.replace && isSameObject(p, this.target)) {
+			this.replace = false;
+			this.replacement.accept(this);
+			return;
+		}
 		writeDebugL(p);
 
 		Expression expr = p.getReferenceExpr();
@@ -867,6 +1041,11 @@ public class SourceCodeWriter extends ParseTreeVisitor {
 	}
 
 	public void visit(FieldDeclaration p) throws ParseTreeException {
+		if (this.replace && isSameObject(p, this.target)) {
+			this.replace = false;
+			this.replacement.accept(this);
+			return;
+		}
 		printComment(p);
 
 		writeTab();
@@ -904,6 +1083,11 @@ public class SourceCodeWriter extends ParseTreeVisitor {
 	}
 
 	public void visit(ForStatement p) throws ParseTreeException {
+		if (this.replace && isSameObject(p, this.target)) {
+			this.replace = false;
+			this.replacement.accept(this);
+			return;
+		}
 		writeTab();
 		writeDebugL(p);
 
@@ -964,6 +1148,11 @@ public class SourceCodeWriter extends ParseTreeVisitor {
 	}
 
 	public void visit(IfStatement p) throws ParseTreeException {
+		if (this.replace && isSameObject(p, this.target)) {
+			this.replace = false;
+			this.replacement.accept(this);
+			return;
+		}
 		writeTab();
 		writeDebugL(p);
 
@@ -990,6 +1179,11 @@ public class SourceCodeWriter extends ParseTreeVisitor {
 	}
 
 	public void visit(InstanceofExpression p) throws ParseTreeException {
+		if (this.replace && isSameObject(p, this.target)) {
+			this.replace = false;
+			this.replacement.accept(this);
+			return;
+		}
 		writeDebugL(p);
 
 		/* this is too strict for + or - */
@@ -1011,6 +1205,11 @@ public class SourceCodeWriter extends ParseTreeVisitor {
 	}
 
 	public void visit(LabeledStatement p) throws ParseTreeException {
+		if (this.replace && isSameObject(p, this.target)) {
+			this.replace = false;
+			this.replacement.accept(this);
+			return;
+		}
 		writeTab();
 
 		String name = p.getLabel();
@@ -1023,14 +1222,29 @@ public class SourceCodeWriter extends ParseTreeVisitor {
 	}
 
 	public void visit(Literal p) throws ParseTreeException {
+		if (this.replace && isSameObject(p, this.target)) {
+			this.replace = false;
+			this.replacement.accept(this);
+			return;
+		}
 		out.print(p.toString());
 	}
 
 	public void visit(MemberDeclarationList p) throws ParseTreeException {
+		if (this.replace && isSameObject(p, this.target)) {
+			this.replace = false;
+			this.replacement.accept(this);
+			return;
+		}
 		writeListWithDelimiter(p, NEWLINE);
 	}
 
 	public void visit(MemberInitializer p) throws ParseTreeException {
+		if (this.replace && isSameObject(p, this.target)) {
+			this.replace = false;
+			this.replacement.accept(this);
+			return;
+		}
 		writeTab();
 		writeDebugL(p);
 
@@ -1046,6 +1260,11 @@ public class SourceCodeWriter extends ParseTreeVisitor {
 	}
 
 	public void visit(MethodCall p) throws ParseTreeException {
+		if (this.replace && isSameObject(p, this.target)) {
+			this.replace = false;
+			this.replacement.accept(this);
+			return;
+		}
 		writeDebugL(p);
 
 		Expression expr = p.getReferenceExpr();
@@ -1076,6 +1295,11 @@ public class SourceCodeWriter extends ParseTreeVisitor {
 	}
 
 	public void visit(MethodDeclaration p) throws ParseTreeException {
+		if (this.replace && isSameObject(p, this.target)) {
+			this.replace = false;
+			this.replacement.accept(this);
+			return;
+		}
 		printComment(p);
 
 		writeTab();
@@ -1151,6 +1375,11 @@ public class SourceCodeWriter extends ParseTreeVisitor {
 	}
 
 	public void visit(ModifierList p) throws ParseTreeException {
+		if (this.replace && isSameObject(p, this.target)) {
+			this.replace = false;
+			this.replacement.accept(this);
+			return;
+		}
 		writeDebugL(p);
 
 		out.print(ModifierList.toString(p.getRegular()));
@@ -1159,6 +1388,11 @@ public class SourceCodeWriter extends ParseTreeVisitor {
 	}
 
 	public void visit(Parameter p) throws ParseTreeException {
+		if (this.replace && isSameObject(p, this.target)) {
+			this.replace = false;
+			this.replacement.accept(this);
+			return;
+		}
 		writeDebugL(p);
 
 		ModifierList modifs = p.getModifiers();
@@ -1178,10 +1412,20 @@ public class SourceCodeWriter extends ParseTreeVisitor {
 	}
 
 	public void visit(ParameterList p) throws ParseTreeException {
+		if (this.replace && isSameObject(p, this.target)) {
+			this.replace = false;
+			this.replacement.accept(this);
+			return;
+		}
 		writeListWithDelimiter(p, ", ");
 	}
 
 	public void visit(ReturnStatement p) throws ParseTreeException {
+		if (this.replace && isSameObject(p, this.target)) {
+			this.replace = false;
+			this.replacement.accept(this);
+			return;
+		}
 		writeTab();
 		writeDebugL(p);
 
@@ -1200,14 +1444,29 @@ public class SourceCodeWriter extends ParseTreeVisitor {
 	}
 
 	public void visit(SelfAccess p) throws ParseTreeException {
+		if (this.replace && isSameObject(p, this.target)) {
+			this.replace = false;
+			this.replacement.accept(this);
+			return;
+		}
 		out.print(p.toString());
 	}
 
 	public void visit(StatementList p) throws ParseTreeException {
+		if (this.replace && isSameObject(p, this.target)) {
+			this.replace = false;
+			this.replacement.accept(this);
+			return;
+		}
 		writeList(p);
 	}
 
 	public void visit(SwitchStatement p) throws ParseTreeException {
+		if (this.replace && isSameObject(p, this.target)) {
+			this.replace = false;
+			this.replacement.accept(this);
+			return;
+		}
 		writeTab();
 		writeDebugL(p);
 
@@ -1229,6 +1488,11 @@ public class SourceCodeWriter extends ParseTreeVisitor {
 	}
 
 	public void visit(SynchronizedStatement p) throws ParseTreeException {
+		if (this.replace && isSameObject(p, this.target)) {
+			this.replace = false;
+			this.replacement.accept(this);
+			return;
+		}
 		writeTab();
 		writeDebugL(p);
 
@@ -1247,6 +1511,11 @@ public class SourceCodeWriter extends ParseTreeVisitor {
 	}
 
 	public void visit(ThrowStatement p) throws ParseTreeException {
+		if (this.replace && isSameObject(p, this.target)) {
+			this.replace = false;
+			this.replacement.accept(this);
+			return;
+		}
 		writeTab();
 		writeDebugL(p);
 
@@ -1262,6 +1531,11 @@ public class SourceCodeWriter extends ParseTreeVisitor {
 	}
 
 	public void visit(TryStatement p) throws ParseTreeException {
+		if (this.replace && isSameObject(p, this.target)) {
+			this.replace = false;
+			this.replacement.accept(this);
+			return;
+		}
 		writeTab();
 		writeDebugL(p);
 
@@ -1287,6 +1561,11 @@ public class SourceCodeWriter extends ParseTreeVisitor {
 
 	/******rough around innerclass********/
 	public void visit(TypeName p) throws ParseTreeException {
+		if (this.replace && isSameObject(p, this.target)) {
+			this.replace = false;
+			this.replacement.accept(this);
+			return;
+		}
 		writeDebugL(p);
 
 		String typename = p.getName().replace('$', '.');
@@ -1299,6 +1578,11 @@ public class SourceCodeWriter extends ParseTreeVisitor {
 	}
 
 	public void visit(UnaryExpression p) throws ParseTreeException {
+		if (this.replace && isSameObject(p, this.target)) {
+			this.replace = false;
+			this.replacement.accept(this);
+			return;
+		}
 		writeDebugL(p);
 
 		if (p.isPrefix()) {
@@ -1327,10 +1611,20 @@ public class SourceCodeWriter extends ParseTreeVisitor {
 	}
 
 	public void visit(Variable p) throws ParseTreeException {
+		if (this.replace && isSameObject(p, this.target)) {
+			this.replace = false;
+			this.replacement.accept(this);
+			return;
+		}
 		out.print(p.toString());
 	}
 
 	public void visit(VariableDeclaration p) throws ParseTreeException {
+		if (this.replace && isSameObject(p, this.target)) {
+			this.replace = false;
+			this.replacement.accept(this);
+			return;
+		}
 		writeTab();
 		writeDebugL(p);
 
@@ -1354,6 +1648,11 @@ public class SourceCodeWriter extends ParseTreeVisitor {
 	}
 
 	public void visit(VariableDeclarator p) throws ParseTreeException {
+		if (this.replace && isSameObject(p, this.target)) {
+			this.replace = false;
+			this.replacement.accept(this);
+			return;
+		}
 		String declname = p.getVariable();
 		out.print(declname);
 		for (int i = 0; i < p.getDimension(); ++i) {
@@ -1368,6 +1667,11 @@ public class SourceCodeWriter extends ParseTreeVisitor {
 	}
 
 	public void visit(WhileStatement p) throws ParseTreeException {
+		if (this.replace && isSameObject(p, this.target)) {
+			this.replace = false;
+			this.replacement.accept(this);
+			return;
+		}
 		writeTab();
 		writeDebugL(p);
 
@@ -1557,6 +1861,11 @@ public class SourceCodeWriter extends ParseTreeVisitor {
 	}
 	
 	public void visit(TypeParameterList p) throws ParseTreeException {	
+		if (this.replace && isSameObject(p, this.target)) {
+			this.replace = false;
+			this.replacement.accept(this);
+			return;
+		}
 		writeTab();	        
 	    
 		out.print("<");
@@ -1569,7 +1878,11 @@ public class SourceCodeWriter extends ParseTreeVisitor {
 	}
 
 	public void visit(TypeParameter p) throws ParseTreeException {
-		
+		if (this.replace && isSameObject(p, this.target)) {
+			this.replace = false;
+			this.replacement.accept(this);
+			return;
+		}
 		out.print(p.toString());		
 	}
 	
