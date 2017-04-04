@@ -137,6 +137,7 @@ public class ExpressionList extends List {
 					Expression exprCopy = (Expression) (expr==null?null:expr.makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
 					res.add(exprCopy);
 				}
+				copyObjectIDTo(res);
 				return res;
 			}
 			default : return getParent().makeRecursiveCopy_keepOriginalID(scope);
