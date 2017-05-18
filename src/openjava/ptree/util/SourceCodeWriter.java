@@ -365,6 +365,8 @@ public class SourceCodeWriter extends ParseTreeVisitor {
 			return;
 		}
 		writeDebugL(p);
+		
+		if (p.forceParenthesis()) out.print("(");
 
 		Expression lexpr = p.getLeft();
 		if (isOperatorNeededLeftPar(p.getOperator(), lexpr)) {
@@ -382,6 +384,8 @@ public class SourceCodeWriter extends ParseTreeVisitor {
 		} else {
 			rexpr.accept(this);
 		}
+		
+		if (p.forceParenthesis()) out.print(")");
 
 		writeDebugR();
 	}
