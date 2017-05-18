@@ -90,6 +90,19 @@ public class BinaryExpression extends NonLeaf implements Expression {
 
 	/** the operator */
 	private int opr = -1;
+	
+	/**
+	 * Forces this expression to be surrounded by parenthesis
+	 */
+	private boolean forceParenthesis = false;
+	/**
+	 * Forces the left part of this expression to be surrounded by parenthesis
+	 */
+	private boolean forceParenthesisLeft = false;
+	/**
+	 * Forces the right part of this expression to be surrounded by parenthesis
+	 */
+	private boolean forceParenthesisRight = false;
 
 	/**
 	 * Allocates a new object.
@@ -114,6 +127,30 @@ public class BinaryExpression extends NonLeaf implements Expression {
 
 	BinaryExpression() {
 		super();
+	}
+	
+	public void forceParenthesis(boolean b) {
+		this.forceParenthesis = b;
+	}
+	
+	public boolean forceParenthesis() {
+		return this.forceParenthesis;
+	}
+	
+	public void forceParenthesisLeft(boolean b) {
+		this.forceParenthesisLeft = b;
+	}
+	
+	public boolean forceParenthesisLeft() {
+		return this.forceParenthesisLeft;
+	}
+	
+	public void forceParenthesisRight(boolean b) {
+		this.forceParenthesisRight = b;
+	}
+	
+	public boolean forceParenthesisRight() {
+		return this.forceParenthesisRight;
 	}
 
 	public ParseTree makeRecursiveCopy() {
@@ -402,6 +439,9 @@ public class BinaryExpression extends NonLeaf implements Expression {
 				BinaryExpression res = new BinaryExpression(leftCopy, getOperator(), rightCopy);
 				copyObjectIDTo(res);
 				res.copyAdditionalInfo(this);
+				res.forceParenthesis = this.forceParenthesis;
+				res.forceParenthesisLeft = this.forceParenthesisLeft;
+				res.forceParenthesisRight = this.forceParenthesisRight;
 				return res;
 			}
 			default : return getParent().makeRecursiveCopy_keepOriginalID(scope);
