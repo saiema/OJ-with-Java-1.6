@@ -31,6 +31,8 @@ public class TypeName extends NonLeaf {
 	Hashtable suffixes;
 
 	int dim;
+	
+	private boolean constructedFromOJClass = false;
 
 	public TypeName(String typename, int n, Hashtable suffixes) {
 		super();
@@ -87,7 +89,17 @@ public class TypeName extends NonLeaf {
 			clazz = clazz.getComponentType();
 		}
 		String name = clazz.getName();
-		return new TypeName(name, demension);
+		TypeName res = new TypeName(name, demension); 
+		res.constructedFromOJClass(true);
+		return res;
+	}
+	
+	private void constructedFromOJClass(boolean b) {
+		this.constructedFromOJClass = b;
+	}
+	
+	public boolean constructedFromOJClass() {
+		return this.constructedFromOJClass;
 	}
 
 	public ParseTree makeRecursiveCopy() {

@@ -79,7 +79,7 @@ import openjava.tools.DebugOut;
  * @see openjava.mop.OJConstructor
  *
  **/
-public class OJClass implements OJMember {
+public class OJClass implements OJMember, Comparable<OJClass> {
 
 	private OJClassImp substance;
 
@@ -2157,6 +2157,12 @@ public class OJClass implements OJMember {
 	/** inner use only */
 	public final void writeMetaInfo(Writer out) throws IOException {
 		substance.writeMetaInfo(out);
+	}
+
+	@Override
+	public int compareTo(OJClass o) {
+		if (o == null) throw new IllegalArgumentException("Value to compare cannot be a null value");
+		return this.toString().compareTo(o.toString());
 	}
 
 }

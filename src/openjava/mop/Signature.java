@@ -24,7 +24,7 @@ package openjava.mop;
  * @since    $Id: Signature.java,v 1.2 2003/02/19 02:55:01 tatsubori Exp $
  * @see java.lang.Object
  */
-public final class Signature {
+public final class Signature implements Comparable<Signature> {
 	public static final int CLASS = 0;
 	public static final int FIELD = 1;
 	public static final int METHOD = 2;
@@ -255,6 +255,12 @@ public final class Signature {
 			result[i] = commonBaseType(a[i], b[i]);
 		}
 		return result;
+	}
+
+	@Override
+	public int compareTo(Signature o) {
+		if (o == null) throw new IllegalArgumentException("Cannot compare with a null value");
+		return this.toString().compareTo(o.toString());
 	}
 
 }
