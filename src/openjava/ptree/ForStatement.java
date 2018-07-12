@@ -238,6 +238,10 @@ public class ForStatement extends NonLeaf implements Statement, ParseTree {
 	public void accept(ParseTreeVisitor v) throws ParseTreeException {
 		v.visit(this);
 	}
+	
+	public boolean isEnhancedFor() {
+		return constructorUsed == 3;
+	}
 
 	@Override
 	public ParseTree makeRecursiveCopy_keepOriginalID(COPY_SCOPE scope) {
