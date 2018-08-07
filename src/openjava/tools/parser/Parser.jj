@@ -3834,6 +3834,7 @@ ForStatement ForStatement( Environment env ) :
 		} else {
 		    result = new ForStatement( new ExpressionList(), p4, p5, body );
 		}
+		
     }
     {
 		if (singleStatementMGL != null) {											//modified (10/09/14) [simon]
@@ -3965,14 +3966,20 @@ ReturnStatement ReturnStatement( Environment env ) :
 
 ThrowStatement ThrowStatement( Environment env ) :
 {
-    Statement			result;
+    ThrowStatement		result;
     Expression			p1;
-
+	Literal				mut = null;
     DebugOut.println( "#ThrowStatement()" );
 }
 {
-    "throw" p1=Expression( env ) ";"
-    { return new ThrowStatement( p1 ); }
+    "throw" p1=Expression( env ) ";" [ LOOKAHEAD(2) <MUT_GEN_LIMIT>  [ LOOKAHEAD(2) mut=Literal() ] ]
+    { 
+    	result = new ThrowStatement( p1 );
+    	if (mut != null) {												//added (10/09/14) [simon]
+		  result.setMutGenLimit(Integer.parseInt(mut.toString())); 		//added (10/09/14) [simon]
+	   	}
+    	return result;
+    }
 }
 
 SynchronizedStatement SynchronizedStatement( Environment env ) :
