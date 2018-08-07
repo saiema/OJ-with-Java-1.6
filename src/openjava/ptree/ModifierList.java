@@ -46,6 +46,7 @@ public class ModifierList extends List {
 
 	public ModifierList(String e0) {
 		super(" ", e0);
+		mod = getModifier(e0);
 	}
 
 	public ModifierList(int mod) {
@@ -102,6 +103,35 @@ public class ModifierList extends List {
 		if ((len = sb.length()) > 0) /* trim trailing space */
 			return sb.toString().substring(0, len - 1);
 		return "";
+	}
+	
+	
+	public static int getModifier(String str) {
+		if (str == null)
+			return 0;
+		int mod = 0;
+		if (str.contains("public"))
+			mod |= PUBLIC;
+		if (str.contains("private"))
+			mod |= PRIVATE;
+		if (str.contains("protected"))
+			mod |= PROTECTED;
+		if (str.contains("abstract"))
+			mod |= ABSTRACT;
+		if (str.contains("static"))
+			mod |= STATIC;
+		if (str.contains("final"))
+			mod |= FINAL;
+		if (str.contains("transient"))
+			mod |= TRANSIENT;
+		if (str.contains("volatile"))
+			mod |= VOLATILE;
+		if (str.contains("native"))
+			mod |= NATIVE;
+		if (str.contains("synchronized")) {
+			mod |= SYNCHRONIZED;
+		}
+		return mod;
 	}
 
 	public boolean isEmpty() {
