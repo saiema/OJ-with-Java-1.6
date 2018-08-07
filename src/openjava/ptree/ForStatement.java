@@ -102,6 +102,10 @@ public class ForStatement extends NonLeaf implements Statement, ParseTree {
 			set(tspec, null, null, expr, null, stmts, identifier, modifier);
 			this.constructorUsed = 3;
 		}
+	
+	public void setModifier(String modifier) {
+		setElementAt(modifier, 7);
+	}
 
 	/**
 	 * Gets the identifier part of an enhanced for-statement.
@@ -261,6 +265,8 @@ public class ForStatement extends NonLeaf implements Statement, ParseTree {
 					ExpressionList incCopy = (ExpressionList) (getIncrement()==null?null:getIncrement().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
 					StatementList bodyCopy = (StatementList) (getStatements()==null?null:getStatements().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
 					res = new ForStatement(initCopy, condCopy, incCopy, bodyCopy);
+					String modsCopy = getModifier();
+					res.setModifier(modsCopy);
 				} else if (this.constructorUsed == 2) {
 					/*
 					 * 	TypeName tspec,
@@ -283,6 +289,8 @@ public class ForStatement extends NonLeaf implements Statement, ParseTree {
 					ExpressionList incCopy = (ExpressionList) (getIncrement()==null?null:getIncrement().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
 					StatementList bodyCopy = (StatementList) (getStatements()==null?null:getStatements().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
 					res = new ForStatement(initDeclTypeCopy, varDeclCopy, condCopy, incCopy, bodyCopy);
+					String modsCopy = getModifier();
+					res.setModifier(modsCopy);
 				} else if (this.constructorUsed == 3) {
 					/*
 					 * 	String modifier,
