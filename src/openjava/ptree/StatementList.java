@@ -124,6 +124,14 @@ public class StatementList extends List {
 		}
 		return result;
 	}
+	
+	public boolean contains(Statement st) {
+		for (int i = 0, len = size(); i < len; i++) {
+			Statement cst = get(i);
+			if (cst == st) return true;
+		}
+		return false;
+	}
 
 	public void accept(ParseTreeVisitor v) throws ParseTreeException {
 		v.visit(this);
