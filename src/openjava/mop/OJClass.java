@@ -2574,7 +2574,8 @@ class OJClassSourceCode extends OJClassImp {
 		if (declarer == null) {
 			return env.toQualifiedName(definition.getName());
 		} else {
-			return declarer.getName() + "." + definition.getName();
+			//return declarer.getName() + "." + definition.getName();
+			return declarer.getName() + "$" + definition.getName();
 		}
 	}
 

@@ -827,7 +827,8 @@ public abstract class Toolbox {
 					return "<unknown primitive type>";
 			}
 		}
-		return result.replace('$', '.');
+		//return result.replace('$', '.');
+		return result;
 	}
 	/**
 	 * modified by Nan Li for Java 1.5 Generics
