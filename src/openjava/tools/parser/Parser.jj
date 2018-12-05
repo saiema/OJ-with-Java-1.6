@@ -2349,6 +2349,46 @@ TypeName TypeOptionalComments( Environment env, boolean checkForComments ) :
 }
 // ----------------------------------------------------------------------------
 
+TypeName TypeWithoutDimensions( Environment env ) :
+{
+    String			    p1;
+    Hashtable			p2;
+}
+{
+    ( p1 = PrimitiveType() | p1 = NameWithoutBrackets() )
+    p2 = OpenJavaTypeSuffixListOpt( env, p1 )
+    { 
+    /*
+    System.out.println("TypeWithoutDims:p1: " + p1);
+    System.out.println("p2: " + p2);
+    */
+    return new TypeName( p1, p2 ); }
+}
+
+String NameWithoutBrackets() :
+/*
+ * A lookahead of 2 is required below since "Name" can be followed
+ * by a ".*" when used in the context of an "ImportDeclaration".
+ */
+{
+    String		 p1, p2;
+    StringBuffer strbuf = null;
+}
+{
+    p1 = Identifier() { strbuf = new StringBuffer( p1 );}
+    [ LOOKAHEAD(2) p2 = TypeArguments()
+       {  strbuf.append(p2);}
+    ]
+    
+    ( LOOKAHEAD(2) "." p1 = Identifier() 
+    	{ strbuf.append( "." + p1 );}
+      [ LOOKAHEAD(2) p2 = TypeArguments() {  strbuf.append(p2); } ]	
+    )*
+    {
+    	return strbuf.toString(); 
+    }
+}
+
 TypeName TypeWithoutDims( Environment env ) :
 {
     String			    p1;
@@ -3250,6 +3290,12 @@ Expression AllocationExpression( Environment env ) :
 {
     LOOKAHEAD( "new" PrimitiveType() )
     "new" p1 = TypeWithoutDims( env )
+    p2 = ArrayDimsAndInits( env, p1 )
+    { result = p2; }
+    { return result; }
+|
+    LOOKAHEAD( "new" Identifier() "[" "]")
+    "new" p1 = TypeWithoutDimensions( env )
     p2 = ArrayDimsAndInits( env, p1 )
     { result = p2; }
     { return result; }
