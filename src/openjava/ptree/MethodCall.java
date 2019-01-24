@@ -26,8 +26,6 @@ import openjava.ptree.util.ParseTreeVisitor;
  * @see openjava.ptree.Expression
  */
 public class MethodCall extends NonLeaf implements Expression {
-
-	private int constructorUsed = -1;
 	
 	/**
 	 * Allocates a new method call expression object.
@@ -42,7 +40,6 @@ public class MethodCall extends NonLeaf implements Expression {
 		if (args == null)
 			args = new ExpressionList();
 		set(expr, null, name, args);
-		this.constructorUsed = 1;
 	}
 
 	/**
@@ -70,7 +67,6 @@ public class MethodCall extends NonLeaf implements Expression {
 		if (args == null)
 			args = new ExpressionList();
 		set(null, type, name, args);
-		this.constructorUsed = 2;
 	}
 
 	public MethodCall(OJClass clazz, String name, ExpressionList args) {
@@ -79,6 +75,7 @@ public class MethodCall extends NonLeaf implements Expression {
 
 	MethodCall() {
 		super();
+		set(null, null, null, null);
 	}
 
 	/**
@@ -244,22 +241,13 @@ public class MethodCall extends NonLeaf implements Expression {
 				ExpressionList argsCopy = (ExpressionList) (getArguments()==null?null:getArguments().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
 				String nameCopy = getName();
 				MethodCall res = null;
-				if (this.constructorUsed == 1) {
-					/*
-					 * Expression expr, String name, ExpressionList args
-					 */
-					Expression refExprCopy = (Expression) (getReferenceExpr()==null?null:getReferenceExpr().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
-					res = new MethodCall(refExprCopy, nameCopy, argsCopy);
-				} else if (this.constructorUsed == 2) {
-					/*
-					 * TypeName type, String name, ExpressionList args
-					 */
-					TypeName refTypeCopy = (TypeName) (getReferenceType()==null?null:getReferenceType().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
-					res = new MethodCall(refTypeCopy, nameCopy, argsCopy);
-				} else {
-					System.err.println("Error while cloning IfStatement (constructorUsed is " + this.constructorUsed + ")");
-					return null;
-				}
+				Expression refExprCopy = (Expression) (getReferenceExpr()==null?null:getReferenceExpr().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
+				TypeName refTypeCopy = (TypeName) (getReferenceType()==null?null:getReferenceType().makeRecursiveCopy_keepOriginalID(COPY_SCOPE.NODE));
+				res = new MethodCall();
+				res.setName(nameCopy);
+				res.setArguments(argsCopy);
+				res.setElementAt(refExprCopy, 0);
+				res.setElementAt(refTypeCopy, 1);
 				copyObjectIDTo(res);
 				res.copyAdditionalInfo(this);
 				return res;
