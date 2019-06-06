@@ -114,6 +114,11 @@ public class UnaryExpression extends NonLeaf implements Expression {
 	private int opr = -1;
 
 	/**
+	 * Forces this expression to be surrounded by parenthesis
+	 */
+	private boolean forceParenthesis;
+
+	/**
 	 * Allocates a new object.
 	 *
 	 * @param  opr  the operator of this unary expression.
@@ -258,6 +263,14 @@ public class UnaryExpression extends NonLeaf implements Expression {
 	public OJClass getType(Environment env) throws Exception {
 		return getExpression().getType(env);
 	}
+	
+	public void forceParenthesis(boolean b) {
+		this.forceParenthesis = b;
+	}
+	
+	public boolean forceParenthesis() {
+		return this.forceParenthesis;
+	}
 
 	@Override
 	public ParseTree makeRecursiveCopy_keepOriginalID(COPY_SCOPE scope) {
@@ -268,6 +281,7 @@ public class UnaryExpression extends NonLeaf implements Expression {
 				UnaryExpression res = new UnaryExpression(exprCopy, opCopy);
 				copyObjectIDTo(res);
 				res.copyAdditionalInfo(this);
+				res.forceParenthesis = this.forceParenthesis;
 				return res;
 			}
 			default : return getParent().makeRecursiveCopy_keepOriginalID(scope);
